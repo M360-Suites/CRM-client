@@ -10,7 +10,7 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default:
-          "bg-[#FF6D00] text-[20px] text-[#ffffff] font-medium [a]:hover:bg-foundation-primary-6/80 border-t-0 border-l-0 border-b-2 border-r-2 border-r-foundation-secondary-6 border-b-foundation-secondary-6",
+          "bg-[#E2725B] text-base text-[#ffffff] font-medium [a]:hover:bg-foundation-primary-6/80 border-t-0 border-l-0 border-b-2 border-r-2 border-r-foundation-secondary-6 border-b-foundation-secondary-6",
         ghost:
           "border-t-0 border-l-0 border-r-2 border-b-2 bg-foundation-gray-1 border-b-foundation-gray-2 font-medium border-r-foundation-gray-2 text-foundation-gray-6 aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
         secondary:
@@ -39,7 +39,7 @@ const buttonVariants = cva(
       variant: "default",
       size: "default",
     },
-  }
+  },
 );
 
 function CustomButton({

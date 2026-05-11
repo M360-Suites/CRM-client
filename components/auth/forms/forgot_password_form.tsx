@@ -1,26 +1,30 @@
 "use client";
 
-import Link from "next/link";
-import { loginSchema, type LoginRequestData } from "@/validation/auth";
+// import Link from "next/link";
+import {
+  forgotPasswordSchema,
+  type ForgotRequestData,
+} from "@/validation/auth";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CustomInput from "@/components/custom/common/customInput";
 
-export default function LoginForm() {
+export default function ForgotPasswordForm() {
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<LoginRequestData>({
-    resolver: zodResolver(loginSchema),
+  } = useForm<ForgotRequestData>({
+    resolver: zodResolver(forgotPasswordSchema),
   });
-  const onSubmit: SubmitHandler<LoginRequestData> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<ForgotRequestData> = (data) =>
+    console.log(data);
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-12 w-lg"
+      className="flex flex-col gap-10 w-lg max-w-full"
     >
       <div className="flex flex-col gap-3 w-full">
         <div className="flex flex-col gap-4 relative">
@@ -36,32 +40,12 @@ export default function LoginForm() {
               {errors.email.message}
             </span>
           )}*/}
-          <div className="flex flex-col gap-2 relative">
-            <CustomInput
-              label="Password"
-              type="password"
-              error={errors.password?.message}
-              {...register("password", { required: true })}
-            />
-            {/*{errors.password && (
-              <span className="text-xs text-foundation-error-6 absolute left-4 top-1">
-                {errors.password.message}
-              </span>
-            )}*/}
-          </div>
         </div>
-
-        <Link
-          href="/forgot-password"
-          className="text-[#E2725B] text-sm/[20px] self-end font-normal"
-        >
-          Forgot password?
-        </Link>
       </div>
       <CustomButton type="submit" className="w-full py-3">
-        Login
+        Continue
       </CustomButton>
-      <div className="flex flex-row items-center gap-2 justify-center">
+      {/*<div className="flex flex-row items-center gap-2 justify-center">
         <span className="text-foundation-gray-4 font-normal text-base/[20px]">
           Don&apos;t have an account?
         </span>
@@ -71,7 +55,7 @@ export default function LoginForm() {
         >
           Sign up
         </Link>
-      </div>
+      </div>*/}
     </form>
   );
 }

@@ -14,12 +14,13 @@ const geistMono = Geist_Mono({
 
 const inter = Inter({
   variable: "--font-inter",
-  subsets: ["latin"]
-})
+  subsets: ["latin"],
+});
 
 export const metadata: Metadata = {
   title: "CRM client",
-  description: "A Customer Relationship Management (CRM) client application for firms",
+  description:
+    "A Customer Relationship Management (CRM) client application for firms",
 };
 
 export default function RootLayout({

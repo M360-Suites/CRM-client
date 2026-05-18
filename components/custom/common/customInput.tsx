@@ -18,8 +18,8 @@ const CustomInput = React.forwardRef<HTMLInputElement, CustomInputProps>(
       type === "password" && isPasswordVisible ? "text" : type;
 
     return (
-      <div className="flex flex-col gap-2 font-dm w-full">
-        <label className="text-foreground font-regular text-base/[120%]">
+      <div className="flex flex-col gap-2 font-inter w-full">
+        <label className="text-foreground font-regular text-sm/[120%]">
           {label}
         </label>
         <div

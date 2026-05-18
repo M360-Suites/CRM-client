@@ -37,7 +37,13 @@ export const resetPasswordSchema = z
   .refine((data) => data.newPassword === data.confirmPassword, {
     message: "Passwords do not match",
     path: ["confirmPassword"],
-  });
+});
+
+export const onboardingSchema = z.object({
+  businessType: z.string().min(1, "Business Type must not be empty"),
+  numberOfEmployee: z.string().min(1, "Number of employees cannot be empty"),
+  companyLogo: z.string()
+})
 
 export type ForgotRequestData = z.infer<typeof forgotPasswordSchema>;
 export type ResetRequestData = z.infer<typeof resetPasswordSchema>;
@@ -46,3 +52,4 @@ export type EmailVerficationRequestData = z.infer<
 >;
 export type RegisterRequestData = z.infer<typeof registerSchema>;
 export type LoginRequestData = z.infer<typeof loginSchema>;
+export type OnboardingRequestData = z.infer<typeof onboardingSchema>;

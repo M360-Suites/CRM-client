@@ -1,5 +1,5 @@
-import Header from "@/components/pipeline/header";
-import Body from "@/components/pipeline/body";
+import Header from "@/components/document/header";
+import Body from "@/components/document/body";
 
 export default function page() {
   return (

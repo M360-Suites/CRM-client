@@ -15,7 +15,7 @@ export default function Header() {
       <div className="flex flex-row items-center justify-between w-full">
         <div className="flex flex-col gap-1">
           <h2 className="text-2xl font-medium text-[#3A2418]">Contacts</h2>
-          <span className="text-base font-normal text-[#3A2418]">
+          <span className="text-base font-medium text-foreground">
             {contacts.length} contacts
           </span>
         </div>

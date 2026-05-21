@@ -3,7 +3,7 @@ import { CustomButton } from "@/components/custom/common/customButton";
 
 export default function ImportDone() {
   return (
-    <div className="flex flex-col gap-10 w-full px-8">
+    <div className="flex flex-col gap-10 w-full px-8 pt-8">
       <div className="bg-[#FFF6EC] h-40 rounded-[10px] flex flex-col items-center justify-center gap-2">
         <Check size={36} color="#E2725B" className="mx-auto" />
         <span className="text-foreground text-sm font-normal block text-center">

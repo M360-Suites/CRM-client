@@ -1,6 +1,5 @@
-import { CustomSelect } from "@/components/custom/common/customSelect";
 import { CustomButton } from "@/components/custom/common/customButton";
-import { useContactStore } from "@/stores/contact/contact_store";
+import { useCompanyStore } from "@/stores/company/company_store";
 import {
   Table,
   TableBody,
@@ -11,8 +10,8 @@ import {
 } from "@/components/ui/table";
 
 export default function ImportStepThree() {
-  const { setImportSteps, contactPreview, completedSteps, setCompletedSteps } =
-    useContactStore();
+  const { setImportSteps, companyPreview, completedSteps, setCompletedSteps } =
+    useCompanyStore();
   console.log("completed steps:", completedSteps);
   return (
     <div className="pt-10 flex flex-col gap-12 px-5 relative">
@@ -20,25 +19,21 @@ export default function ImportStepThree() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead className="text-right">Firstname</TableHead>
-              <TableHead className="text-right">Lastname</TableHead>
-              <TableHead className="text-right">Email</TableHead>
-              <TableHead className="text-right">Phone</TableHead>
-              <TableHead className="text-right">Role/Title</TableHead>
-              <TableHead className="text-right">Temperature</TableHead>
+              <TableHead className="text-left">Company name</TableHead>
+              <TableHead className="text-left">Industry</TableHead>
+              <TableHead className="text-left">Website</TableHead>
+              <TableHead className="text-left">Notes</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
-            {contactPreview.map((contact) => (
-              <TableRow key={contact.id}>
-                <TableCell className="font-medium text-right">
-                  {contact.firstname}
+            {companyPreview.map((contact, index) => (
+              <TableRow key={index}>
+                <TableCell className="text-left">
+                  {contact.companyName}
                 </TableCell>
-                <TableCell className="text-right">{contact.lastname}</TableCell>
-                <TableCell className="text-right">{contact.email}</TableCell>
-                <TableCell className="text-right">{contact.phone}</TableCell>
-                <TableCell className="text-right">{contact.role}</TableCell>
-                <TableCell className="text-right">{contact.status}</TableCell>
+                <TableCell className="text-left">{contact.industry}</TableCell>
+                <TableCell className="text-left">{contact.website}</TableCell>
+                <TableCell className="text-left">{contact.notes}</TableCell>
               </TableRow>
             ))}
           </TableBody>
@@ -55,7 +50,15 @@ export default function ImportStepThree() {
         >
           Back
         </CustomButton>
-        <CustomButton className="py-4 px-5 flex-1">Import</CustomButton>
+        <CustomButton
+          className="py-4 px-5 flex-1"
+          onClick={() => {
+            setImportSteps(4);
+            setCompletedSteps([5]);
+          }}
+        >
+          Import
+        </CustomButton>
       </div>
     </div>
   );

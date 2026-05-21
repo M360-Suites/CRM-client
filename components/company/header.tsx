@@ -3,25 +3,31 @@
 import { CustomButton } from "@/components/custom/common/customButton";
 import { Download, UploadIcon, PlusIcon } from "lucide-react";
 import { CustomDrawer } from "@/components/custom/common/drawer";
-import AddContactForm from "./forms/add_contact";
+import AddCompanyForm from "./forms/add_company";
 import ImportContacts from "./import";
-import { useContactStore } from "@/stores/contact/contact_store";
+import { useCompanyStore } from "@/stores/company/company_store";
 
 export default function Header() {
-  const { contacts } = useContactStore();
+  const { companies } = useCompanyStore();
 
   return (
     <div className="w-full pt-8">
       <div className="flex flex-row items-center justify-between w-full">
-        <div className="flex flex-col gap-1">
-          <h2 className="text-2xl font-medium text-[#3A2418]">Companies</h2>
-          <span className="text-base font-normal text-[#3A2418]">
-            {contacts.length} companies
+        <div className="flex flex-row items-start gap-2">
+          <div className="flex flex-col gap-1">
+            <h2 className="text-2xl font-medium text-[#3A2418]">Companies</h2>
+            <span className="text-base font-medium text-foreground">
+              {companies.length} companies
+            </span>
+          </div>
+          <span className="text-[#E2725B] text-sm bg-[#FFF3E6] border border-border rounded-full py-1 px-3">
+            Sales rep
           </span>
         </div>
+
         <div className="flex flex-row gap-4">
           <CustomDrawer
-            label="Export Contacts"
+            label="Export Companies"
             trigger={
               <CustomButton
                 variant="outline"
@@ -34,10 +40,10 @@ export default function Header() {
           >
             <div className="p-4">
               <span className="text-lg font-medium text-foreground">
-                Export Contacts
+                Export Companies
               </span>
               <p className="text-sm font-normal text-foreground/70 mt-2">
-                Choose the format you want to export your contacts in.
+                Choose the format you want to export your companies in.
               </p>
               <div className="flex flex-col gap-3 mt-4">
                 <CustomButton variant="outline" className="w-full">
@@ -54,7 +60,7 @@ export default function Header() {
           </CustomDrawer>
 
           <CustomDrawer
-            label="Import Contacts"
+            label="Import Companies"
             trigger={
               <CustomButton
                 variant="outline"
@@ -68,18 +74,18 @@ export default function Header() {
             <ImportContacts />
           </CustomDrawer>
           <CustomDrawer
-            label="Add Companies"
+            label="Add Company"
             trigger={
               <CustomButton
                 variant="default"
                 className="rounded-full flex flex-row items-center gap-2 px-5 py-2.5"
               >
                 <PlusIcon className="" />
-                <span>Add Companies</span>
+                <span>Add Company</span>
               </CustomButton>
             }
           >
-            <AddContactForm />
+            <AddCompanyForm />
           </CustomDrawer>
         </div>
       </div>

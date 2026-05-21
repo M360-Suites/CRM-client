@@ -5,6 +5,7 @@ import { ContactTabs, getIntials } from "@/lib/utils";
 import { useContactStore } from "@/stores/contact/contact_store";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { CustomDrawer } from "@/components/custom/common/drawer";
+import Detail from "./forms/detail";
 import { useState } from "react";
 
 export default function Body() {
@@ -115,27 +116,7 @@ export default function Body() {
                   </div>
                 }
               >
-                {/* Drawer Content */}
-                <div className="p-4">
-                  <h2 className="text-lg font-medium text-foreground">
-                    {selectedContact?.name}
-                  </h2>
-                  <p className="text-sm text-foreground/70">
-                    Email: {selectedContact?.email}
-                  </p>
-                  <p className="text-sm text-foreground/70">
-                    Phone: {selectedContact?.phone}
-                  </p>
-                  <p className="text-sm text-foreground/70">
-                    Company: {selectedContact?.company}
-                  </p>
-                  <p className="text-sm text-foreground/70">
-                    Role: {selectedContact?.role}
-                  </p>
-                  <p className="text-sm text-foreground/70">
-                    Status: {selectedContact?.status}
-                  </p>
-                </div>
+                <Detail />
               </CustomDrawer>
             ))}
           </div>

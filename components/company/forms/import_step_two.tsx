@@ -1,42 +1,34 @@
 import { CustomSelect } from "@/components/custom/common/customSelect";
 import { CustomButton } from "@/components/custom/common/customButton";
-import { useContactStore } from "@/stores/contact/contact_store";
+import { useCompanyStore } from "@/stores/company/company_store";
 
 const selectData = [
   {
-    name: "First Name",
-    value: "firstname",
+    name: "Company Name",
+    value: "company name",
   },
   {
-    name: "Last Name",
-    value: "lastname",
+    name: "Industry",
+    value: "industry",
   },
   {
-    name: "Email",
-    value: "email",
+    name: "Website",
+    value: "website",
   },
   {
-    name: "Phone",
-    value: "phone",
-  },
-  {
-    name: "Role/Title",
-    value: "role",
-  },
-  {
-    name: "Temperature",
-    value: "temperature",
+    name: "Notes",
+    value: "notes",
   },
 ];
 
 export default function ImportStepTwo() {
-  const { setImportSteps, setCompletedSteps } = useContactStore();
+  const { setImportSteps, setCompletedSteps } = useCompanyStore();
   return (
     <div className="pt-10 flex flex-col gap-12 px-5 relative">
       <div className="flex flex-col gap-4">
         <div className="flex flex-row items-center justify-between">
           <span className="text-base text-foreground font-medium">
-            First Name
+            Company Name
           </span>
           <div className="w-125 relative">
             <CustomSelect
@@ -48,7 +40,7 @@ export default function ImportStepTwo() {
         </div>
         <div className="flex flex-row items-center justify-between">
           <span className="text-base text-foreground font-medium">
-            Last Name
+            Industry
           </span>
           <div className="w-125 relative">
             <CustomSelect
@@ -59,7 +51,7 @@ export default function ImportStepTwo() {
           </div>
         </div>
         <div className="flex flex-row items-center justify-between">
-          <span className="text-base text-foreground font-medium">Email</span>
+          <span className="text-base text-foreground font-medium">Website</span>
           <div className="w-125 relative">
             <CustomSelect
               label=""
@@ -69,31 +61,7 @@ export default function ImportStepTwo() {
           </div>
         </div>
         <div className="flex flex-row items-center justify-between">
-          <span className="text-base text-foreground font-medium">Phone</span>
-          <div className="w-125 relative">
-            <CustomSelect
-              label=""
-              placeholder="Select a field"
-              selectable={selectData}
-            />
-          </div>
-        </div>
-        <div className="flex flex-row items-center justify-between">
-          <span className="text-base text-foreground font-medium">
-            Role/Title
-          </span>
-          <div className="w-125 relative">
-            <CustomSelect
-              label=""
-              placeholder="Select a field"
-              selectable={selectData}
-            />
-          </div>
-        </div>
-        <div className="flex flex-row items-center justify-between">
-          <span className="text-base text-foreground font-medium">
-            Temperature
-          </span>
+          <span className="text-base text-foreground font-medium">Notes</span>
           <div className="w-125 relative">
             <CustomSelect
               label=""

@@ -1,9 +1,9 @@
 import { UploadIcon, Download } from "lucide-react";
-import { useContactStore } from "@/stores/contact/contact_store";
+import { useCompanyStore } from "@/stores/company/company_store";
 import { CustomButton } from "@/components/custom/common/customButton";
 
 export default function ImportStepOne() {
-  const { setImportSteps, setCompletedSteps } = useContactStore();
+  const { setImportSteps, setCompletedSteps } = useCompanyStore();
   return (
     <div className="flex flex-col gap-6 w-full">
       <div
@@ -41,7 +41,7 @@ export default function ImportStepOne() {
             >
               <circle cx="4" cy="4" r="4" fill="#C95C47" />
             </svg>
-            First Name
+            Company name
           </li>
           <li className="flex flex-row items-center gap-2 p-2.5">
             <svg
@@ -53,7 +53,7 @@ export default function ImportStepOne() {
             >
               <circle cx="4" cy="4" r="4" fill="#C95C47" />
             </svg>
-            Last Name
+            Industry
           </li>
           <li className="flex flex-row items-center gap-2 p-2.5">
             <svg
@@ -65,7 +65,7 @@ export default function ImportStepOne() {
             >
               <circle cx="4" cy="4" r="4" fill="#C95C47" />
             </svg>
-            Email
+            Website
           </li>
           <li className="flex flex-row items-center gap-2 p-2.5">
             <svg
@@ -77,31 +77,7 @@ export default function ImportStepOne() {
             >
               <circle cx="4" cy="4" r="4" fill="#C95C47" />
             </svg>
-            Phone
-          </li>
-          <li className="flex flex-row items-center gap-2 p-2.5">
-            <svg
-              width="8"
-              height="8"
-              viewBox="0 0 8 8"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle cx="4" cy="4" r="4" fill="#C95C47" />
-            </svg>
-            Role
-          </li>
-          <li className="flex flex-row items-center gap-2 p-2.5">
-            <svg
-              width="8"
-              height="8"
-              viewBox="0 0 8 8"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <circle cx="4" cy="4" r="4" fill="#C95C47" />
-            </svg>
-            Temperature(hot/warm/cold)
+            Notes
           </li>
         </ul>
       </div>

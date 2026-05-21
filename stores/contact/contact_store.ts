@@ -18,6 +18,7 @@ export interface ContactState {
     name: string;
     email: string;
     company: string;
+    phone?: string;
     date: string;
     status: string;
     role?: string;
@@ -49,6 +50,7 @@ export const useContactStore = create<ContactState>((set) => ({
       date: "2024-06-01",
       status: "Hot",
       role: "Manager",
+      phone: "07049370621",
     },
     {
       id: 2,
@@ -58,6 +60,7 @@ export const useContactStore = create<ContactState>((set) => ({
       date: "2024-06-02",
       status: "Warm",
       role: "Developer",
+      phone: "08012345678",
     },
     {
       id: 3,
@@ -67,6 +70,7 @@ export const useContactStore = create<ContactState>((set) => ({
       date: "2024-06-03",
       status: "Cold",
       role: "Designer",
+      phone: "09098765432",
     },
   ],
   selectedContact: null,

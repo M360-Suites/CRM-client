@@ -63,7 +63,7 @@ export default function DashCard() {
           Here&apos;s how your pipeline looks today.
         </span>
       </div>
-      <div className="flex flex-wrap justify-between gap-5">
+      <div className="grid grid-cols-4 gap-5">
         {DashData.map((item) => (
           <div className="p-4 border border-[#E8E8E8] rounded-[8px] flex flex-col gap-2">
             <div className="w-64 flex flex-col gap-3">
@@ -90,7 +90,7 @@ export default function DashCard() {
           <span>Pipeline Preview</span>
           <span className="text-sm text-[#FF9E55] font-medium">View all</span>
         </div>
-        <div className="flex flex-wrap justify-between w-full">
+        <div className="grid grid-cols-5 gap-4 w-full">
           {Pipeline.map((data) => (
             <div className="bg-[#FAFFFF] border border-[#E8E8E8] py-3.5 px-5 rounded-[12px]">
               <div className="flex flex-col gap-2.5 w-42.5">

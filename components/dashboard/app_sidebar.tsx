@@ -48,18 +48,18 @@ const sideLinks = [
   {
     name: "Task & Calendar",
     icon: CalendarCheck,
-    url: "/calendar",
+    url: "/tasks_and_calendar",
   },
   // {
   //   name: "Inbox",
   //   icon: Inbox,
   //   url: ""
   // },
-  // {
-  //   name: "Documents",
-  //   icon: FileText,
-  //   url: ""
-  // },
+  {
+    name: "Documents",
+    icon: FileText,
+    url: "/documents",
+  },
   // {
   //   name: "Email Sync",
   //   icon: Mail,

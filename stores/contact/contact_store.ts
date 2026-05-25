@@ -1,101 +1,70 @@
 import { create } from "zustand";
+import { Contact } from "@/types/contact";
 
 export interface ContactState {
   importSteps: number;
   completedSteps: number[];
-  selectedContact: {
-    id: number;
-    name: string;
-    email: string;
-    company: string;
-    date: string;
-    status: string;
-    role?: string;
-    phone?: string;
-  } | null;
-  contacts: {
-    id: number;
-    name: string;
-    email: string;
-    company: string;
-    phone?: string;
-    date: string;
-    status: string;
-    role?: string;
-  }[];
-  contactPreview: {
-    id: number;
-    firstname: string;
-    phone: string;
-    lastname: string;
-    email: string;
-    company: string;
-    date: string;
-    status: string;
-    role?: string;
-  }[];
+  selectedContact: Contact | null;
+  contacts: Contact[];
+  contactPreview: Contact[];
   setCompletedSteps: (value: number[]) => void;
   setImportSteps: (value: number) => void;
-  setSelectedContact: (contact: ContactState["selectedContact"]) => void;
+  setSelectedContact: (contact: Contact | null) => void;
 }
 
 export const useContactStore = create<ContactState>((set) => ({
   importSteps: 1,
   contacts: [
     {
-      id: 1,
-      name: "John Doe",
-      email: "john.doe@example.com",
-      company: "Acme Corp",
-      date: "2024-06-01",
-      status: "Hot",
-      role: "Manager",
-      phone: "07049370621",
-    },
-    {
-      id: 2,
-      name: "Jane Smith",
-      email: "jane.smith@example.com",
-      company: "Beta Inc",
-      date: "2024-06-02",
-      status: "Warm",
-      role: "Developer",
-      phone: "08012345678",
-    },
-    {
-      id: 3,
-      name: "Bob Johnson",
-      email: "bob.johnson@example.com",
-      company: "Gamma LLC",
-      date: "2024-06-03",
-      status: "Cold",
-      role: "Designer",
-      phone: "09098765432",
+      _id: "6a11e367cb1fb8657013ca6a",
+      first_name: "boluwatife",
+      last_name: "ojo",
+      email: "watifeb278@gmail.com",
+      phone: "09127422780",
+      role_title: "Lead CX",
+      company_id: {
+        _id: "6a11c1e46c58135c46def538",
+        name: "M360solutions",
+        industry: "Finance",
+        website: "https://www.m360sooluitons.com",
+      },
+      owner_id: {
+        _id: "6a105a031b2fe0919e654b8b",
+        email: "ojodanieltoby@gmail.com",
+        display_name: "ojo daniel",
+      },
+      temperature: "warm",
+      tags: [],
+      created_at: "2026-05-23T17:27:03.559Z",
+      updated_at: "2026-05-23T17:27:03.559Z",
+      __v: 0,
     },
   ],
   selectedContact: null,
   contactPreview: [
     {
-      id: 1,
-      lastname: "Doe",
-      firstname: "John",
-      email: "john.doe@example.com",
-      company: "Acme Corp",
-      date: "2024-06-01",
-      status: "Hot",
-      role: "Manager",
-      phone: "07049370621",
-    },
-    {
-      id: 2,
-      lastname: "Smith",
-      firstname: "Jola",
-      email: "jolasmith@gmail.com",
-      company: "Acme Corp",
-      date: "2024-06-01",
-      status: "Warm",
-      role: "Developer",
-      phone: "09089783265",
+      _id: "6a11e367cb1fb8657013ca6a",
+      first_name: "boluwatife",
+      last_name: "ojo",
+      email: "watifeb278@gmail.com",
+      phone: "09127422780",
+      role_title: "Lead CX",
+      company_id: {
+        _id: "6a11c1e46c58135c46def538",
+        name: "M360solutions",
+        industry: "Finance",
+        website: "https://www.m360sooluitons.com",
+      },
+      owner_id: {
+        _id: "6a105a031b2fe0919e654b8b",
+        email: "ojodanieltoby@gmail.com",
+        display_name: "ojo daniel",
+      },
+      temperature: "warm",
+      tags: [],
+      created_at: "2026-05-23T17:27:03.559Z",
+      updated_at: "2026-05-23T17:27:03.559Z",
+      __v: 0,
     },
   ],
   completedSteps: [],

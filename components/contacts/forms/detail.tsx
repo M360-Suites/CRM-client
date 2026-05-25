@@ -2,27 +2,42 @@ import { useContactStore } from "@/stores/contact/contact_store";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { CustomDrawer } from "@/components/custom/common/drawer";
 import EditContactForm from "./edit_contact";
-import { getIntials } from "@/lib/utils";
+import { getInitials } from "@/lib/utils";
 
-export default function Detail() {
+interface ContactDetailsSheetProps {
+  onDelete: () => void;
+  isLoading?: boolean;
+}
+
+export default function Detail({
+  onDelete,
+  isLoading,
+}: ContactDetailsSheetProps) {
   const { selectedContact } = useContactStore();
+
+  console.log("selectedContact", selectedContact);
 
   return (
     <div className="p-4 flex flex-col gap-10">
       <div className="flex flex-row items-start gap-4 flex-1">
         <div className="bg-[#D8F3F1] h-10 w-10 rounded-full flex items-center justify-center text-base font-medium text-[#2F9E94]">
-          {getIntials(selectedContact?.name || "")}
+          {getInitials(
+            selectedContact?.first_name + " " + selectedContact?.last_name ||
+              "",
+          )}
         </div>
         <div className="flex flex-col gap-2">
           <div className="flex flex-col items-start">
-            <span className="text-sm font-normal">{selectedContact?.name}</span>
+            <span className="text-sm font-normal">
+              {selectedContact?.first_name + " " + selectedContact?.last_name}
+            </span>
             <span className="text-sm font-medium text-foreground">
-              {selectedContact?.role}
+              {selectedContact?.role_title}
             </span>
           </div>
           <span className="px-1.5 py-1 rounded-full text-sm  font-medium bg-[#E6F7F1] text-[#2CA678]">
             <p className="text-sm text-foreground text-center">
-              {selectedContact?.status}
+              {selectedContact?.temperature}
             </p>
           </span>
         </div>
@@ -42,7 +57,9 @@ export default function Detail() {
         </div>
         <div className="py-2 flex justify-between w-full">
           <span>Last Contacted</span>
-          <p className="text-sm text-foreground/70">{selectedContact?.date}</p>
+          <p className="text-sm text-foreground/70">
+            {selectedContact?.created_at}
+          </p>
         </div>
       </div>
       <div className="flex flex-col gap-4">
@@ -56,10 +73,10 @@ export default function Detail() {
       <div className="flex flex-row items-center gap-4 w-full">
         <CustomButton
           variant={"ghost"}
-          onClick={() => {}}
+          onClick={onDelete}
           className="py-4 px-5 flex-1 text-base"
         >
-          Delete
+          {isLoading ? "Deleting..." : "Delete"}
         </CustomButton>
 
         <CustomDrawer
@@ -70,7 +87,16 @@ export default function Detail() {
             </CustomButton>
           }
         >
-          <EditContactForm />
+          {(close) =>
+            selectedContact ? (
+              <EditContactForm
+                contact={selectedContact}
+                onSuccess={() => {
+                  close();
+                }}
+              />
+            ) : null
+          }
         </CustomDrawer>
       </div>
     </div>

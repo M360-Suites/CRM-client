@@ -5,18 +5,17 @@ import { Download, UploadIcon, PlusIcon } from "lucide-react";
 import { CustomDrawer } from "@/components/custom/common/drawer";
 import AddContactForm from "./forms/add_contact";
 import ImportContacts from "./import";
-import { useContactStore } from "@/stores/contact/contact_store";
+import { useGetContacts } from "@/hooks/contact/get_contacts";
 
 export default function Header() {
-  const { contacts } = useContactStore();
-
+  const { data: contacts } = useGetContacts();
   return (
     <div className="w-full pt-8">
       <div className="flex flex-row items-center justify-between w-full">
         <div className="flex flex-col gap-1">
           <h2 className="text-2xl font-medium text-[#3A2418]">Contacts</h2>
           <span className="text-base font-medium text-foreground">
-            {contacts.length} contacts
+            {contacts?.length} contacts
           </span>
         </div>
         <div className="flex flex-row gap-4">
@@ -79,7 +78,13 @@ export default function Header() {
               </CustomButton>
             }
           >
-            <AddContactForm />
+            {(close) => (
+              <AddContactForm
+                onSuccess={() => {
+                  close();
+                }}
+              />
+            )}
           </CustomDrawer>
         </div>
       </div>

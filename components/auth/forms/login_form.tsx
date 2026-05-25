@@ -4,10 +4,14 @@ import Link from "next/link";
 import { loginSchema, type LoginRequestData } from "@/validation/auth";
 import { useForm, SubmitHandler } from "react-hook-form";
 import { CustomButton } from "@/components/custom/common/customButton";
-import { zodResolver } from "@hookform/resolvers/zod";
 import CustomInput from "@/components/custom/common/customInput";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useLogin } from "@/hooks/auth/login";
+import { useRouter } from "next/navigation";
 
 export default function LoginForm() {
+  const router = useRouter();
+  const { mutate: loginUser, isPending: isLoginLoading } = useLogin();
   const {
     register,
     handleSubmit,
@@ -15,7 +19,13 @@ export default function LoginForm() {
   } = useForm<LoginRequestData>({
     resolver: zodResolver(loginSchema),
   });
-  const onSubmit: SubmitHandler<LoginRequestData> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<LoginRequestData> = async (data) => {
+    loginUser(data, {
+      onSuccess: () => {
+        router.push("/dashboard");
+      },
+    });
+  };
 
   return (
     <form
@@ -29,26 +39,26 @@ export default function LoginForm() {
             placeholder="you@example.com"
             error={errors.email?.message}
             type="email"
-            {...register("email")}
+            {...register("email", { required: true })}
           />
-          {/*{errors.email && (
-            <span className="text-xs text-foundation-error-6 absolute top-1 right-4">
+          {errors.email && (
+            <span className="text-xs text-foundation-error-6 absolute right-0 -bottom-5">
               {errors.email.message}
             </span>
-          )}*/}
-          <div className="flex flex-col gap-2 relative">
-            <CustomInput
-              label="Password"
-              type="password"
-              error={errors.password?.message}
-              {...register("password", { required: true })}
-            />
-            {/*{errors.password && (
-              <span className="text-xs text-foundation-error-6 absolute left-4 top-1">
-                {errors.password.message}
-              </span>
-            )}*/}
-          </div>
+          )}
+        </div>
+        <div className="flex flex-col gap-2 relative">
+          <CustomInput
+            label="Password"
+            type="password"
+            error={errors.password?.message}
+            {...register("password", { required: true })}
+          />
+          {errors.password && (
+            <span className="text-xs text-foundation-error-6 absolute left-0 -bottom-5">
+              {errors.password.message}
+            </span>
+          )}
         </div>
 
         <Link
@@ -58,8 +68,12 @@ export default function LoginForm() {
           Forgot password?
         </Link>
       </div>
-      <CustomButton type="submit" className="w-full py-3">
-        Login
+      <CustomButton
+        type="submit"
+        disabled={isLoginLoading}
+        className="w-full py-3"
+      >
+        {isLoginLoading ? "Logging in..." : "Login"}
       </CustomButton>
       <div className="flex flex-row items-center gap-2 justify-center">
         <span className="text-foundation-gray-4 font-normal text-base/[20px]">

@@ -27,12 +27,11 @@ export function CustomModal({
   const isDelete = type === "delete";
   return (
     <Dialog>
-      {" "}
       {/* Made Dialog controlled */}
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent>
         <DialogHeader label={label} />
-        <div className="p-6">{children}</div>
+        <div className="px-6 pt-4 pb-6">{children}</div>
         <DialogFooter>
           {isDelete && (
             <CustomButton

@@ -30,12 +30,12 @@ export default function ImportStepThree() {
           </TableHeader>
           <TableBody>
             {contactPreview.map((contact) => (
-              <TableRow key={contact.id}>
+              <TableRow key={contact._id}>
                 <TableCell className="font-normals text-left">
-                  {contact.firstname}
+                  {contact.first_name}
                 </TableCell>
                 <TableCell className="text-left text-foreground">
-                  {contact.lastname}
+                  {contact.last_name}
                 </TableCell>
                 <TableCell className="text-left text-foreground">
                   {contact.email}
@@ -44,10 +44,10 @@ export default function ImportStepThree() {
                   {contact.phone}
                 </TableCell>
                 <TableCell className="text-left text-foreground">
-                  {contact.role}
+                  {contact.role_title}
                 </TableCell>
                 <TableCell className="text-left text-foreground">
-                  {contact.status}
+                  {contact.temperature}
                 </TableCell>
               </TableRow>
             ))}

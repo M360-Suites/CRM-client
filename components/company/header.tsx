@@ -6,9 +6,11 @@ import { CustomDrawer } from "@/components/custom/common/drawer";
 import AddCompanyForm from "./forms/add_company";
 import ImportContacts from "./import";
 import { useCompanyStore } from "@/stores/company/company_store";
+import { useGetCompanies } from "@/hooks/company/get_companies";
 
 export default function Header() {
-  const { companies } = useCompanyStore();
+  const { importSteps } = useCompanyStore();
+  const { data: companies } = useGetCompanies();
 
   return (
     <div className="w-full pt-8">
@@ -17,7 +19,7 @@ export default function Header() {
           <div className="flex flex-col gap-1">
             <h2 className="text-2xl font-medium text-[#3A2418]">Companies</h2>
             <span className="text-base font-medium text-foreground">
-              {companies.length} companies
+              {companies?.length} companies
             </span>
           </div>
           <span className="text-[#E2725B] text-sm bg-[#FFF3E6] border border-border rounded-full py-1 px-3">
@@ -71,7 +73,11 @@ export default function Header() {
               </CustomButton>
             }
           >
-            <ImportContacts />
+            {(close) => (
+              <ImportContacts
+                onSuccess={importSteps === 4 ? () => close() : undefined}
+              />
+            )}
           </CustomDrawer>
           <CustomDrawer
             label="Add Company"
@@ -85,7 +91,14 @@ export default function Header() {
               </CustomButton>
             }
           >
-            <AddCompanyForm />
+            {(close) => (
+              <AddCompanyForm
+                mode="add"
+                onSuccess={() => {
+                  close();
+                }}
+              />
+            )}
           </CustomDrawer>
         </div>
       </div>

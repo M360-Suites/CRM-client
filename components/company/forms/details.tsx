@@ -1,19 +1,21 @@
 "use client";
 
 import { useCompanyStore } from "@/stores/company/company_store";
-import { getIntials } from "@/lib/utils";
+import { getInitials } from "@/lib/utils";
 import { UserRound, Mail, Phone, MapPin, Globe, Building2 } from "lucide-react";
 import { CustomDrawer } from "@/components/custom/common/drawer";
 import AddCompanyForm from "../forms/add_company";
 
 interface CompanyDetailsSheetProps {
   onDelete: () => void;
+  isLoading?: boolean;
   onEdit: () => void;
 }
 
 export default function CompanyDetailsSheet({
   onDelete,
   onEdit,
+  isLoading,
 }: CompanyDetailsSheetProps) {
   const { selectedCompany } = useCompanyStore();
 
@@ -21,7 +23,7 @@ export default function CompanyDetailsSheet({
     {
       icon: UserRound,
       label: "Contact person",
-      value: selectedCompany?.contactPerson,
+      value: selectedCompany?.contact_person,
     },
     {
       icon: Mail,
@@ -36,7 +38,7 @@ export default function CompanyDetailsSheet({
     {
       icon: MapPin,
       label: "Company address",
-      value: selectedCompany?.companyAddress,
+      value: selectedCompany?.address,
     },
     {
       icon: Globe,
@@ -51,18 +53,18 @@ export default function CompanyDetailsSheet({
   ];
 
   const stats = [
-    { label: "Contacts", value: selectedCompany?.contact || 0 },
+    { label: "Contacts", value: 0 },
     {
       label: "Deals",
-      value: `$${selectedCompany?.deals?.toLocaleString() || 0}`,
+      value: `$${0}`,
     },
     {
       label: "Pipeline value",
-      value: `$${selectedCompany?.pipelineRevenue?.toLocaleString() || 0}`,
+      value: `$${0}`,
     },
     {
       label: "Won revenue",
-      value: `$${selectedCompany?.wonRevenue?.toLocaleString() || 0}`,
+      value: `$${0}`,
     },
   ];
 
@@ -79,15 +81,15 @@ export default function CompanyDetailsSheet({
       <div className="flex items-center gap-3 px-6 pb-5 border-b border-b-gray-300/60">
         <div className="w-10 h-10 rounded-lg bg-[#F5B7A3] flex items-center justify-center shrink-0">
           <span className="text-sm font-semibold text-white">
-            {getIntials(selectedCompany?.companyName || "")}
+            {getInitials(selectedCompany?.name || "")}
           </span>
         </div>
         <div className="flex flex-col">
           <span className="text-base font-semibold text-foreground">
-            {selectedCompany?.companyName}
+            {selectedCompany?.name}
           </span>
           <span className="text-xs text-foreground/50">
-            {selectedCompany?.industry}
+            {selectedCompany?.industry ?? "--------"}
           </span>
         </div>
       </div>
@@ -120,7 +122,9 @@ export default function CompanyDetailsSheet({
         {stats.map(({ label, value }) => (
           <div key={label} className="flex flex-col gap-1 p-2.5">
             <span className="text-xs text-black">{label}</span>
-            <span className="text-base font-semibold text-black">{value}</span>
+            <span className="text-base font-semibold text-black">
+              {value ?? "--------"}
+            </span>
           </div>
         ))}
       </div>
@@ -131,7 +135,7 @@ export default function CompanyDetailsSheet({
           onClick={onDelete}
           className="flex-1 py-4 rounded-[12px] border border-[#E2725B] text-base font-medium text-foreground hover:bg-[#FFF3E6] transition-colors cursor-pointer"
         >
-          Delete
+          {isLoading ? "Deleting..." : "Delete"}
         </button>
 
         <CustomDrawer
@@ -145,7 +149,7 @@ export default function CompanyDetailsSheet({
             </button>
           }
         >
-          <AddCompanyForm company={selectedCompany ?? undefined} />
+          <AddCompanyForm mode="edit" company={selectedCompany} />
         </CustomDrawer>
       </div>
     </div>

@@ -28,12 +28,9 @@ export default function ImportStepThree() {
           <TableBody>
             {companyPreview.map((contact, index) => (
               <TableRow key={index}>
-                <TableCell className="text-left">
-                  {contact.companyName}
-                </TableCell>
+                <TableCell className="text-left">{contact.name}</TableCell>
                 <TableCell className="text-left">{contact.industry}</TableCell>
                 <TableCell className="text-left">{contact.website}</TableCell>
-                <TableCell className="text-left">{contact.notes}</TableCell>
               </TableRow>
             ))}
           </TableBody>

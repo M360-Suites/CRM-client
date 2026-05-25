@@ -1,11 +1,16 @@
-import { email, z } from "zod";
+import { z } from "zod";
 
 export const addCompanySchema = z.object({
-  companyName: z.string("Invalid company name"),
-  companyAddress: z.string("Invalid company address"),
-  industry: z.string("Invalid industry"),
-  website: z.string("Invalid website").url("Invalid URL format"),
-  contactPerson: z.string("Invalid contact person"),
+  _id: z.string().optional(),
+  companyName: z.string().min(2, "Company name must be at least 2 characters"),
+  companyAddress: z
+    .string()
+    .min(5, "Company address must be at least 5 characters"),
+  industry: z.string().min(2, "Industry must be at least 2 characters"),
+  website: z.url("Invalid URL format"),
+  contactPerson: z
+    .string()
+    .min(2, "Contact person must be at least 2 characters"),
   email: z.email("Invalid email address"),
   phone: z
     .string("Invalid phone number")

@@ -64,13 +64,13 @@ export default function OnboardingForm() {
               </span>
             )}*/}
             <div className="flex flex-col gap-2 relative">
-              <CustomSelect
+              {/* <CustomSelect
                 label="Number of Employees"
                 selectable={employeesData}
                 placeholder="Select number of employees"
                 error={errors.numberOfEmployee?.message}
                 {...register("numberOfEmployee", { required: true })}
-              />
+              /> */}
               {/*{errors.password && (
                 <span className="text-xs text-foundation-error-6 absolute left-4 top-1">
                   {errors.password.message}

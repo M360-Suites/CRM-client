@@ -1,9 +1,12 @@
 import Image from "next/image";
 import CRMLOGO from "@/public/assets/company/logo.png";
-import { getIntials } from "@/lib/utils";
+import { getInitials } from "@/lib/utils";
 import { Search, Bell } from "lucide-react";
+import { useUserProfile } from "@/hooks/user/profile";
 
 export default function Navbar() {
+  const { data: user, isPending } = useUserProfile();
+
   return (
     <div className="px-10 bg-white border border-[#e8e8e8] flex flex-row justify-between items-center fixed top-0 left-0 right-0 z-50">
       <Image
@@ -25,17 +28,30 @@ export default function Navbar() {
         <div className="p-2.5 border rounded-full">
           <Bell color="#3A2418" size={18} />
         </div>
-        <div className="flex flex-row items-center gap-2 p-2">
-          <div className="flex flex-col justify-center gap-1 items-end">
-            <span className="text-base/[120%] font-medium">Ojo Daniel</span>
-            <span className="text-sm/[120%] font-normal">
-              ojodanieltoby@gmail.com
-            </span>
+
+        {isPending ? (
+          // skeleton
+          <div className="flex flex-row items-center gap-2 p-2 animate-pulse">
+            <div className="flex flex-col gap-1.5 items-end">
+              <div className="h-3.5 w-28 bg-gray-200 rounded-full" />
+              <div className="h-3 w-36 bg-gray-200 rounded-full" />
+            </div>
+            <div className="bg-gray-200 px-3 py-3 w-10 h-10 rounded-full" />
           </div>
-          <div className="bg-[#F5B7A3] px-3 py-3 text-base font-bold text-foreground rounded-full">
-            {getIntials("Ojo Daniel")}
+        ) : (
+          // real content
+          <div className="flex flex-row items-center gap-2 p-2">
+            <div className="flex flex-col justify-center gap-1 items-end">
+              <span className="text-base/[120%] font-medium capitalize">
+                {user?.display_name}
+              </span>
+              <span className="text-sm/[120%] font-normal">{user?.email}</span>
+            </div>
+            <div className="bg-[#F5B7A3] px-3 py-3 text-base font-bold text-foreground rounded-full">
+              {getInitials(user?.display_name || "").toUpperCase()}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

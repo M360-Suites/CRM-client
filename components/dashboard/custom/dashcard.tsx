@@ -1,5 +1,7 @@
+"use client";
 import { Users, TrendingUp, DollarSign, Mail } from "lucide-react";
-import { iconCardBg, iconColor } from "@/lib/utils";
+import { iconCardBg, iconColor, handleGreeting } from "@/lib/utils";
+import { useUserProfile } from "@/hooks/user/profile";
 
 const DashData = [
   {
@@ -53,11 +55,13 @@ const Pipeline = [
 ];
 
 export default function DashCard() {
+  const { data: user } = useUserProfile();
+  const firstname = user?.display_name?.split(" ")[0];
   return (
     <div className="flex flex-col gap-6 pt-8">
-      <div className="flex flex-col gap-1">
-        <h2 className="text-2xl font-medium text-foreground">
-          Good Morning, Oluchuckwu
+      <div className="flex flex-col gap-0.5">
+        <h2 className="text-2xl font-medium text-foreground capitalize">
+          {handleGreeting()}, {firstname}
         </h2>
         <span className="text-base font-normal">
           Here&apos;s how your pipeline looks today.

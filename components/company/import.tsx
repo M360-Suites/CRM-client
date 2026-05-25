@@ -6,14 +6,18 @@ import ImportStepThree from "./forms/import_step_three";
 import ImportDone from "./forms/import_done";
 import { useCompanyStore } from "@/stores/company/company_store";
 
-export default function ImportContacts() {
+interface ImportContactsProps {
+  onSuccess?: () => void;
+}
+
+export default function ImportContacts({ onSuccess }: ImportContactsProps) {
   const { importSteps } = useCompanyStore();
   return (
     <ImportLayout>
       {importSteps === 1 && <ImportStepOne />}
       {importSteps === 2 && <ImportStepTwo />}
       {importSteps === 3 && <ImportStepThree />}
-      {importSteps === 4 && <ImportDone />}
+      {importSteps === 4 && <ImportDone onSuccess={onSuccess} />}
     </ImportLayout>
   );
 }

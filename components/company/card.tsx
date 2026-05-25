@@ -3,6 +3,7 @@ import { CustomDrawer } from "../custom/common/drawer";
 import AddCompanyForm from "./forms/add_company";
 import CompanyDetailsSheet from "./forms/details";
 import { useCompanyStore } from "@/stores/company/company_store";
+import { useDeleteCompany } from "@/hooks/company/delete_companies";
 import { Company } from "@/types/company";
 
 interface CompanyCardProps {
@@ -10,7 +11,8 @@ interface CompanyCardProps {
 }
 
 export default function CompanyCard({ company }: CompanyCardProps) {
-  const { setSelectedCompany, selectedCompany } = useCompanyStore();
+  const { setSelectedCompany } = useCompanyStore();
+  const { mutate: deleteCompany, isPending: isDeleting } = useDeleteCompany();
   return (
     <div className="w-95 bg-white border border-[#F3D9C4] rounded-[8px] p-4 flex flex-col gap-4">
       {/* Header */}
@@ -19,14 +21,14 @@ export default function CompanyCard({ company }: CompanyCardProps) {
           {/* Avatar */}
           <div className="w-9 h-9 rounded-lg bg-[#F5B7A3] flex items-center justify-center shrink-0">
             <span className="text-sm font-medium text-foreground">
-              {company?.companyName.charAt(0) ?? "-----"}
+              {company?.name.charAt(0) ?? "-----"}
             </span>
           </div>
 
           {/* Name + Industry */}
           <div className="flex flex-col">
             <span className="text-sm font-medium text-foreground">
-              {company?.companyName ?? "-----"}
+              {company?.name ?? "-----"}
             </span>
             <span className="text-xs text-foreground">
               {company?.industry ?? "-----"}
@@ -48,7 +50,8 @@ export default function CompanyCard({ company }: CompanyCardProps) {
             }
           >
             <CompanyDetailsSheet
-              onDelete={() => console.log("Delete")}
+              onDelete={() => deleteCompany(company._id)}
+              isLoading={isDeleting}
               onEdit={() => console.log("Edit")}
             />
           </CustomDrawer>
@@ -63,7 +66,15 @@ export default function CompanyCard({ company }: CompanyCardProps) {
               </button>
             }
           >
-            <AddCompanyForm company={selectedCompany ?? undefined} />
+            {(close) => (
+              <AddCompanyForm
+                mode="edit"
+                company={company || undefined}
+                onSuccess={() => {
+                  close();
+                }}
+              />
+            )}
           </CustomDrawer>
         </div>
       </div>
@@ -75,15 +86,11 @@ export default function CompanyCard({ company }: CompanyCardProps) {
       <div className="flex flex-row items-start gap-16 py-2.5">
         <div className="flex flex-col gap-1">
           <span className="text-xs text-black">Contacts</span>
-          <span className="text-sm font-medium text-black">
-            {company?.contact || 0}
-          </span>
+          <span className="text-sm font-medium text-black">{0}</span>
         </div>
         <div className="flex flex-col gap-1">
           <span className="text-xs text-black">Won revenue</span>
-          <span className="text-sm font-medium text-black">
-            ${company?.wonRevenue?.toLocaleString() || 0}
-          </span>
+          <span className="text-sm font-medium text-black">${0}</span>
         </div>
       </div>
     </div>

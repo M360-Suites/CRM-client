@@ -20,10 +20,12 @@ import {
   Mail,
   Sparkle,
   ChartColumn,
+  LogOut,
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
-
+import { CustomButton } from "../custom/common/customButton";
+import { useLogout } from "@/hooks/auth/logout";
 const sideLinks = [
   {
     name: "Dashboard",
@@ -83,6 +85,7 @@ const sideLinks = [
 ];
 
 export function AppSidebar() {
+  const { mutate: logoutUser, isPending } = useLogout();
   const router = useRouter();
   const { activeLink, setActiveLink } = useDashStore();
   const currentPath = usePathname();
@@ -131,7 +134,20 @@ export function AppSidebar() {
           ))}
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter />
+      <SidebarFooter className="pb-10 px-5">
+        <CustomButton
+          variant="outline"
+          onClick={() => {
+            logoutUser();
+          }}
+          className="px-4 py-3 flex items-center border-none justify-start flex-row gap-4"
+        >
+          <LogOut className="h-6 w-6" color={"#3A2418"} />
+          <span className="text-base font-medium text-[#3A2418]">
+            {isPending ? "Logging out..." : "Log out"}
+          </span>
+        </CustomButton>
+      </SidebarFooter>
     </Sidebar>
   );
 }

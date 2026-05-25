@@ -1,45 +1,41 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError } from "axios";
-import { STAGING_API_URL, PRODUCTION_API_URL } from "../constant";
+import { PRODUCTION_API_URL } from "../constant";
 import { ApiResponse } from "../types/common";
-import { storage, getCookie } from "@/lib/handler";
+import { storage } from "@/lib/handler";
+import Cookies from "js-cookie";
 
 const IS_DEVELOPMENT = process.env.NODE_ENV === "development";
-const BASE_URL = IS_DEVELOPMENT ? STAGING_API_URL : PRODUCTION_API_URL;
+const BASE_URL = IS_DEVELOPMENT ? "/api/proxy" : PRODUCTION_API_URL;
 
 export const authInstance = axios.create({
   baseURL: BASE_URL,
+  withCredentials: true,
 });
 
 export const publicInstance = axios.create({
   baseURL: BASE_URL,
+  withCredentials: true,
 });
 
 authInstance.interceptors.request.use((config) => {
-  let token: string | null = null;
   if (typeof window !== "undefined") {
-    token = getCookie(storage.ACCESS_TOKEN);
-    console.log("Retrieved token from cookies:", !!token);
+    const token = Cookies.get(storage.ACCESS_TOKEN);
+    if (token) {
+      config.headers = config.headers || {};
+      config.headers.Authorization = `Bearer ${token}`;
+    }
   }
-
-  const authenticated = typeof window !== "undefined" && Boolean(token);
-
-  if (authenticated && token) {
-    config.headers = config.headers || {};
-    config.headers.Authorization = `Bearer ${token}`;
-  }
-
-  // If you use httpOnly cookies for auth (cannot be read from JS), enable sending cookies:
   config.withCredentials = true;
-  // and configure the server to accept credentials (Access-Control-Allow-Credentials + specific origin)
   return config;
 });
 
 authInstance.interceptors.response.use(
   (res) => res,
   (err: AxiosError) => {
+    console.log("error from response interceptor:", err);
     if (err.response?.status === 401) {
-      window.location.href = "/auth/login";
+      window.location.href = "/login";
     }
     return Promise.reject(err);
   },
@@ -56,11 +52,15 @@ class ApiClient {
     };
   }
 
-  async get<T>(endpoint: string, requiresAuth = true): Promise<ApiResponse<T>> {
+  async get<T>(
+    endpoint: string,
+    requiresAuth = true,
+    params?: Record<string, any>,
+  ): Promise<ApiResponse<T>> {
     try {
       const response = requiresAuth
-        ? await authInstance.get<ApiResponse<T>>(endpoint)
-        : await publicInstance.get<ApiResponse<T>>(endpoint);
+        ? await authInstance.get<ApiResponse<T>>(endpoint, { params })
+        : await publicInstance.get<ApiResponse<T>>(endpoint, { params });
       return response.data;
     } catch (error) {
       console.error("API GET Error:", error);
@@ -91,7 +91,7 @@ class ApiClient {
     }
   }
 
-  async put<T>(
+  async patch<T>(
     endpoint: string,
     body: unknown,
     requiresAuth = true,
@@ -100,7 +100,7 @@ class ApiClient {
       const isFormData = body instanceof FormData;
       const instance = requiresAuth ? authInstance : publicInstance;
 
-      const res = await instance.put(endpoint, body, {
+      const res = await instance.patch(endpoint, body, {
         headers: isFormData
           ? { Accept: "application/json" }
           : { Accept: "application/json", "Content-Type": "application/json" },

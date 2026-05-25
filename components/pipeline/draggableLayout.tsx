@@ -8,15 +8,17 @@ export function DraggableLayout({
   className?: string;
   children?: React.ReactNode;
 }) {
-  const { setIsTarget } = usePipelineStore();
+  const { moveLeadToStage } = usePipelineStore();
+
   const handleDragEnd = (event: any) => {
     const target = event.operation?.target;
-    if (target) {
-      setIsTarget(target.id);
-    } else {
-      setIsTarget(null);
+    const source = event.operation?.source;
+
+    if (target && source) {
+      moveLeadToStage(source.id, target.id); // 👈 move lead to new stage
     }
   };
+
   return (
     <DragDropProvider onDragEnd={handleDragEnd}>
       <div className={className}>{children}</div>

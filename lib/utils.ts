@@ -77,6 +77,16 @@ export enum ContactTabs {
   COLD = "Cold",
 }
 
+export enum PipelineTabs {
+  LEADS = "leads",
+  QUALIFIED = "qualified",
+  PROPOSALS = "proposals",
+  NEGOTIATIONS = "negotiations",
+  WON = "won",
+  LOST = "lost",
+  CLOSED = "closed",
+}
+
 export default function getDirtyValues<T extends Record<string, any>>(
   dirtyFields: Partial<Record<keyof T, boolean | object>>,
   values: T,

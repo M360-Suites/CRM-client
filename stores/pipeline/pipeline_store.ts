@@ -1,15 +1,19 @@
 import { create } from "zustand";
+import { Lead } from "@/components/pipeline/draggable";
 
 interface PipelineStore {
-  isDropped: boolean;
-  isTarget: string | null;
-  setIsTarget: (value: string | null) => void;
-  setIsDropped: (value: boolean) => void;
+  leads: Lead[];
+  setLeads: (leads: Lead[]) => void;
+  moveLeadToStage: (leadId: string, newStage: string) => void;
 }
 
 export const usePipelineStore = create<PipelineStore>((set) => ({
-  isDropped: false,
-  isTarget: null,
-  setIsTarget: (value: string | null) => set({ isTarget: value }),
-  setIsDropped: (value: boolean) => set({ isDropped: value }),
+  leads: [],
+  setLeads: (leads) => set({ leads }),
+  moveLeadToStage: (leadId, newStage) =>
+    set((state) => ({
+      leads: state.leads.map((lead) =>
+        lead._id === leadId ? { ...lead, stage: newStage } : lead,
+      ),
+    })),
 }));

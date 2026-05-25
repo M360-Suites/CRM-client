@@ -81,7 +81,7 @@ export function proxy(request: NextRequest) {
       }
 
       // Redirect to verification page (gracious)
-      const verifyUrl = new URL(`/otp-verification`, request.url);
+      const verifyUrl = new URL(`/verification`, request.url);
       verifyUrl.searchParams.set("r", "verify_email");
       if (userEmail) verifyUrl.searchParams.set("email", userEmail);
 

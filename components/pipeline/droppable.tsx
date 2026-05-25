@@ -14,7 +14,7 @@ export function Droppable({ id, children }: DroppableProps) {
   return (
     <div
       ref={ref}
-      className="w-full h-50 bg-yellow-300 border rounded-md flex items-center justify-center"
+      className="w-full flex-1 flex-col gap-1.5 h-50 pt-4 pb-2 px-1 flex items-start justify-start"
     >
       {children}
     </div>

@@ -86,11 +86,15 @@ export default function CompanyCard({ company }: CompanyCardProps) {
       <div className="flex flex-row items-start gap-16 py-2.5">
         <div className="flex flex-col gap-1">
           <span className="text-xs text-black">Contacts</span>
-          <span className="text-sm font-medium text-black">{0}</span>
+          <span className="text-sm font-medium text-black">
+            {company?.stats.contact_count ?? 0}
+          </span>
         </div>
         <div className="flex flex-col gap-1">
           <span className="text-xs text-black">Won revenue</span>
-          <span className="text-sm font-medium text-black">${0}</span>
+          <span className="text-sm font-medium text-black">
+            ${company?.stats.won_revenue ?? 0}
+          </span>
         </div>
       </div>
     </div>

@@ -44,12 +44,18 @@ export const handleTime = (time: string) => {
 export const iconCardBg = (icon: string) => {
   switch (icon) {
     case "Open Deals":
+    case "Pipeline Value":
+    case "Lead Conv.":
       return "bg-[#E8EEFF]";
     case "Revenue Forecast":
+    case "Won Revenue":
+    case "Tasks":
       return "bg-[#D8F3F1]";
     case "Active Contacts":
+    case "Avg. Cycle":
       return "bg-[#E8EEFF]";
-    case "Emails Sent":
+    case "Active Companies":
+    case "Win Rate":
       return "bg-[#FFE7D5]";
     default:
       return "bg-gray-500";
@@ -58,12 +64,18 @@ export const iconCardBg = (icon: string) => {
 export const iconColor = (icon: string) => {
   switch (icon) {
     case "Open Deals":
+    case "Pipeline Value":
+    case "Lead Conv.":
       return "#4A90E2";
     case "Revenue Forecast":
+    case "Won Revenue":
+    case "Tasks":
       return "#2F9E94";
     case "Active Contacts":
+    case "Avg. Cycle":
       return "#0041FF";
-    case "Emails Sent":
+    case "Active Companies":
+    case "Win Rate":
       return "#FF6D00";
     default:
       return "bg-gray-500";
@@ -94,4 +106,17 @@ export default function getDirtyValues<T extends Record<string, any>>(
   return Object.fromEntries(
     Object.keys(dirtyFields).map((key) => [key, values[key as keyof T]]),
   ) as Partial<T>;
+}
+
+export function toUTC(dateStr?: string | null): string {
+  if (!dateStr) return "";
+  const date = /^\d+$/.test(dateStr)
+    ? new Date(Number(dateStr))
+    : new Date(dateStr);
+  if (Number.isNaN(date.getTime())) return dateStr || "";
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
 }

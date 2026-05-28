@@ -1,9 +1,9 @@
 import { Download, Trash2, FileText } from "lucide-react";
 import { useDocumentStore } from "@/stores/document/doc_store";
-import { File } from "@/types/pipeline";
+import { Document } from "@/types/document";
 
 interface FileItemProps {
-  file: File;
+  file: Document;
 }
 
 export default function FileItem({ file }: FileItemProps) {
@@ -18,26 +18,20 @@ export default function FileItem({ file }: FileItemProps) {
         </div>
         <div className="flex flex-col gap-1.5">
           <span className="text-sm font-medium text-[#3A2418]">
-            {file.name}
+            {file.original_name}
           </span>
           <span className="text-xs text-foreground">
-            {file.size} • {file.date}
+            {`${file.file_size / 1024} KB`}
           </span>
         </div>
       </div>
 
       {/* Actions */}
       <div className="flex items-center gap-6">
-        <button
-          onClick={() => onDownload(file)}
-          className="text-foreground/40 hover:text-foreground/70 transition-colors cursor-pointer"
-        >
+        <button className="text-foreground/40 hover:text-foreground/70 transition-colors cursor-pointer">
           <Download size={17} color="#4A4A4A" />
         </button>
-        <button
-          onClick={() => onDelete(file)}
-          className="text-[#FB3748] transition-colors cursor-pointer"
-        >
+        <button className="text-[#FB3748] transition-colors cursor-pointer">
           <Trash2 size={17} />
         </button>
       </div>

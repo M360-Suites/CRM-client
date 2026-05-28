@@ -130,3 +130,11 @@
     @apply font-sans;
   }
 }
+
+[data-dnd-kit-draggable] {
+  transition: none !important;
+}
+
+[data-dragging="true"] {
+  transition: none !important;
+}

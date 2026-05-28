@@ -1,8 +1,9 @@
 "use client";
 
 import { CustomButton } from "@/components/custom/common/customButton";
-import { UploadIcon } from "lucide-react";
+import { PlusIcon } from "lucide-react";
 import { CustomDrawer } from "@/components/custom/common/drawer";
+import AddFolderForm from "@/components/document/form/add_document";
 
 export default function Header() {
   return (
@@ -16,18 +17,18 @@ export default function Header() {
         </div>
         <div className="flex flex-row gap-4">
           <CustomDrawer
-            label="Upload Documents"
+            label="Create New Folder"
             trigger={
               <CustomButton
                 variant="default"
                 className="rounded-full flex text-sm flex-row items-center gap-2 px-8 py-3"
               >
-                <UploadIcon className="" />
-                <span>Upload file</span>
+                <PlusIcon className="" />
+                <span>Create folder</span>
               </CustomButton>
             }
           >
-            <div>Hello World</div>
+            {(close) => <AddFolderForm onSuccess={close} />}
           </CustomDrawer>
         </div>
       </div>

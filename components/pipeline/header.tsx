@@ -28,7 +28,13 @@ export default function Header() {
               </CustomButton>
             }
           >
-            <AddDealForm />
+            {(close) => (
+              <AddDealForm
+                onSuccess={() => {
+                  close();
+                }}
+              />
+            )}
           </CustomDrawer>
         </div>
       </div>

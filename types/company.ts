@@ -14,5 +14,10 @@ export interface Company {
   address: string;
   created_at: string;
   updated_at: string;
-  __v: number;
+  stats: {
+    contact_count: number;
+    deal_count: number;
+    pipeline_value: number;
+    won_revenue: number;
+  };
 }

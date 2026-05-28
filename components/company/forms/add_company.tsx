@@ -44,8 +44,7 @@ export default function AddCompanyForm({
 
   const isEdit = mode === "edit";
   const isPending = isAdding || isEditing;
-  const hasChanges = Object.keys(dirtyFields).length > 0;
-
+  const hasChanges = isEdit ? Object.keys(dirtyFields).length > 0 : true;
   const handleFormSubmit: SubmitHandler<AddCompanyRequestData> = (data) => {
     if (isEdit && company?._id) {
       if (!hasChanges) {
@@ -114,7 +113,7 @@ export default function AddCompanyForm({
       <div className="relative w-full">
         <CustomInput
           label="Website"
-          placeholder="Enter website URL"
+          placeholder="https://www.example.com"
           error={errors.website?.message}
           type="text"
           {...register("website", { required: true })}
@@ -185,7 +184,7 @@ export default function AddCompanyForm({
       <div className="pt-10 px-5">
         <CustomButton
           type="submit"
-          disabled={isAdding || isEditing || !hasChanges}
+          disabled={isPending || !hasChanges}
           className="w-full px-6 py-4"
         >
           {isPending

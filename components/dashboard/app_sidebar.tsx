@@ -72,16 +72,16 @@ const sideLinks = [
   //   icon: Sparkle,
   //   url: ""
   // },
-  // {
-  //   name: "Analytics",
-  //   icon: ChartColumn,
-  //   url: ""
-  // },
-  // {
-  //   name: "Report",
-  //   icon: ChartColumn,
-  //   url: ""
-  // }
+  {
+    name: "Analytics",
+    icon: ChartColumn,
+    url: "/analytics",
+  },
+  {
+    name: "Report",
+    icon: ChartColumn,
+    url: "/report",
+  },
 ];
 
 export function AppSidebar() {
@@ -92,12 +92,12 @@ export function AppSidebar() {
 
   useEffect(() => {
     const matchedLink = sideLinks.find((link) =>
-      currentPath.startsWith(link.url),
+      currentPath?.startsWith(link.url),
     );
     if (matchedLink) {
       setActiveLink(matchedLink.url);
     }
-  }, [setActiveLink]);
+  }, [currentPath, setActiveLink]);
   return (
     <Sidebar className="inset-0 h-full overflow-y-auto">
       <SidebarHeader className="pt-15" />

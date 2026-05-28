@@ -7,6 +7,6 @@ export const useUserProfile = () => {
   return useQuery<User>({
     queryKey: ["user"],
     queryFn: getUser,
-    refetchInterval: 1 * 60 * 1000, // Refetch every 5 minutes
+    refetchInterval: 10 * 60 * 1000, // Refetch every 10 minutes
   });
 };

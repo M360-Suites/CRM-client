@@ -17,3 +17,7 @@ export interface EmailRequest {
   additional_notes?: string;
   subject?: string;
 }
+export interface EmailResponse {
+  subject: string;
+  body: string;
+}

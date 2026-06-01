@@ -19,6 +19,11 @@ const inter = Inter({
   subsets: ["latin"],
 });
 
+export const viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
+
 export const metadata: Metadata = {
   title: "CRM client",
   description:

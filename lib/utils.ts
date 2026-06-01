@@ -164,29 +164,29 @@ export function formatNaira(
 }
 
 export interface ParsedEmail {
+  subject: string;
   body: string;
 }
 
 export function parseEmailResponse(raw: string): ParsedEmail | null {
   try {
-    // extract the JSON object from the raw string
     const match = raw.match(
-      /\{[\s\S]*"subject"\s*:\s*"[\s\S]*?"[\s\S]*"body"\s*:\s*"[\s\S]*?"\s*\}/,
+      /\{[\s\S]*?"subject"\s*:\s*"[\s\S]*?"\s*,\s*"body"\s*:\s*"[\s\S]*?"\s*\}/,
     );
     const jsonStr = match ? match[0] : raw;
-
     const parsed = JSON.parse(jsonStr);
 
     return {
+      subject: parsed.subject ?? "",
       body: parsed.body?.replace(/\\n/g, "\n") ?? "",
     };
   } catch {
-    // if JSON parse fails, try to extract manually
     const subjectMatch = raw.match(/"subject"\s*:\s*"([^"]+)"/);
     const bodyMatch = raw.match(/"body"\s*:\s*"([\s\S]+?)"\s*\}/);
 
-    if (subjectMatch && bodyMatch) {
+    if (bodyMatch) {
       return {
+        subject: subjectMatch?.[1] ?? "",
         body: bodyMatch[1].replace(/\\n/g, "\n"),
       };
     }

@@ -131,6 +131,10 @@
   }
 }
 
+body {
+  zoom: 1 !important;
+}
+
 [data-dnd-kit-draggable] {
   transition: none !important;
 }

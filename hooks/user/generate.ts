@@ -6,7 +6,11 @@ export default function useGenerateDraft() {
   return useMutation({
     mutationFn: generateDraft,
     onSuccess: (data) => {
-      toast.success(data.message || "Draft generated successfully");
+      if (data.status) {
+        toast.success(data.message || "Draft generated successfully");
+      } else {
+        toast.error(data.message);
+      }
     },
     onError: () => {
       toast.error("Failed to generate draft");

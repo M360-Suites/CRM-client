@@ -1,31 +1,42 @@
 "use client";
 
+import { FolderRowSkeleton } from "./skeleton/folder_row_skeleton";
 import { useGetFolders } from "@/hooks/document/get_folders";
 import { CustomButton } from "../custom/common/customButton";
 import { useRouter } from "next/navigation";
 import FolderItem from "./folderItem";
+import { useState } from "react";
 
-// small skeleton row for the folder list
-function FolderRowSkeleton() {
-  return (
-    <div className="grid grid-cols-6 px-5 py-6 gap-4 border-b border-[#F3D9C4] bg-white animate-pulse">
-      <span className="h-4 bg-gray-200 rounded col-span-1" />
-      <span className="h-4 bg-gray-200 rounded col-span-2" />
-      <span className="h-4 bg-gray-200 rounded col-span-1" />
-      <span className="h-4 bg-gray-200 rounded col-span-1" />
-      <span className="h-4 bg-gray-200 rounded col-span-1 text-right" />
-    </div>
-  );
-}
+type PinStage = "setup" | "verify" | "granted";
 
 export default function Body() {
   const router = useRouter();
   const { data: folders, isPending } = useGetFolders();
 
+  const [stage, setStage] = useState<PinStage>(() => {
+    const hasPin = localStorage.getItem("doc_pin");
+    return hasPin ? "verify" : "setup";
+  });
+
+  // if (stage === "setup") {
+  //   return <PinSetup onSuccess={() => setStage("verify")} />;
+  // }
+
+  // if (stage === "verify") {
+  //   return (
+  //     <PinVerify
+  //       onSuccess={() => setStage("granted")}
+  //       onReset={() => {
+  //         localStorage.removeItem("doc_pin");
+  //         setStage("setup");
+  //       }}
+  //     />
+  //   );
+  // }
+
   return (
     <div className="w-full flex flex-col">
       {isPending ? (
-        // show header + skeleton rows while loading
         <div className="flex border flex-col w-full rounded-t-[10px]">
           <div className="grid grid-cols-6 px-5 py-6 rounded-t-[10px] border-b border-b-[#F3D9C4]  bg-[#FFF6EC]">
             {["Name", "Description", "Items", "Last Modified", "Action"].map(

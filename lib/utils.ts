@@ -50,17 +50,21 @@ export const iconCardBg = (icon: string) => {
     case "Revenue Forecast":
     case "Won Revenue":
     case "Tasks":
+    case "Total Deals":
       return "bg-[#D8F3F1]";
     case "Active Contacts":
     case "Avg. Cycle":
+    case "Won":
       return "bg-[#E8EEFF]";
     case "Active Companies":
     case "Win Rate":
+    case "Lost":
       return "bg-[#FFE7D5]";
     default:
       return "bg-gray-500";
   }
 };
+
 export const iconColor = (icon: string) => {
   switch (icon) {
     case "Open Deals":
@@ -70,12 +74,15 @@ export const iconColor = (icon: string) => {
     case "Revenue Forecast":
     case "Won Revenue":
     case "Tasks":
+    case "Total Deals":
       return "#2F9E94";
     case "Active Contacts":
     case "Avg. Cycle":
+    case "Won":
       return "#0041FF";
     case "Active Companies":
     case "Win Rate":
+    case "Lost":
       return "#FF6D00";
     default:
       return "bg-gray-500";
@@ -119,4 +126,71 @@ export function toUTC(dateStr?: string | null): string {
     day: "numeric",
     year: "numeric",
   });
+}
+
+export function formatNaira(
+  input?: number | string | null,
+  opts?: { decimals?: number; showSymbol?: boolean },
+): string {
+  const { decimals = 0, showSymbol = true } = opts ?? {};
+
+  if (input == null || input === "") {
+    const zero = (0).toLocaleString("en-NG", {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    });
+    return `${showSymbol ? "₦" : ""}${zero}`;
+  }
+
+  const n =
+    typeof input === "string"
+      ? Number(String(input).replace(/[^0-9.-]+/g, ""))
+      : Number(input);
+
+  if (!Number.isFinite(n)) {
+    const zero = (0).toLocaleString("en-NG", {
+      minimumFractionDigits: decimals,
+      maximumFractionDigits: decimals,
+    });
+    return `${showSymbol ? "₦" : ""}${zero}`;
+  }
+
+  const absFmt = Math.abs(n).toLocaleString("en-NG", {
+    minimumFractionDigits: decimals,
+    maximumFractionDigits: decimals,
+  });
+
+  return `${n < 0 ? "-" : ""}${showSymbol ? "₦" : ""}${absFmt}`;
+}
+
+export interface ParsedEmail {
+  body: string;
+}
+
+export function parseEmailResponse(raw: string): ParsedEmail | null {
+  try {
+    // extract the JSON object from the raw string
+    const match = raw.match(
+      /\{[\s\S]*"subject"\s*:\s*"[\s\S]*?"[\s\S]*"body"\s*:\s*"[\s\S]*?"\s*\}/,
+    );
+    const jsonStr = match ? match[0] : raw;
+
+    const parsed = JSON.parse(jsonStr);
+
+    return {
+      body: parsed.body?.replace(/\\n/g, "\n") ?? "",
+    };
+  } catch {
+    // if JSON parse fails, try to extract manually
+    const subjectMatch = raw.match(/"subject"\s*:\s*"([^"]+)"/);
+    const bodyMatch = raw.match(/"body"\s*:\s*"([\s\S]+?)"\s*\}/);
+
+    if (subjectMatch && bodyMatch) {
+      return {
+        body: bodyMatch[1].replace(/\\n/g, "\n"),
+      };
+    }
+
+    return null;
+  }
 }

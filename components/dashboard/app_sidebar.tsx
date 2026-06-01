@@ -18,7 +18,7 @@ import {
   Inbox,
   FileText,
   Mail,
-  Sparkle,
+  Sparkles,
   ChartColumn,
   LogOut,
 } from "lucide-react";
@@ -26,6 +26,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { CustomButton } from "../custom/common/customButton";
 import { useLogout } from "@/hooks/auth/logout";
+
 const sideLinks = [
   {
     name: "Dashboard",
@@ -52,11 +53,11 @@ const sideLinks = [
     icon: CalendarCheck,
     url: "/tasks_and_calendar",
   },
-  // {
-  //   name: "Inbox",
-  //   icon: Inbox,
-  //   url: ""
-  // },
+  {
+    name: "Inbox",
+    icon: Inbox,
+    url: "/inbox",
+  },
   {
     name: "Documents",
     icon: FileText,
@@ -67,11 +68,11 @@ const sideLinks = [
   //   icon: Mail,
   //   url: ""
   // },
-  // {
-  //   name: "AI Writer",
-  //   icon: Sparkle,
-  //   url: ""
-  // },
+  {
+    name: "AI Writer",
+    icon: Sparkles,
+    url: "/ai-writer",
+  },
   {
     name: "Analytics",
     icon: ChartColumn,

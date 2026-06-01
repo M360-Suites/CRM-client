@@ -1,6 +1,11 @@
 "use client";
 import { Users, TrendingUp, DollarSign, Building2 } from "lucide-react";
-import { iconCardBg, iconColor, handleGreeting } from "@/lib/utils";
+import {
+  iconCardBg,
+  iconColor,
+  handleGreeting,
+  formatNaira,
+} from "@/lib/utils";
 import { useUserProfile } from "@/hooks/user/profile";
 import { useDashboard } from "@/hooks/user/dashboard";
 import Link from "next/link";
@@ -18,7 +23,7 @@ export default function DashCard() {
     },
     {
       title: "Revenue Forecast",
-      value: dashboardData?.cards.revenue_forecast || 0,
+      value: formatNaira(dashboardData?.cards.revenue_forecast) || 0,
       icon: DollarSign,
     },
     {
@@ -64,6 +69,8 @@ export default function DashCard() {
       ))}
     </div>
   );
+
+  console.log("dashboardData", dashboardData);
 
   return (
     <div className="flex flex-col gap-6 pt-8">
@@ -136,7 +143,7 @@ export default function DashCard() {
                     </span>
                   </div>
                   <span className="text-xs font-normal text-foreground">
-                    ${data.value}
+                    {formatNaira(data.value)}
                   </span>
                 </div>
               </div>
@@ -145,7 +152,8 @@ export default function DashCard() {
         )}
         <div className="flex flex-col items-center">
           <span className="text-base font-medium">
-            Total Pipeline Value: $31,700{" "}
+            Total Pipeline Value:{" "}
+            {formatNaira(dashboardData?.pipeline_total.value || 0)}
           </span>
         </div>
       </div>

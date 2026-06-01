@@ -2,14 +2,19 @@
 
 import PipelineByStage from "./analytics_card/pipeline_by_stage";
 import PipelineByLead from "./analytics_card/pipeline_by_lead";
-import { useAnalyticsLeadSource } from "@/hooks/analytics/analytics_lead_source";
-import { useAnalyticsPipelineStage } from "@/hooks/analytics/analytics_pipeline_stage";
+import PipelineByLeadTemp from "./analytics_card/pipeline_lead_by_temp";
+
+import { useAnalyticsLeadSource } from "@/hooks/report/report_lead_source";
+import { useReportLeadTemp } from "@/hooks/report/report_by_leadtemp";
+import { useAnalyticsPipelineStage } from "@/hooks/report/report_pipeline_stage";
 
 export default function Body() {
   const { data: leadSourceData, isLoading: isLeadSourceLoading } =
     useAnalyticsLeadSource();
   const { data: pipelineStageData, isLoading: isPipelineStageLoading } =
     useAnalyticsPipelineStage();
+  const { data: pipelineLeadTemp, isPending: isTempLeadLoading } =
+    useReportLeadTemp();
 
   return (
     <div className="flex flex-col gap-8 w-full">
@@ -49,15 +54,18 @@ export default function Body() {
           </div>
         </div>
       </div>
-      <div className="p-4 w-full min-h-80 border border-[#E8E8E8] rounded-[8px] flex flex-col gap-2">
+      <div className="p-4 min-h-80 border w-1/2 border-[#E8E8E8] rounded-[8px] flex flex-col gap-2">
         <h2 className="text-base font-medium text-foreground">
-          Team Productivity
+          Lead Temperature
         </h2>
-        <div className="flex justify-center w-full items-center h-full">
-          <p className="text-sm text-foreground">
-            This chart shows the distribution of leads across different stages
-            of the pipeline.
-          </p>
+        <div className="flex justify-center h-[300px] items-center">
+          {isTempLeadLoading ? (
+            <div className="w-full h-64 animate-pulse bg-[#E8E8E8]/50 rounded-[8px]" />
+          ) : pipelineLeadTemp?.length === 0 ? (
+            <p className="text-sm text-foreground">No Data Yet</p>
+          ) : (
+            <PipelineByLeadTemp />
+          )}
         </div>
       </div>
     </div>

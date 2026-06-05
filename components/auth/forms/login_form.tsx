@@ -30,7 +30,7 @@ export default function LoginForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-12 w-lg"
+      className="flex flex-col gap-12 w-full"
     >
       <div className="flex flex-col gap-3 w-full">
         <div className="flex flex-col gap-4 relative">

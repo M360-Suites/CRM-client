@@ -1,7 +1,11 @@
 import { Check } from "lucide-react";
 import { CustomButton } from "@/components/custom/common/customButton";
 
-export default function ImportDone() {
+interface DoneProps {
+  onSuccess: () => void;
+}
+
+export default function ImportDone({ onSuccess }: DoneProps) {
   return (
     <div className="flex flex-col gap-10 w-full px-8 pt-8">
       <div className="bg-[#FFF6EC] h-40 rounded-[10px] flex flex-col items-center justify-center gap-2">
@@ -11,7 +15,10 @@ export default function ImportDone() {
         </span>
       </div>
       <div className="px-10">
-        <CustomButton className="w-full flex flex-row items-center py-3">
+        <CustomButton
+          className="w-full flex flex-row items-center py-3"
+          onClick={onSuccess}
+        >
           Done
         </CustomButton>
       </div>

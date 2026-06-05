@@ -1,14 +1,37 @@
 "use client";
 
+import React from "react";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { Download, UploadIcon, PlusIcon } from "lucide-react";
 import { CustomDrawer } from "@/components/custom/common/drawer";
 import AddContactForm from "./forms/add_contact";
 import ImportContacts from "./import";
 import { useGetContacts } from "@/hooks/contact/get_contacts";
+import { downloadFile } from "@/lib/handler";
 
 export default function Header() {
   const { data: contacts } = useGetContacts();
+
+  const handleExport = (format: "csv" | "json") => {
+    if (!contacts?.length) return;
+
+    if (format === "json") {
+      const json = JSON.stringify(contacts, null, 2);
+      downloadFile(json, "contacts.json", "application/json");
+      return;
+    }
+
+    // CSV
+    const headers = Object.keys(contacts[0]).join(",");
+    const rows = contacts.map((c) =>
+      Object.values(c)
+        .map((v) => (typeof v === "string" ? `"${v.replace(/"/g, '""')}"` : v))
+        .join(","),
+    );
+    const csv = [headers, ...rows].join("\n");
+    downloadFile(csv, "contacts.csv", "text/csv");
+  };
+
   return (
     <div className="w-full pt-8">
       <div className="flex flex-row items-center justify-between w-full">
@@ -31,22 +54,28 @@ export default function Header() {
               </CustomButton>
             }
           >
-            <div className="p-4">
-              <span className="text-lg font-medium text-foreground">
-                Export Contacts
-              </span>
-              <p className="text-sm font-normal text-foreground/70 mt-2">
+            <div className="px-4">
+              <p className="text-sm font-normal text-foreground/70">
                 Choose the format you want to export your contacts in.
               </p>
-              <div className="flex flex-col gap-3 mt-4">
-                <CustomButton variant="outline" className="w-full">
+              <div className="flex flex-col gap-5 mt-8">
+                <CustomButton
+                  onClick={() => {
+                    handleExport("csv");
+                  }}
+                  variant="default"
+                  className="w-full py-3"
+                >
                   CSV
                 </CustomButton>
-                <CustomButton variant="outline" className="w-full">
-                  Excel
-                </CustomButton>
-                <CustomButton variant="outline" className="w-full">
-                  PDF
+                <CustomButton
+                  onClick={() => {
+                    handleExport("json");
+                  }}
+                  variant="ghost"
+                  className="w-full py-3"
+                >
+                  JSON
                 </CustomButton>
               </div>
             </div>
@@ -64,7 +93,13 @@ export default function Header() {
               </CustomButton>
             }
           >
-            <ImportContacts />
+            {(close) => (
+              <ImportContacts
+                onSuccess={() => {
+                  close();
+                }}
+              />
+            )}
           </CustomDrawer>
           <CustomDrawer
             label="Add Contacts"

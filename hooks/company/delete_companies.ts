@@ -8,8 +8,12 @@ export const useDeleteCompany = () => {
   return useMutation({
     mutationFn: (id: string) => DeleteCompany(id),
     onSuccess: (data) => {
-      toast.success(data.message);
-      queryClient.invalidateQueries({ queryKey: ["companies"] });
+      if (data.status) {
+        toast.success(data.message);
+        queryClient.invalidateQueries({ queryKey: ["companies"] });
+      } else {
+        toast.error(data.message);
+      }
     },
     onError: () => {
       toast.error("Failed to delete company");

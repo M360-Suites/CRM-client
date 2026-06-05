@@ -8,8 +8,12 @@ export const useDeleteContact = () => {
   return useMutation({
     mutationFn: (id: string) => DeleteContact(id),
     onSuccess: (data) => {
-      toast.success(data.message);
-      queryClient.invalidateQueries({ queryKey: ["contacts"] });
+      if (data.status) {
+        toast.success(data.message);
+        queryClient.invalidateQueries({ queryKey: ["contacts"] });
+      } else {
+        toast.error(data.message);
+      }
     },
     onError: () => {
       toast.error("Failed to delete contact");

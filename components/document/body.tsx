@@ -3,6 +3,8 @@
 import { FolderRowSkeleton } from "./skeleton/folder_row_skeleton";
 import { useGetFolders } from "@/hooks/document/get_folders";
 import { CustomButton } from "../custom/common/customButton";
+import { CustomDrawer } from "../custom/common/drawer";
+import AddFolderForm from "./form/add_document";
 import { useRouter } from "next/navigation";
 import FolderItem from "./folderItem";
 import { useState } from "react";
@@ -61,9 +63,19 @@ export default function Body() {
           <span className="text-base font-normal text-foreground">
             No folders yet
           </span>
-          <CustomButton className="px-4 py-2 rounded-full bg-[#F5B7A3]">
-            <span className="text-sm ">create your first folder</span>
-          </CustomButton>
+          <CustomDrawer
+            label="Create New Folder"
+            trigger={
+              <CustomButton
+                variant="default"
+                className="rounded-full flex text-sm flex-row items-center gap-2 px-8 py-3"
+              >
+                <span>Create your first folder</span>
+              </CustomButton>
+            }
+          >
+            {(close) => <AddFolderForm onSuccess={close} />}
+          </CustomDrawer>
         </div>
       ) : (
         <div className="flex border flex-col w-full rounded-t-[10px]">

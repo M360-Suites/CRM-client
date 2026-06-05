@@ -26,7 +26,7 @@ export default function ImportLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { importSteps, completedSteps } = useCompanyStore();
+  const { importSteps, completedSteps, rows } = useCompanyStore();
 
   return (
     <div>
@@ -86,7 +86,8 @@ export default function ImportLayout({
           <div className="flex flex-row items-center gap-2">
             <FileText size={14} color="#3A2418" />
             <span className="text-[#3A2418] text-sm">
-              4 rows detected. Match your file&apos;s columns to fields:
+              {rows.length} rows detected. Match your file&apos;s columns to
+              fields:
             </span>
           </div>
         )}

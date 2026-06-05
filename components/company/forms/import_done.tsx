@@ -2,7 +2,7 @@ import { Check } from "lucide-react";
 import { CustomButton } from "@/components/custom/common/customButton";
 
 interface ImportDoneProps {
-  onSuccess?: () => void;
+  onSuccess: () => void;
 }
 
 export default function ImportDone({ onSuccess }: ImportDoneProps) {

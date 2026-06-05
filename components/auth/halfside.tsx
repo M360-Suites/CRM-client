@@ -61,20 +61,20 @@ export default function HalfSide() {
   ];
 
   return (
-    <div className="w-full bg-[#FFF6EC] h-full flex flex-col pt-26 items-center justify-center pb-6 rounded-[16px] gap-8">
+    <div className="w-full bg-[#FFF6EC] min-h-screen xl:min-h-screen flex flex-col py-12 xl:py-20 items-center justify-center px-5 xl:px-10 rounded-[16px] gap-8">
       <div
-        className={`flex items-center justify-center h-125 w-144.5 ${otherHalf.includes(value.type) && "bg-white"} rounded-[16px]`}
+        className={`flex items-center justify-center ${otherHalf.includes(value.type) && "bg-white"} rounded-[16px]`}
       >
         <Image
           src={value.url}
           alt="analytics"
           width={800}
           height={800}
-          className="w-auto h-full object-cover"
+          className="w-full h-full block object-cover"
         />
       </div>
       {(value.type === "login" || value.type === "register") && (
-        <div className="flex flex-col gap-4 items-center justify-end h-full w-144.5">
+        <div className="flex flex-col gap-4 items-center justify-end">
           <h1 className="text-[38px]/[120%] text-foreground tracking-tight font-medium text-center">
             {value.title}
           </h1>

@@ -2,6 +2,8 @@
 
 import { useGetCompanies } from "@/hooks/company/get_companies";
 import { CustomButton } from "@/components/custom/common/customButton";
+import { CustomDrawer } from "@/components/custom/common/drawer";
+import AddCompanyForm from "./forms/add_company";
 import { Company } from "@/types/company";
 import CompanyCard from "./card";
 
@@ -30,9 +32,26 @@ export default function Body() {
             <span className="text-base font-normal text-foreground">
               No contacts yet
             </span>
-            <CustomButton className="px-4 py-2 rounded-full">
-              <span className="text-sm ">Add your first Contact</span>
-            </CustomButton>
+            <CustomDrawer
+              label="Add Company"
+              trigger={
+                <CustomButton
+                  variant="default"
+                  className="rounded-full flex flex-row items-center gap-2 px-5 py-2.5"
+                >
+                  <span>Add your first company</span>
+                </CustomButton>
+              }
+            >
+              {(close) => (
+                <AddCompanyForm
+                  mode="add"
+                  onSuccess={() => {
+                    close();
+                  }}
+                />
+              )}
+            </CustomDrawer>
           </div>
         ) : (
           <div className="py-2 grid grid-cols-3 gap-4">

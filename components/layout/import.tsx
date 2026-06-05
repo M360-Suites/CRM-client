@@ -1,6 +1,7 @@
 "use client";
 import { FileText } from "lucide-react";
 import { useContactStore } from "@/stores/contact/contact_store";
+import { useEffect } from "react";
 
 const steps = [
   {
@@ -23,10 +24,19 @@ const steps = [
 
 export default function ImportLayout({
   children,
+  rows,
 }: {
   children: React.ReactNode;
+  rows?: Record<string, string>[];
 }) {
-  const { importSteps, completedSteps } = useContactStore();
+  const { importSteps, completedSteps, setCompletedSteps, setImportSteps } =
+    useContactStore();
+
+  useEffect(() => {
+    // Reset import progress whenever the import layout mounts
+    setImportSteps(1);
+    setCompletedSteps([]);
+  }, [setImportSteps, setCompletedSteps]);
 
   return (
     <div>
@@ -52,7 +62,13 @@ export default function ImportLayout({
                 {index < steps.length - 1 && (
                   <div className="relative w-12 h-0.5 mx-2">
                     <div
-                      className={`absolute inset-0 ${completedSteps.includes(step.id) ? "bg-[#C95C47]" : importSteps === step.id ? "bg-[#C95C47]" : "bg-[#D9D9D9]"} rounded-full`}
+                      className={`absolute inset-0 ${
+                        completedSteps.includes(step.id)
+                          ? "bg-[#C95C47]"
+                          : importSteps === step.id
+                            ? "bg-[#C95C47]"
+                            : "bg-[#D9D9D9]"
+                      } rounded-full`}
                     />
                     <div
                       className={`absolute top-0 left-0 h-full bg-[#C95C47] rounded-full`}
@@ -86,7 +102,8 @@ export default function ImportLayout({
           <div className="flex flex-row items-center gap-2">
             <FileText size={14} color="#3A2418" />
             <span className="text-[#3A2418] text-sm">
-              4 rows detected. Match your file&apos;s columns to fields:
+              {rows?.length ?? 0} rows detected. Match your file&apos;s columns
+              to fields:
             </span>
           </div>
         )}

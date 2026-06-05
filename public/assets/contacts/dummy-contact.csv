@@ -1,0 +1,11 @@
+first_name,last_name,email,phone,role,temperature,tags,owner_id,organization_id
+John,Doe,john.doe@acmecorp.com,+2348012345678,CEO,hot,"decision-maker,enterprise",owner_001,org_001
+Jane,Smith,jane.smith@techbridge.io,+2348023456789,CTO,warm,"tech,saas",owner_001,org_002
+Michael,Okafor,m.okafor@finlabnig.com,+2348034567890,Product Manager,cold,"fintech,startup",owner_002,org_003
+Amara,Nwosu,amara.n@brightventures.co,+2348045678901,Head of Sales,hot,"sales,b2b",owner_002,org_004
+David,Adeyemi,d.adeyemi@loopstack.dev,+2348056789012,Engineering Lead,warm,"developer,api",owner_001,org_005
+Fatima,Al-Hassan,f.alhassan@globalretail.ng,+2348067890123,Operations Manager,cold,"retail,logistics",owner_003,org_006
+Samuel,Obi,s.obi@nexahealth.com,+2348078901234,Co-Founder,hot,"healthtech,investor",owner_003,org_007
+Chidinma,Eze,c.eze@edubridge.africa,+2348089012345,Marketing Director,warm,"edtech,marketing",owner_002,org_008
+Tobi,Adebayo,t.adebayo@payswift.io,+2348090123456,CFO,hot,"fintech,decision-maker",owner_001,org_009
+Grace,Mensah,g.mensah@cloudpeak.gh,+233245678901,Business Analyst,cold,"consulting,ghana",owner_003,org_010

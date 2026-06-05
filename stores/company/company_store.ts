@@ -2,10 +2,18 @@ import { create } from "zustand";
 import { Company } from "@/types/company";
 
 export interface CompanyState {
+  file: File | null;
+  headers: string[];
+  rows: Record<string, string>[];
+  mapping: Record<string, string>;
+  setFile: (file: File | null) => void;
+  setHeaders: (headers: string[]) => void;
+  setRows: (rows: Record<string, string>[]) => void;
+  setMapping: (mapping: Record<string, string>) => void;
+  resetImport: () => void;
   importSteps: number;
   completedSteps: number[];
   selectedCompany: Company | null;
-  companies: Company[];
   companyPreview: Company[];
   setCompletedSteps: (value: number[]) => void;
   setImportSteps: (value: number) => void;
@@ -13,53 +21,29 @@ export interface CompanyState {
 }
 
 export const useCompanyStore = create<CompanyState>((set) => ({
+  file: null,
+  headers: [],
+  rows: [],
+  mapping: {},
+
+  setFile: (file) => set({ file }),
+  setHeaders: (headers) => set({ headers }),
+  setRows: (rows) => set({ rows }),
+  setMapping: (mapping) => set({ mapping }),
+  resetImport: () =>
+    set({
+      file: null,
+      headers: [],
+      rows: [],
+      mapping: {},
+      importSteps: 1,
+      completedSteps: [],
+    }),
   importSteps: 1,
-  companies: [
-    {
-      _id: "6a11c32f6c58135c46def539",
-      name: "Jola Industries",
-      industry: "Food & Hospitality",
-      website: "https://www.jola.com",
-      owner_id: {
-        _id: "6a105a031b2fe0919e654b8b",
-        email: "ojodanieltoby@gmail.com",
-        display_name: "ojo daniel",
-      },
-      contact_person: "Jola simi",
-      email: "jola@gmail.com",
-      phone: "09127428680",
-      address: "10, adewale street, coker",
-      created_at: "2026-05-23T15:09:35.982Z",
-      updated_at: "2026-05-23T15:09:35.982Z",
-      __v: 0,
-    },
-  ],
   selectedCompany: null,
-  companyPreview: [
-    {
-      _id: "6a11c32f6c58135c46def539",
-      name: "Jola Industries",
-      industry: "Food & Hospitality",
-      website: "https://www.jola.com",
-      owner_id: {
-        _id: "6a105a031b2fe0919e654b8b",
-        email: "ojodanieltoby@gmail.com",
-        display_name: "ojo daniel",
-      },
-      contact_person: "Jola simi",
-      email: "jola@gmail.com",
-      phone: "09127428680",
-      address: "10, adewale street, coker",
-      created_at: "2026-05-23T15:09:35.982Z",
-      updated_at: "2026-05-23T15:09:35.982Z",
-      __v: 0,
-    },
-  ],
+  companyPreview: [],
   completedSteps: [],
-  setCompletedSteps: (value) =>
-    set((state) => ({
-      completedSteps: Array.from(new Set([...state.completedSteps, ...value])),
-    })),
+  setCompletedSteps: (value) => set({ completedSteps: value }),
   setImportSteps: (value) => set({ importSteps: value }),
   setSelectedCompany: (company) => set({ selectedCompany: company }),
 }));

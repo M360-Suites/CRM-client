@@ -18,3 +18,13 @@ export function clearRedirectUrl(): void {
   if (typeof document === "undefined") return;
   Cookies.remove(storage.REDIRECT_AFTER_LOGIN);
 }
+
+export function downloadFile(data: string, filename: string, mimeType: string) {
+  const blob = new Blob([data], { type: mimeType });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = filename;
+  a.click();
+  URL.revokeObjectURL(url);
+}

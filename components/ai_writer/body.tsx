@@ -14,9 +14,9 @@ import CustomEmailArea from "../custom/common/customEmailTextArea";
 const toneOptions = [
   { name: "Friendly", value: "friendly" },
   { name: "Professional", value: "professional" },
-  { name: "Follow-up", value: "follow-up" },
-  { name: "Cold outreach", value: "cold-outreach" },
-  { name: "Thank you", value: "thank-you" },
+  { name: "Follow-up", value: "follow_up" },
+  { name: "Cold outreach", value: "cold_outreach" },
+  { name: "Thank you", value: "thank_you" },
 ];
 
 const lengthOptions = [

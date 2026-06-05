@@ -2,6 +2,15 @@ import { create } from "zustand";
 import { Contact } from "@/types/contact";
 
 export interface ContactState {
+  file: File | null;
+  headers: string[];
+  rows: Record<string, string>[];
+  mapping: Record<string, string>;
+  setFile: (file: File | null) => void;
+  setHeaders: (headers: string[]) => void;
+  setRows: (rows: Record<string, string>[]) => void;
+  setMapping: (mapping: Record<string, string>) => void;
+  resetImport: () => void;
   importSteps: number;
   completedSteps: number[];
   selectedContact: Contact | null;
@@ -13,6 +22,24 @@ export interface ContactState {
 }
 
 export const useContactStore = create<ContactState>((set) => ({
+  file: null,
+  headers: [],
+  rows: [],
+  mapping: {},
+
+  setFile: (file) => set({ file }),
+  setHeaders: (headers) => set({ headers }),
+  setRows: (rows) => set({ rows }),
+  setMapping: (mapping) => set({ mapping }),
+  resetImport: () =>
+    set({
+      file: null,
+      headers: [],
+      rows: [],
+      mapping: {},
+      importSteps: 1,
+      completedSteps: [],
+    }),
   importSteps: 1,
   contacts: [
     {
@@ -68,10 +95,7 @@ export const useContactStore = create<ContactState>((set) => ({
     },
   ],
   completedSteps: [],
-  setCompletedSteps: (value) =>
-    set((state) => ({
-      completedSteps: Array.from(new Set([...state.completedSteps, ...value])),
-    })),
+  setCompletedSteps: (value) => set({ completedSteps: value }),
   setImportSteps: (value) => set({ importSteps: value }),
   setSelectedContact: (contact) => set({ selectedContact: contact }),
 }));

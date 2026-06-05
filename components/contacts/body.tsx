@@ -7,6 +7,7 @@ import { useGetContacts } from "@/hooks/contact/get_contacts";
 import { useDeleteContact } from "@/hooks/contact/delete_contact";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { CustomDrawer } from "@/components/custom/common/drawer";
+import AddContactForm from "./forms/add_contact";
 import Detail from "./forms/detail";
 import { useState } from "react";
 
@@ -38,6 +39,7 @@ export default function Body() {
     data: contacts,
     isPending,
     isError,
+    refetch,
   } = useGetContacts(
     activeTab === ContactTabs.ALL ? undefined : activeTab.toLowerCase(),
   );
@@ -90,7 +92,10 @@ export default function Body() {
             <span className="text-base font-normal text-foreground">
               Failed to load contacts
             </span>
-            <CustomButton className="px-4 py-2 rounded-full">
+            <CustomButton
+              className="px-4 py-2 rounded-full"
+              onClick={() => refetch()}
+            >
               <span className="text-sm">Retry</span>
             </CustomButton>
           </div>
@@ -176,9 +181,25 @@ export default function Body() {
                 : `No ${activeTab.toLowerCase()} contacts found`}
             </span>
             {activeTab === "All" && (
-              <CustomButton className="px-4 py-2 rounded-full">
-                <span className="text-sm">Add your first Contact</span>
-              </CustomButton>
+              <CustomDrawer
+                label="Add Contacts"
+                trigger={
+                  <CustomButton
+                    variant="default"
+                    className="rounded-full flex flex-row items-center gap-2 px-5 py-2.5"
+                  >
+                    <span>Add your first contact</span>
+                  </CustomButton>
+                }
+              >
+                {(close) => (
+                  <AddContactForm
+                    onSuccess={() => {
+                      close();
+                    }}
+                  />
+                )}
+              </CustomDrawer>
             )}
           </div>
         )}

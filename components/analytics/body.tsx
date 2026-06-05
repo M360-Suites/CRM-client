@@ -23,8 +23,7 @@ export default function Body() {
               <div className="w-full h-64 animate-pulse bg-[#E8E8E8]/50 rounded-[8px]" />
             ) : pipelineStageData?.length === 0 ? (
               <p className="text-sm text-foreground">
-                This chart shows the distribution of leads across different
-                stages of the pipeline.
+                No pipeline stage data yet
               </p>
             ) : (
               <PipelineByStage />
@@ -39,10 +38,7 @@ export default function Body() {
             {isLeadSourceLoading ? (
               <div className="w-full h-64 animate-pulse bg-[#E8E8E8]/50 rounded-[8px]" />
             ) : leadSourceData?.length === 0 ? (
-              <p className="text-sm text-foreground">
-                This chart shows the distribution of leads across different
-                stages of the pipeline.
-              </p>
+              <p className="text-sm text-foreground">No lead source data yet</p>
             ) : (
               <PipelineByLead />
             )}
@@ -53,11 +49,8 @@ export default function Body() {
         <h2 className="text-base font-medium text-foreground">
           Team Productivity
         </h2>
-        <div className="flex justify-center w-full items-center h-full">
-          <p className="text-sm text-foreground">
-            This chart shows the distribution of leads across different stages
-            of the pipeline.
-          </p>
+        <div className="flex justify-center w-full items-center h-64">
+          <p className="text-sm text-foreground">No Team production data yet</p>
         </div>
       </div>
     </div>

@@ -8,7 +8,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <SidebarProvider className="flex flex-col inset-0 font-inter">
       <Navbar />
-      <div className="flex">
+      <div className="flex w-full">
         <AppSidebar />
         <SidebarTrigger className="md:hidden" />
         <main className="pt-16 px-8 w-full">{children}</main>

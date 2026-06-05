@@ -2,7 +2,7 @@ import { useContactStore } from "@/stores/contact/contact_store";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { CustomDrawer } from "@/components/custom/common/drawer";
 import EditContactForm from "./edit_contact";
-import { getInitials } from "@/lib/utils";
+import { getInitials, toUTC } from "@/lib/utils";
 
 interface ContactDetailsSheetProps {
   onDelete: () => void;
@@ -58,7 +58,7 @@ export default function Detail({
         <div className="py-2 flex justify-between w-full">
           <span>Last Contacted</span>
           <p className="text-sm text-foreground/70">
-            {selectedContact?.created_at}
+            {toUTC(selectedContact?.created_at)}
           </p>
         </div>
       </div>

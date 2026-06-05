@@ -38,7 +38,7 @@ export default function RegisterForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-12 w-lg"
+      className="flex flex-col gap-12 w-full"
     >
       {registerStep === 1 && (
         <div className="flex flex-col gap-4">

@@ -1,15 +1,19 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import { CustomButton } from "../custom/common/customButton";
 import { CustomSelect } from "../custom/common/customSelect";
 import CustomInput from "../custom/common/customInput";
-import { Sparkles, Link, XIcon, Loader, Send } from "lucide-react";
+import { Sparkles, XIcon, Loader, Send } from "lucide-react";
 import { getInitials } from "@/lib/utils";
 import { useGetContacts } from "@/hooks/contact/get_contacts";
 import { useGetDeals } from "@/hooks/pipeline/get_deals";
+import useSendGmail from "@/hooks/gmail/send_gmail";
 import useGenerateDraft from "@/hooks/user/generate";
 import { useForm, Controller } from "react-hook-form";
 import CustomEmailArea from "../custom/common/customEmailTextArea";
+import AttachmentUpload from "../ai_writer/attachment_file";
+import { SendMailRequest } from "@/types/gmail";
 
 const toneOptions = [
   { name: "Friendly", value: "friendly" },
@@ -25,11 +29,6 @@ const lengthOptions = [
   { name: "Detailed", value: "detailed" },
 ];
 
-const Options = [
-  { label: "Attachment", icon: Link },
-  { label: "Send", icon: Send },
-];
-
 interface EmailFormValues {
   contactId: string;
   dealId: string;
@@ -38,10 +37,22 @@ interface EmailFormValues {
   notes: string;
 }
 
+interface SendFormValues {
+  to: string;
+  subject: string;
+  body: string;
+}
+
+const isValidEmail = (value: string) =>
+  /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
+
 export default function Body() {
   const { mutate: generateMail, data: mail, isPending } = useGenerateDraft();
+  const { mutate: sendMail, isPending: isSending } = useSendGmail();
   const { data: contacts } = useGetContacts();
   const { data: deals } = useGetDeals();
+
+  const [attachments, setAttachments] = useState<File[]>([]);
 
   const { control, handleSubmit, setValue, watch } = useForm<EmailFormValues>({
     defaultValues: {
@@ -53,16 +64,30 @@ export default function Body() {
     },
   });
 
+  const {
+    handleSubmit: handleSendSubmit,
+    setValue: setSendValue,
+    watch: watchSend,
+  } = useForm<SendFormValues>({
+    defaultValues: {
+      to: "",
+      subject: "",
+      body: "",
+    },
+  });
+
+  useEffect(() => {
+    if (mail?.data?.subject) setSendValue("subject", mail.data.subject);
+    if (mail?.data?.body) setSendValue("body", mail.data.body);
+  }, [mail]);
+
   const selectedTone = watch("tone");
   const selectedLength = watch("length");
   const selectedContactId = watch("contactId");
   const selectedContact =
     contacts?.find((c) => c._id === selectedContactId) ?? null;
 
-  const handleRemoveContact = () => {
-    // clear the selected contact in the form
-    setValue("contactId", "");
-  };
+  const handleRemoveContact = () => setValue("contactId", "");
 
   const contactData =
     contacts?.map((c) => ({
@@ -76,14 +101,40 @@ export default function Body() {
       value: d.id,
     })) ?? [];
 
-  const onSubmit = (values: EmailFormValues) => {
+  const canSend =
+    !isSending && (!!selectedContact?.email || isValidEmail(watchSend("to")));
+
+  const onGenerate = (values: EmailFormValues) => {
     generateMail(values);
+  };
+
+  const onSend = (values: SendFormValues) => {
+    const recipient = selectedContact?.email || values.to;
+    if (!recipient) return;
+
+    if (attachments.length > 0) {
+      const formData = new FormData();
+      formData.append("to", recipient);
+      formData.append("subject", values.subject);
+      formData.append("body", values.body);
+      if (selectedContactId) formData.append("contactId", selectedContactId);
+      attachments.forEach((file) => formData.append("attachments", file));
+      sendMail(formData as unknown as SendMailRequest);
+    } else {
+      sendMail({
+        to: recipient,
+        subject: values.subject,
+        body: values.body,
+        contactId: selectedContactId || undefined,
+      } as SendMailRequest);
+    }
   };
 
   return (
     <div className="grid grid-cols-2 gap-8">
+      {/* Generate form */}
       <form
-        onSubmit={handleSubmit(onSubmit)}
+        onSubmit={handleSubmit(onGenerate)}
         className="flex flex-col gap-8 border border-[#E8E8E8] rounded-[12px] p-5"
       >
         <div className="flex flex-col gap-4">
@@ -169,7 +220,12 @@ export default function Body() {
         </CustomButton>
       </form>
 
-      <div className="flex flex-col gap-4 border border-[#E8E8E8] rounded-[12px] p-5">
+      {/* Send form */}
+      <form
+        onSubmit={handleSendSubmit(onSend)}
+        className="flex flex-col gap-4 border border-[#E8E8E8] rounded-[12px] p-5"
+      >
+        {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-base text-[#3A2418] font-medium">Draft</span>
@@ -177,58 +233,61 @@ export default function Body() {
               AI Generated
             </span>
           </div>
-          <div className="flex items-center gap-4">
-            {Options.map((item, index) => (
-              <button
-                key={index}
-                className={`flex items-center gap-1 ${item.label === "Send" && "bg-[#FFD9C0] px-3 py-1.5 rounded-full cursor-pointer gap-2"}`}
-              >
-                <item.icon
-                  size={16}
-                  color={item.label === "Send" ? "#4a4a4a" : "#F5B7A3"}
-                />
-                <span className="text-sm text-[#4A4A4A] font-medium">
-                  {item.label}
-                </span>
-              </button>
-            ))}
-          </div>
-        </div>
-
-        <div className="border-y flex items-center gap-2">
-          <span className="text-foreground text-base font-medium">To:</span>
-          <div className="py-3">
-            {selectedContact ? (
-              <div className="border rounded-full p-1 text-sm text-[#4A4A4A] font-medium flex items-center gap-2">
-                <div className="flex items-center gap-2">
-                  <div className="rounded-full text-[#FF9E55] bg-[#FFE7D5] w-9 h-9 flex items-center justify-center text-xs font-medium">
-                    {getInitials(
-                      `${selectedContact.first_name} ${selectedContact.last_name}`,
-                    )}
-                  </div>
-                  <span>
-                    {selectedContact.first_name +
-                      " " +
-                      selectedContact.last_name}
-                  </span>
-                </div>
-                <span>{`<${selectedContact.email}>`}</span>
-                <button
-                  type="button"
-                  className="p-2 cursor-pointer"
-                  onClick={handleRemoveContact}
-                >
-                  <XIcon size={16} color="#F5B7A3" />
-                </button>
-              </div>
-            ) : (
-              <span className="text-foreground text-sm h-10">
-                Select a contact or enter email
+          <div className="flex items-center gap-3">
+            {/* Attachment trigger only — list renders below body */}
+            <AttachmentUpload onFilesChange={setAttachments} triggerOnly />
+            <button
+              type="submit"
+              disabled={!canSend}
+              className="flex items-center bg-[#FFD9C0] px-3 py-1.5 rounded-full gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {isSending ? (
+                <Loader size={16} color="#4a4a4a" className="animate-spin" />
+              ) : (
+                <Send size={16} color="#4a4a4a" />
+              )}
+              <span className="text-sm text-[#4A4A4A] font-medium">
+                {isSending ? "Sending..." : "Send"}
               </span>
-            )}
+            </button>
           </div>
         </div>
 
+        {/* To */}
+        <div className="border-y flex items-center gap-2 py-2">
+          <span className="text-foreground text-base font-medium">To:</span>
+          {selectedContact ? (
+            <div className="border rounded-full p-1 text-sm text-[#4A4A4A] font-medium flex items-center gap-2">
+              <div className="flex items-center gap-2">
+                <div className="rounded-full text-[#FF9E55] bg-[#FFE7D5] w-9 h-9 flex items-center justify-center text-xs font-medium">
+                  {getInitials(
+                    `${selectedContact.first_name} ${selectedContact.last_name}`,
+                  )}
+                </div>
+                <span>
+                  {selectedContact.first_name + " " + selectedContact.last_name}
+                </span>
+              </div>
+              <span>{`<${selectedContact.email}>`}</span>
+              <button
+                type="button"
+                className="p-2 cursor-pointer"
+                onClick={handleRemoveContact}
+              >
+                <XIcon size={16} color="#F5B7A3" />
+              </button>
+            </div>
+          ) : (
+            <CustomEmailArea
+              kind="to"
+              body={watchSend("to")}
+              onChange={(value) => setSendValue("to", value)}
+              placeholder="Enter recipient email"
+            />
+          )}
+        </div>
+
+        {/* Subject */}
         <div className="border-b flex items-center gap-2 pb-2">
           <span className="text-foreground text-base font-medium">
             Subject:
@@ -238,13 +297,14 @@ export default function Body() {
           ) : (
             <CustomEmailArea
               kind="subject"
-              body={mail?.data?.subject}
-              onChange={(value) => console.log(value)}
+              body={watchSend("subject")}
+              onChange={(value) => setSendValue("subject", value)}
               placeholder="Subject of the mail"
             />
           )}
         </div>
 
+        {/* Body */}
         <div className="text-foreground text-sm whitespace-pre-line">
           {isPending ? (
             <div className="space-y-2">
@@ -258,12 +318,21 @@ export default function Body() {
           ) : (
             <CustomEmailArea
               kind="body"
-              body={mail?.data?.body ?? ""}
-              onChange={(value) => console.log(value)}
+              body={watchSend("body")}
+              onChange={(value) => setSendValue("body", value)}
             />
           )}
         </div>
-      </div>
+
+        {/* Attached files list — always visible below body */}
+        {attachments.length > 0 && (
+          <AttachmentUpload
+            onFilesChange={setAttachments}
+            listOnly
+            files={attachments}
+          />
+        )}
+      </form>
     </div>
   );
 }

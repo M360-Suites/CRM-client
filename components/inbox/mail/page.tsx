@@ -1,7 +1,11 @@
 import { CustomButton } from "@/components/custom/common/customButton";
 import { useGmailAuth } from "@/hooks/gmail/gmail_auth";
 import { Mail, Send, Tags, Loader } from "lucide-react";
+import { useGmailStore } from "@/stores/gmail/gmail_store";
+import { useGmailStatus } from "@/hooks/gmail/gmail_connect_status";
+import { useSearchParams } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
+import { useEffect } from "react";
 
 const Permissions = [
   {
@@ -19,7 +23,25 @@ const Permissions = [
 ];
 
 export default function MailAuthorisation() {
+  const { setConnectedChannels } = useGmailStore();
   const { mutate, isPending } = useGmailAuth();
+  const { isPending: isStatusPending, data } = useGmailStatus();
+  const searchParams = useSearchParams();
+  const channel = searchParams?.get("channel");
+  const status = searchParams?.get("connected");
+
+  useEffect(() => {
+    if (channel && status) {
+      setConnectedChannels([
+        {
+          id: channel,
+          label: "Google Gmail",
+          connected: (status as string) === "true",
+        },
+      ]);
+    }
+  }, [channel, status, setConnectedChannels]);
+
   return (
     <div className="flex flex-col gap-4">
       <p>We&apos;ll redirect you to Google to approve these permissions</p>

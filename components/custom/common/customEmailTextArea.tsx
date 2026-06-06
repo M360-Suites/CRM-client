@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 
-type EmailAreaType = "subject" | "body";
+type EmailAreaType = "subject" | "body" | "to";
 
 interface CustomEmailAreaProps extends Omit<
   React.TextareaHTMLAttributes<HTMLTextAreaElement>,
@@ -15,7 +15,10 @@ interface CustomEmailAreaProps extends Omit<
 const kindStyles: Record<EmailAreaType, string> = {
   subject: "text-base font-medium",
   body: "text-sm font-normal",
+  to: "text-sm font-normal",
 };
+
+const emailTextColor = "text-[#FF9E55]";
 
 const CustomEmailArea = React.forwardRef<any, CustomEmailAreaProps>(
   ({ className = "", body, kind = "body", onChange, ...rest }, ref) => {
@@ -36,13 +39,13 @@ const CustomEmailArea = React.forwardRef<any, CustomEmailAreaProps>(
 
     return (
       <div className="flex flex-col gap-2 font-inter w-full">
-        {kind === "subject" ? (
+        {kind === "subject" || kind === "to" ? (
           <input
             {...(rest as React.InputHTMLAttributes<HTMLInputElement>)}
             ref={ref}
             value={value}
             onChange={handleChange}
-            className={`outline-none text-sm bg-transparent text-foreground placeholder:text-sm placeholder:text-foundation-gray-4 focus:ring-0 w-full ${kindStyles[kind]} ${className}`}
+            className={`outline-none text-sm bg-transparent placeholder:text-sm placeholder:text-gray-600/40 focus:ring-0 w-full ${kindStyles[kind]} ${kind === "subject" ? "text-foreground" : emailTextColor} ${className}`}
           />
         ) : (
           <textarea

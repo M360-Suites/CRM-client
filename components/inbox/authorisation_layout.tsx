@@ -1,4 +1,3 @@
-import { CustomButton } from "@/components/custom/common/customButton";
 import { CustomDrawer } from "@/components/custom/common/drawer";
 
 interface AuthorisationPageProps {

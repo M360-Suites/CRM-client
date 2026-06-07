@@ -84,13 +84,13 @@ export default function AddTaskForm() {
           )}
         </div>
       </div>
-      <CustomInput
+      {/* <CustomInput
         label="Industry"
         placeholder="Enter industry"
         error={errors.due_at?.message}
         type="text"
         {...(register("industry"), { required: true })}
-      />
+      /> */}
 
       <div className="flex items-center gap-3">
         <CustomInput
@@ -108,7 +108,7 @@ export default function AddTaskForm() {
           {...(register("location"), { required: true })}
         />
       </div>
-      <CustomInput
+      {/* <CustomInput
         label="Industry"
         placeholder="Enter industry"
         error={errors.industry?.message}
@@ -129,7 +129,7 @@ export default function AddTaskForm() {
           { name: "Closed", value: "Closed" },
           { name: "Lost", value: "Lost" },
         ]}
-      />
+      /> */}
 
       <div className="pt-6 px-6">
         <CustomButton type="submit" className="w-full px-6 py-4 font-inter">

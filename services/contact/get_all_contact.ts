@@ -1,11 +1,21 @@
 import { apiClient } from "../apiclient";
-import { Contact } from "@/types/contact";
+import { Contact, ContactResponse } from "@/types/contact";
 
-export const GetContacts = async (temperature?: string): Promise<Contact[]> => {
-  const response = await apiClient.get<Contact[]>(
-    "/contacts",
-    true,
-    temperature ? { temperature } : undefined,
-  );
-  return response.data as Contact[];
+interface UseGetContactsProps {
+  temperature?: string;
+  page?: number;
+  limit?: number;
+  search?: string;
+}
+
+export const GetContacts = async (
+  props: UseGetContactsProps,
+): Promise<ContactResponse> => {
+  const response = await apiClient.get<ContactResponse>(`/contacts`, true, {
+    temperature: props.temperature,
+    page: props.page,
+    limit: props.limit,
+    search: props.search,
+  });
+  return response.data as ContactResponse;
 };

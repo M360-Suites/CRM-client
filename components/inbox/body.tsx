@@ -50,8 +50,8 @@ export default function Body() {
   }, [channel, status, setConnectedChannels]);
 
   return (
-    <div className="grid grid-cols-4 gap-8">
-      <div className="flex flex-col gap-1 px-2.5 py-5 w-75 border border-[#E8E8E8] rounded-[12px]">
+    <div className="grid grid-cols-4 gap-5">
+      <div className="flex flex-col gap-1 px-2.5 py-5 sticky top-20 col-span-1 self-start border border-[#E8E8E8] rounded-[12px]">
         {InboxTabs.map((tab) => (
           <button
             key={tab.name}
@@ -76,28 +76,30 @@ export default function Body() {
             </span>
           </div>
         )}
-        {selectedTab === "Mail" && data?.connected ? (
-          <div className="w-full">
-            <div className="flex justify-end gap-3 mb-4 w-full">
-              {isPending ? (
-                <button className="bg-[#FFD9C0] p-2 rounded-lg cursor-pointer">
-                  <Loader size={20} className="animate-spin" />
-                </button>
-              ) : (
-                <button
-                  onClick={() => handleSync()}
-                  className="bg-[#FFD9C0] p-2 rounded-lg cursor-pointer"
-                >
-                  <CloudSync size={20} />
-                </button>
-              )}
-            </div>
-            <span className="text-sm text-foreground">
+
+        {selectedTab === "Mail" &&
+          !isStatusPending &&
+          (data?.connected ? (
+            <div className="w-full">
+              <div className="flex justify-end gap-3 mb-4 w-full">
+                {isPending ? (
+                  <CustomButton className="bg-[#FFD9C0] px-3.5 rounded-full cursor-pointer">
+                    <Loader size={20} className="animate-spin" />
+                    <span className="text-sm">Syncing</span>
+                  </CustomButton>
+                ) : (
+                  <CustomButton
+                    onClick={() => handleSync()}
+                    className="rounded-full px-3.5"
+                  >
+                    <CloudSync size={20} />
+                    <span className="text-sm">Sync Mail</span>
+                  </CustomButton>
+                )}
+              </div>
               <ShowMail />
-            </span>
-          </div>
-        ) : (
-          selectedTab === "Mail" && (
+            </div>
+          ) : (
             <AuthorisationPage
               label="Allow access to gmail"
               trigger={
@@ -108,8 +110,7 @@ export default function Body() {
             >
               <MailAuthorisation />
             </AuthorisationPage>
-          )
-        )}
+          ))}
       </div>
     </div>
   );

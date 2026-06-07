@@ -1,7 +1,16 @@
 import { apiClient } from "../apiclient";
-import { MailResponse } from "@/types/gmail";
+import { GmailDataResponse } from "@/types/gmail";
 
-export const getMails = async () => {
-  const response = await apiClient.get("/email/messages");
-  return response.data as MailResponse[];
+interface MailProps {
+  page?: number;
+  limit?: number;
+}
+
+export const getMails = async (props: MailProps) => {
+  const response = await apiClient.get(
+    `/email/messages?page=${props.page}&limit=${props.limit}`,
+    false,
+  );
+  console.log("getMails response:", response);
+  return response.data as GmailDataResponse;
 };

@@ -21,3 +21,11 @@ export interface Company {
     won_revenue: number;
   };
 }
+
+export interface CompanyResponse {
+  data: Company[];
+  limit: number;
+  page: number;
+  total: number;
+  total_pages: number;
+}

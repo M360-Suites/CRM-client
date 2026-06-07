@@ -7,6 +7,7 @@ import { useGetContacts } from "@/hooks/contact/get_contacts";
 import { useDeleteContact } from "@/hooks/contact/delete_contact";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { CustomDrawer } from "@/components/custom/common/drawer";
+import CustomPagination from "../custom/common/customPagination";
 import AddContactForm from "./forms/add_contact";
 import Detail from "./forms/detail";
 import { useState } from "react";
@@ -35,14 +36,22 @@ export default function Body() {
   const categories = [...categoryObjects];
   const { setSelectedContact } = useContactStore();
   const [activeTab, setActiveTab] = useState(categories[0]);
+  const [page, setPage] = useState(1);
+  const [limit, setLimit] = useState(25);
+  const [search, setSearch] = useState("");
+
   const {
     data: contacts,
     isPending,
     isError,
     refetch,
-  } = useGetContacts(
-    activeTab === ContactTabs.ALL ? undefined : activeTab.toLowerCase(),
-  );
+  } = useGetContacts({
+    temperature:
+      activeTab === ContactTabs.ALL ? undefined : activeTab.toLowerCase(),
+    page,
+    limit,
+    search,
+  });
   const { mutate: deleteContact, isPending: isLoading } = useDeleteContact();
   return (
     <div className="w-full flex-col flex gap-8">
@@ -51,6 +60,7 @@ export default function Body() {
           <Search color="#3A2418" size={20} />
           <input
             type="text"
+            onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name,email,company..."
             className="flex-1 placeholder:text-sm h-full outline-0 focus-visible:ring-0"
           />
@@ -102,78 +112,92 @@ export default function Body() {
         )}
 
         {/* Contacts list */}
-        {!isPending && !isError && contacts && contacts.length > 0 && (
-          <div className="border border-[#F3D9C4] rounded-t-[12px]">
-            {contacts?.map((contact, index) => (
-              <CustomDrawer
-                key={index}
-                label="Contact Details"
-                trigger={
-                  <div
-                    className="flex flex-row items-center justify-between w-full p-4 border-b last:border-b-0 cursor-pointer"
-                    onClick={() => setSelectedContact(contact)}
-                  >
-                    <div className="flex flex-row items-center gap-4 flex-1">
-                      <div className="bg-[#D8F3F1] h-10 w-10 rounded-full flex items-center justify-center text-base font-medium text-[#2F9E94]">
-                        {getInitials(
-                          contact.first_name + " " + contact.last_name,
-                        )}
-                      </div>
-                      <div className="flex flex-col items-start">
-                        <span className="text-sm font-normal">
-                          {contact.first_name + " " + contact.last_name}
-                        </span>
-                        <span className="text-sm font-medium text-foreground">
-                          {contact.role_title}
-                        </span>
-                      </div>
-                    </div>
-
-                    <div className="flex flex-col items-start flex-1">
-                      <span className="text-sm font-normal text-foreground">
-                        {contact.company_id?.name ?? "-------------"}
-                      </span>
-                    </div>
-
-                    <div className="flex flex-col items-start flex-1">
-                      <span className="text-sm font-normal text-foreground">
-                        {handleTime(contact.created_at)}
-                      </span>
-                    </div>
-
+        {!isPending && !isError && contacts && contacts.data.length > 0 && (
+          <>
+            <div className="border border-[#F3D9C4] rounded-t-[12px]">
+              {contacts.data.map((contact, index) => (
+                <CustomDrawer
+                  key={index}
+                  label="Contact Details"
+                  trigger={
                     <div
-                      className={`px-3 py-1 rounded-full text-sm font-medium ${
-                        contact.temperature === ContactTabs.HOT
-                          ? "bg-[#E6F7F1] text-[#2CA678]"
-                          : contact.temperature === ContactTabs.WARM
-                            ? "bg-[#FFF6EC] text-[#E2725B]"
-                            : "bg-[#F3D9C4] text-[#E2725B]"
-                      }`}
+                      className="flex flex-row items-center justify-between w-full p-4 border-b last:border-b-0 cursor-pointer"
+                      onClick={() => setSelectedContact(contact)}
                     >
-                      <span className="text-sm font-normal text-foreground">
-                        {contact.temperature}
-                      </span>
+                      <div className="flex flex-row items-center gap-4 flex-1">
+                        <div className="bg-[#D8F3F1] h-10 w-10 rounded-full flex items-center justify-center text-base font-medium text-[#2F9E94]">
+                          {getInitials(
+                            contact.first_name + " " + contact.last_name,
+                          )}
+                        </div>
+                        <div className="flex flex-col items-start">
+                          <span className="text-sm font-normal">
+                            {contact.first_name + " " + contact.last_name}
+                          </span>
+                          <span className="text-sm font-medium text-foreground">
+                            {contact.role_title}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col items-start flex-1">
+                        <span className="text-sm font-normal text-foreground">
+                          {contact.company_id?.name ?? "-------------"}
+                        </span>
+                      </div>
+
+                      <div className="flex flex-col items-start flex-1">
+                        <span className="text-sm font-normal text-foreground">
+                          {handleTime(contact.created_at)}
+                        </span>
+                      </div>
+
+                      <div
+                        className={`px-3 py-1 rounded-full text-sm font-medium ${
+                          contact.temperature === ContactTabs.HOT
+                            ? "bg-[#E6F7F1] text-[#2CA678]"
+                            : contact.temperature === ContactTabs.WARM
+                              ? "bg-[#FFF6EC] text-[#E2725B]"
+                              : "bg-[#F3D9C4] text-[#E2725B]"
+                        }`}
+                      >
+                        <span className="text-sm font-normal text-foreground">
+                          {contact.temperature}
+                        </span>
+                      </div>
                     </div>
-                  </div>
-                }
-              >
-                {(close) => (
-                  <Detail
-                    onDelete={() =>
-                      deleteContact(contact._id, {
-                        onSuccess: () => close(),
-                      })
-                    }
-                    isLoading={isLoading}
-                  />
-                )}
-              </CustomDrawer>
-            ))}
-          </div>
+                  }
+                >
+                  {(close) => (
+                    <Detail
+                      onDelete={() =>
+                        deleteContact(contact._id, {
+                          onSuccess: () => close(),
+                        })
+                      }
+                      isLoading={isLoading}
+                    />
+                  )}
+                </CustomDrawer>
+              ))}
+            </div>
+            <div className="border border-t-0 border-[#F3D9C4] rounded-b-[12px] px-4 py-3">
+              <CustomPagination
+                page={page}
+                totalPages={contacts.total_pages}
+                limit={limit}
+                onPageChange={setPage}
+                onLimitChange={(newLimit) => {
+                  setLimit(newLimit);
+                  setPage(1);
+                }}
+              />
+            </div>
+          </>
         )}
 
         {/* Filtered empty state */}
-        {!isPending && !isError && contacts?.length === 0 && (
+        {!isPending && !isError && contacts?.data.length === 0 && (
           <div className="flex flex-col items-center gap-4 py-20 border border-[#E8E8E8] rounded-[12px]">
             <span className="text-base font-normal text-foreground">
               {activeTab === "All"

@@ -1,7 +1,15 @@
 import { apiClient } from "../apiclient";
-import { Company } from "@/types/company";
+import { Company, CompanyResponse } from "@/types/company";
 
-export const GetCompanies = async () => {
-  const response = await apiClient.get("/companies");
-  return response.data as Company[];
+interface GetCompaniesProps {
+  page?: number;
+  limit?: number;
+}
+
+export const GetCompanies = async (props: GetCompaniesProps) => {
+  const response = await apiClient.get(`/companies`, true, {
+    page: props.page,
+    limit: props.limit,
+  });
+  return response.data as CompanyResponse;
 };

@@ -28,11 +28,26 @@ export interface MailResponse {
   snippet: string;
   received_at: string;
   is_read: boolean;
-  contact_id: null;
+  contact_id: string | null;
   created_at: string;
   __v: number;
 }
 
+export interface GmailDataResponse {
+  status: boolean;
+  data: MailResponse[];
+  total: number;
+  page: number;
+  limit: number;
+  total_pages: number;
+  stats: {
+    synced_count: number;
+    link_ratio: number;
+    linked_senders: number;
+    total_senders: number;
+    linked_messages: number;
+  };
+}
 export interface SendMailRequest {
   contact_id?: string;
   deal_id?: string;

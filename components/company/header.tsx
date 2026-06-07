@@ -10,11 +10,10 @@ import { useGetCompanies } from "@/hooks/company/get_companies";
 import { downloadFile } from "@/lib/handler";
 
 export default function Header() {
-  const { importSteps } = useCompanyStore();
-  const { data: companies } = useGetCompanies();
+  const { data: companies } = useGetCompanies({});
 
   const handleExport = (format: "csv" | "json") => {
-    if (!companies?.length) return;
+    if (!companies?.data.length) return;
 
     if (format === "json") {
       const json = JSON.stringify(companies, null, 2);
@@ -23,8 +22,8 @@ export default function Header() {
     }
 
     // CSV
-    const headers = Object.keys(companies[0]).join(",");
-    const rows = companies.map((c) =>
+    const headers = Object.keys(companies.data[0]).join(",");
+    const rows = companies.data.map((c) =>
       Object.values(c)
         .map((v) => (typeof v === "string" ? `"${v.replace(/"/g, '""')}"` : v))
         .join(","),
@@ -40,7 +39,7 @@ export default function Header() {
           <div className="flex flex-col gap-1">
             <h2 className="text-2xl font-medium text-[#3A2418]">Companies</h2>
             <span className="text-base font-medium text-foreground">
-              {companies?.length} companies
+              {companies?.total} companies
             </span>
           </div>
           <span className="text-[#E2725B] text-sm bg-[#FFF3E6] border border-border rounded-full py-1 px-3">

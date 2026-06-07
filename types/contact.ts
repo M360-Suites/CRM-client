@@ -22,3 +22,11 @@ export interface Contact {
   updated_at: string;
   __v: number;
 }
+
+export interface ContactResponse {
+  data: Contact[];
+  limit: string;
+  page: string;
+  total: number;
+  total_pages: number;
+}

@@ -14,7 +14,7 @@ export default function CompanyCard({ company }: CompanyCardProps) {
   const { setSelectedCompany } = useCompanyStore();
   const { mutate: deleteCompany, isPending: isDeleting } = useDeleteCompany();
   return (
-    <div className="w-95 bg-white border border-[#F3D9C4] rounded-[8px] p-4 flex flex-col gap-4">
+    <div className="w-full bg-white border border-[#F3D9C4] rounded-[8px] p-4 flex flex-col gap-4">
       {/* Header */}
       <div className="flex flex-row items-center justify-between">
         <div className="flex flex-row items-center gap-3">

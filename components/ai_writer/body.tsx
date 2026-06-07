@@ -49,7 +49,7 @@ const isValidEmail = (value: string) =>
 export default function Body() {
   const { mutate: generateMail, data: mail, isPending } = useGenerateDraft();
   const { mutate: sendMail, isPending: isSending } = useSendGmail();
-  const { data: contacts } = useGetContacts();
+  const { data: contacts } = useGetContacts({});
   const { data: deals } = useGetDeals();
 
   const [attachments, setAttachments] = useState<File[]>([]);
@@ -85,12 +85,12 @@ export default function Body() {
   const selectedLength = watch("length");
   const selectedContactId = watch("contactId");
   const selectedContact =
-    contacts?.find((c) => c._id === selectedContactId) ?? null;
+    contacts?.data.find((c) => c._id === selectedContactId) ?? null;
 
   const handleRemoveContact = () => setValue("contactId", "");
 
   const contactData =
-    contacts?.map((c) => ({
+    contacts?.data?.map((c) => ({
       name: `${c.first_name} ${c.last_name}`,
       value: c._id,
     })) ?? [];
@@ -108,7 +108,8 @@ export default function Body() {
     generateMail(values);
   };
 
-  const onSend = (values: SendFormValues) => {
+  const onSend = () => {
+    const values = watchSend();
     const recipient = selectedContact?.email || values.to;
     if (!recipient) return;
 
@@ -222,7 +223,7 @@ export default function Body() {
 
       {/* Send form */}
       <form
-        onSubmit={handleSendSubmit(onSend)}
+        // onSubmit={handleSendSubmit(onSend)}
         className="flex flex-col gap-4 border border-[#E8E8E8] rounded-[12px] p-5"
       >
         {/* Header */}
@@ -237,8 +238,9 @@ export default function Body() {
             {/* Attachment trigger only — list renders below body */}
             <AttachmentUpload onFilesChange={setAttachments} triggerOnly />
             <button
-              type="submit"
+              type="button"
               disabled={!canSend}
+              onClick={onSend}
               className="flex items-center bg-[#FFD9C0] px-3 py-1.5 rounded-full gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSending ? (
@@ -247,7 +249,7 @@ export default function Body() {
                 <Send size={16} color="#4a4a4a" />
               )}
               <span className="text-sm text-[#4A4A4A] font-medium">
-                {isSending ? "Sending..." : "Send"}
+                {isSending ? "Sending" : "Send"}
               </span>
             </button>
           </div>
@@ -319,6 +321,7 @@ export default function Body() {
             <CustomEmailArea
               kind="body"
               body={watchSend("body")}
+              placeholder="Write your email here..."
               onChange={(value) => setSendValue("body", value)}
             />
           )}

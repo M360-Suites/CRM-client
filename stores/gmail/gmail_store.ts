@@ -9,6 +9,10 @@ export interface Channel {
 }
 
 interface MailStore {
+  page: number;
+  limit: number;
+  setPage: (page: number) => void;
+  setLimit: (limit: number) => void;
   connectedChannels: Channel[];
   setConnectedChannels: (channels: Channel[]) => void;
   addOrUpdateChannel: (channel: Channel) => void;
@@ -21,6 +25,10 @@ export const useGmailStore = create<MailStore>()(
   persist(
     (set) => ({
       connectedChannels: [],
+      page: 1,
+      limit: 25,
+      setPage: (page) => set({ page }),
+      setLimit: (limit) => set({ limit }),
 
       setConnectedChannels: (channels) => set({ connectedChannels: channels }),
 

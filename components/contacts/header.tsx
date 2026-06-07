@@ -10,10 +10,12 @@ import { useGetContacts } from "@/hooks/contact/get_contacts";
 import { downloadFile } from "@/lib/handler";
 
 export default function Header() {
-  const { data: contacts } = useGetContacts();
+  const { data: contacts } = useGetContacts({
+    temperature: undefined,
+  });
 
   const handleExport = (format: "csv" | "json") => {
-    if (!contacts?.length) return;
+    if (!contacts?.data.length) return;
 
     if (format === "json") {
       const json = JSON.stringify(contacts, null, 2);
@@ -22,8 +24,8 @@ export default function Header() {
     }
 
     // CSV
-    const headers = Object.keys(contacts[0]).join(",");
-    const rows = contacts.map((c) =>
+    const headers = Object.keys(contacts.data[0]).join(",");
+    const rows = contacts.data.map((c) =>
       Object.values(c)
         .map((v) => (typeof v === "string" ? `"${v.replace(/"/g, '""')}"` : v))
         .join(","),
@@ -38,7 +40,7 @@ export default function Header() {
         <div className="flex flex-col gap-1">
           <h2 className="text-2xl font-medium text-[#3A2418]">Contacts</h2>
           <span className="text-base font-medium text-foreground">
-            {contacts?.length} contacts
+            {contacts?.total} contacts
           </span>
         </div>
         <div className="flex flex-row gap-4">

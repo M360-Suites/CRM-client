@@ -27,10 +27,10 @@ export default function EditContactForm({
   contact,
   onSuccess,
 }: EditContactFormProps) {
-  const { data: companies } = useGetCompanies();
+  const { data: companies } = useGetCompanies({});
   const { mutate: editContact, isPending } = useEditContact();
 
-  const companyOptions = companies?.map((company) => ({
+  const companyOptions = companies?.data.map((company) => ({
     name: company.name,
     value: company._id,
   }));

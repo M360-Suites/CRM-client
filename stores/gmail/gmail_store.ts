@@ -61,7 +61,9 @@ export const useGmailStore = create<MailStore>()(
     }),
     {
       name: "gmail_store",
-      storage: createJSONStorage(() => localStorage),
+      storage: createJSONStorage(() =>
+        typeof window !== "undefined" ? localStorage : sessionStorage,
+      ),
     },
   ),
 );

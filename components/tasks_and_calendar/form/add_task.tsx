@@ -5,32 +5,66 @@ import CustomInput from "@/components/custom/common/customInput";
 import { CustomSelect } from "@/components/custom/common/customSelect";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { AddTaskRequestData, addTaskSchema } from "@/validation/task";
+import { useAddTask } from "@/hooks/tasks/add_task";
+import { ControlledDateTimePicker } from "@/components/custom/common/customDateTimePicker";
+import { useGetDeals } from "@/hooks/pipeline/get_deals";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-export default function AddTaskForm() {
+interface AddTaskFormProps {
+  onSuccess?: () => void;
+}
+
+export default function AddTaskForm({ onSuccess }: AddTaskFormProps) {
   const {
     control,
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<AddTaskRequestData>({
+  } = useForm<AddTaskRequestData, Error>({
     resolver: zodResolver(addTaskSchema),
+    defaultValues: {
+      status: "pending",
+    },
   });
-  const onSubmit: SubmitHandler<AddTaskRequestData> = (data) =>
-    console.log(data);
+  const { data: deals } = useGetDeals();
+  const { mutate: addTask, isPending } = useAddTask();
+
+  const onSubmit: SubmitHandler<AddTaskRequestData> = (data) => {
+    console.log("Form Data:", data);
+    addTask(data, {
+      onSuccess: () => onSuccess?.(),
+    });
+  };
+
+  const dealData = deals?.map((d) => ({ name: d.title, value: d.id })) ?? [];
 
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
       className="flex flex-col gap-4 px-6"
     >
-      <CustomInput
-        label="Title"
-        placeholder="Enter task title"
-        error={errors.title?.message}
-        type="text"
-        {...(register("title"), { required: true })}
+      <div className="relative w-full">
+        <CustomInput
+          label="Title"
+          placeholder="Enter task title"
+          error={errors.title?.message}
+          type="text"
+          {...register("title")}
+        />
+        {errors.title && (
+          <span className="text-xs text-foundation-error-6 absolute right-0 -bottom-5">
+            {errors.title.message}
+          </span>
+        )}
+      </div>
+      <ControlledDateTimePicker
+        name="due_at"
+        control={control}
+        label="Due Date & Time"
+        placeholder="Select date & time"
+        rules={{ required: "Please select a date and time" }}
       />
+
       <div className="flex items-center gap-3 w-full">
         <div className="relative w-full">
           <Controller
@@ -84,56 +118,96 @@ export default function AddTaskForm() {
           )}
         </div>
       </div>
-      {/* <CustomInput
-        label="Industry"
-        placeholder="Enter industry"
-        error={errors.due_at?.message}
-        type="text"
-        {...(register("industry"), { required: true })}
-      /> */}
 
       <div className="flex items-center gap-3">
-        <CustomInput
-          label="Duration (mins)"
-          placeholder="Enter task duration"
-          error={errors.duration_minutes?.message}
-          type="number"
-          {...(register("duration_minutes"), { required: true })}
-        />
-        <CustomInput
-          label="Location"
-          placeholder="Enter Location"
-          error={errors.location?.message}
-          type="text"
-          {...(register("location"), { required: true })}
-        />
+        <div className="relative w-full">
+          <CustomInput
+            label="Duration (mins)"
+            placeholder="Enter task duration"
+            error={errors.duration_minutes?.message}
+            type="text"
+            {...register("duration_minutes")}
+          />
+          <span className="text-xs text-foundation-error-6 absolute left-0 -bottom-5">
+            {errors.duration_minutes?.message}
+          </span>
+        </div>
+        <div className="relative w-full">
+          <CustomInput
+            label="Location"
+            placeholder="Enter Location"
+            error={errors.location?.message}
+            type="text"
+            {...register("location")}
+          />
+          {errors.location && (
+            <span className="text-xs text-foundation-error-6 absolute right-0 -bottom-5">
+              {errors.location.message}
+            </span>
+          )}
+        </div>
       </div>
-      {/* <CustomInput
-        label="Industry"
-        placeholder="Enter industry"
-        error={errors.industry?.message}
-        type="text"
-        {...(register("industry"), { required: true })}
-      />
 
-      <CustomSelect
-        label="Stage"
-        placeholder="Select stage"
-        error={errors.stage?.message}
-        {...(register("stage"), { required: true })}
-        selectable={[
-          { name: "Lead", value: "Lead" },
-          { name: "Qualified", value: "Qualified" },
-          { name: "Proposal", value: "Proposal" },
-          { name: "Negotiation", value: "Negotiation" },
-          { name: "Closed", value: "Closed" },
-          { name: "Lost", value: "Lost" },
-        ]}
-      /> */}
+      <div className="relative w-full">
+        <CustomInput
+          label="Meeting Url"
+          placeholder="https://meet.google.com/see-you-olu"
+          error={errors.meeting_url?.message}
+          type="text"
+          {...register("meeting_url")}
+        />
+        {errors.meeting_url && (
+          <span className="text-xs text-foundation-error-6 absolute right-0 -bottom-5">
+            {errors.meeting_url.message}
+          </span>
+        )}
+      </div>
+
+      <div className="relative w-full">
+        <Controller
+          name="deal_id"
+          control={control}
+          render={({ field }) => (
+            <CustomSelect
+              {...field}
+              label="Linked Deal"
+              value={field.value}
+              onChange={(v) => field.onChange(v)}
+              placeholder="Select Linked Deal"
+              error={errors.deal_id?.message}
+              selectable={dealData}
+            />
+          )}
+        />
+        {errors.deal_id && (
+          <span className="text-xs text-foundation-error-6 absolute right-0 -bottom-5">
+            {errors.deal_id.message}
+          </span>
+        )}
+      </div>
+
+      <div className="relative w-full">
+        <CustomInput
+          textArea={true}
+          label="Description"
+          placeholder="Enter description"
+          error={errors.description?.message}
+          {...register("description")}
+        />
+        {errors.description && (
+          <span className="text-xs text-foundation-error-6 absolute right-0 -bottom-5">
+            {errors.description.message}
+          </span>
+        )}
+      </div>
 
       <div className="pt-6 px-6">
-        <CustomButton type="submit" className="w-full px-6 py-4 font-inter">
-          Save Deal
+        <CustomButton
+          type="submit"
+          disabled={isPending}
+          className="w-full px-6 py-4 font-inter"
+        >
+          {isPending ? "Adding..." : "Add Task"}
         </CustomButton>
       </div>
     </form>

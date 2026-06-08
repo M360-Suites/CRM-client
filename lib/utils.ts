@@ -162,35 +162,3 @@ export function formatNaira(
 
   return `${n < 0 ? "-" : ""}${showSymbol ? "₦" : ""}${absFmt}`;
 }
-
-export interface ParsedEmail {
-  subject: string;
-  body: string;
-}
-
-export function parseEmailResponse(raw: string): ParsedEmail | null {
-  try {
-    const match = raw.match(
-      /\{[\s\S]*?"subject"\s*:\s*"[\s\S]*?"\s*,\s*"body"\s*:\s*"[\s\S]*?"\s*\}/,
-    );
-    const jsonStr = match ? match[0] : raw;
-    const parsed = JSON.parse(jsonStr);
-
-    return {
-      subject: parsed.subject ?? "",
-      body: parsed.body?.replace(/\\n/g, "\n") ?? "",
-    };
-  } catch {
-    const subjectMatch = raw.match(/"subject"\s*:\s*"([^"]+)"/);
-    const bodyMatch = raw.match(/"body"\s*:\s*"([\s\S]+?)"\s*\}/);
-
-    if (bodyMatch) {
-      return {
-        subject: subjectMatch?.[1] ?? "",
-        body: bodyMatch[1].replace(/\\n/g, "\n"),
-      };
-    }
-
-    return null;
-  }
-}

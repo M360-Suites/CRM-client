@@ -4,7 +4,7 @@ import { CustomButton } from "@/components/custom/common/customButton";
 import { CustomDrawer } from "@/components/custom/common/drawer";
 import { useTasksAndCalendarStore } from "@/stores/tasks_calendars/task_calendare_store";
 import { PlusIcon, List, CalendarDays } from "lucide-react";
-import AddDealForm from "./form/add_deal";
+import AddTaskForm from "./form/add_task";
 
 interface Tab {
   label: string;
@@ -37,7 +37,10 @@ export default function Header() {
               <CustomButton
                 key={tab.value}
                 variant={tab.value === activeTab ? "default" : "outline"}
-                onClick={() => setActiveTab(tab.value)}
+                onClick={() => {
+                  console.log("clicking tab:", tab.value);
+                  setActiveTab(tab.value);
+                }}
                 className="rounded-full flex text-sm font-medium flex-row items-center gap-1.5 px-4 py-2 border-none"
               >
                 {tab.icon && <tab.icon className="" />}
@@ -46,18 +49,18 @@ export default function Header() {
             ))}
           </div>
           <CustomDrawer
-            label="Add Deal"
+            label="Add Task"
             trigger={
               <CustomButton
                 variant="default"
-                className="rounded-full flex text-sm flex-row items-center gap-2 px-8 py-3"
+                className="rounded-full flex flex-row items-center gap-3 px-12 py-2"
               >
                 <PlusIcon className="" />
                 <span>New</span>
               </CustomButton>
             }
           >
-            <AddDealForm />
+            {(close) => <AddTaskForm onSuccess={close} />}
           </CustomDrawer>
         </div>
       </div>

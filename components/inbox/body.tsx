@@ -1,6 +1,6 @@
 "use client";
 
-import { MailIcon, InboxIcon, Mail, Loader, CloudSync } from "lucide-react";
+import { MailIcon, InboxIcon, Loader, CloudSync } from "lucide-react";
 import { CustomButton } from "../custom/common/customButton";
 import ShowMail from "./mail/show_mail";
 import MailAuthorisation from "./mail/page";
@@ -31,7 +31,7 @@ export default function Body() {
   const initialTab = searchParams?.get("channel") ?? "All";
   const tab = initialTab.charAt(0).toUpperCase() + initialTab.slice(1);
   const [selectedTab, setSelectedTab] = useState(tab);
-  const { setConnectedChannels } = useGmailStore();
+  const { setConnectedChannels, connectedChannels } = useGmailStore();
   const { isPending: isStatusPending, data } = useGmailStatus();
   const channel = searchParams?.get("channel");
   const status = searchParams?.get("connected");
@@ -42,13 +42,12 @@ export default function Body() {
       setConnectedChannels([
         {
           id: channel,
-          label: "Google Gmail",
-          connected: (status as string) === "true",
+          label: channel.charAt(0).toUpperCase() + channel.slice(1),
+          connected: status === "true",
         },
       ]);
     }
   }, [channel, status, setConnectedChannels]);
-
   return (
     <div className="grid grid-cols-4 gap-5">
       <div className="flex flex-col gap-1 px-2.5 py-5 sticky top-20 col-span-1 self-start border border-[#E8E8E8] rounded-[12px]">
@@ -68,6 +67,55 @@ export default function Body() {
         ))}
       </div>
       <div className="w-full col-span-3 border border-[#E8E8E8] rounded-[12px] p-5 flex flex-col gap-6">
+        {/* All channels view */}
+        {selectedTab === "All" && (
+          <div className="w-full">
+            <div className="flex items-center justify-between">
+              <h3 className="text-sm font-medium">All Channels</h3>
+            </div>
+
+            {connectedChannels && connectedChannels.length > 0 ? (
+              <ul className="mt-4 flex flex-col gap-3">
+                {connectedChannels.map((c) => (
+                  <li
+                    key={c.id}
+                    className="flex items-center justify-between p-3 border rounded-md"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="w-8 h-8 rounded bg-[#F6F6F6] flex items-center justify-center text-sm font-medium">
+                        {(c.label ?? c.id).charAt(0).toUpperCase()}
+                      </div>
+                      <div className="text-sm font-medium capitalize">
+                        {c.label ?? c.id}
+                      </div>
+                    </div>
+                    <span
+                      className={`text-sm font-medium ${
+                        c.connected ? "text-green-600" : "text-gray-500"
+                      }`}
+                    >
+                      {c.connected ? "Connected" : "Disconnected"}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            ) : (
+              <div className="mt-6 py-8 px-4 text-sm text-muted-foreground border rounded-md">
+                No channels connected. Authorize a channel to start syncing
+                messages.
+              </div>
+            )}
+
+            {connectedChannels.some((c) => c.id === "gmail" && c.connected) && (
+              <div className="mt-6">
+                <h3 className="text-sm font-medium mb-3">Messages</h3>
+                <ShowMail />
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Mail view */}
         {selectedTab === "Mail" && isStatusPending && (
           <div className="flex items-center gap-2">
             <Loader size={16} className="animate-spin" />

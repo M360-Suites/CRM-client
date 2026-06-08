@@ -8,17 +8,15 @@ import { DraggableLayout } from "./draggableLayout";
 
 export default function Body() {
   const { data: pipelineData, isPending } = useGetPipelineBoard();
-  const pipeline = pipelineData?.data ?? pipelineData;
-  console.log("pipeline:", pipeline);
-
-  const stages = pipeline?.stages || [];
+  const { stages } = pipelineData || {};
+  console.log("pipeline:", pipelineData);
 
   if (isPending) return <PipelineSkeleton />;
 
   return (
     <DraggableLayout className="w-full h-full rounded-md">
       <div className="flex w-full gap-3">
-        {stages.map((stage) => (
+        {stages?.map((stage) => (
           <div
             key={stage.id}
             className="flex flex-col border rounded-md flex-1 min-w-0"

@@ -9,7 +9,7 @@ export const addTaskSchema = z.object({
   }),
   description: z.string().optional(),
   due_at: z.string().optional(),
-  duration_minutes: z.number().optional(),
+  duration_minutes: z.string().optional(),
   location: z.string().optional(),
   meeting_url: z.url("Invalid URL format").optional(),
   contact_id: z.string().optional(),

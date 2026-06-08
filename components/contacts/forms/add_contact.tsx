@@ -10,17 +10,13 @@ import { useAddContact } from "@/hooks/contact/add_contact";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 interface AddContactFormProps {
-  contact?: AddContactRequestData;
   onSuccess?: () => void;
 }
 
-export default function AddContactForm({
-  contact,
-  onSuccess,
-}: AddContactFormProps) {
-  const { data: companies } = useGetCompanies();
+export default function AddContactForm({ onSuccess }: AddContactFormProps) {
+  const { data: companies } = useGetCompanies({});
   const { mutate: addContact, isPending } = useAddContact();
-  const companyOptions = companies?.map((company) => ({
+  const companyOptions = companies?.data.map((company) => ({
     name: company.name,
     value: company._id,
   }));

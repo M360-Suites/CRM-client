@@ -16,6 +16,7 @@ export default function Body() {
   const { data: folders, isPending } = useGetFolders();
 
   const [stage, setStage] = useState<PinStage>(() => {
+    if (typeof window === "undefined") return "setup";
     const hasPin = localStorage.getItem("doc_pin");
     return hasPin ? "verify" : "setup";
   });

@@ -120,14 +120,50 @@ export default function Body() {
       formData.append("body", values.body);
       if (selectedContactId) formData.append("contactId", selectedContactId);
       attachments.forEach((file) => formData.append("attachments", file));
-      sendMail(formData as unknown as SendMailRequest);
+
+      sendMail(formData as unknown as SendMailRequest, {
+        onSuccess: () => {
+          setTimeout(() => {
+            // reset send form
+            setSendValue("to", "");
+            setSendValue("subject", "");
+            setSendValue("body", "");
+            // reset generate form
+            setValue("contactId", "");
+            setValue("dealId", "");
+            setValue("tone", "");
+            setValue("length", "");
+            setValue("notes", "");
+            // clear attachments
+            setAttachments([]);
+          }, 1000);
+        },
+      });
     } else {
-      sendMail({
-        to: recipient,
-        subject: values.subject,
-        body: values.body,
-        contactId: selectedContactId || undefined,
-      } as SendMailRequest);
+      sendMail(
+        {
+          to: recipient,
+          subject: values.subject,
+          body: values.body,
+          contactId: selectedContactId || undefined,
+        } as SendMailRequest,
+        {
+          onSuccess: () => {
+            // reset send form
+            setSendValue("to", "");
+            setSendValue("subject", "");
+            setSendValue("body", "");
+            // reset generate form
+            setValue("contactId", "");
+            setValue("dealId", "");
+            setValue("tone", "");
+            setValue("length", "");
+            setValue("notes", "");
+            // clear attachments (no-op here but keep consistent)
+            setAttachments([]);
+          },
+        },
+      );
     }
   };
 
@@ -217,7 +253,7 @@ export default function Body() {
           className="rounded-full py-3.5"
         >
           {isPending ? <Loader className="animate-spin" /> : <Sparkles />}
-          <span>{isPending ? "Generating" : "Generate Drafts"}</span>
+          <span>{isPending ? "Generating" : "Generate draft"}</span>
         </CustomButton>
       </form>
 

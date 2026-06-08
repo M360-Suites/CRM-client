@@ -54,7 +54,7 @@ export default function ShowMail() {
               <span className="font-medium text-sm">{mail.from_name}</span>
             </div>
             <div className="px-4">
-              <span className="text-sm font-medium">Re: {mail.subject}</span>
+              <span className="text-sm font-medium">{mail.subject}</span>
               <p className="text-xs text-muted-foreground">
                 {decodeHtml(mail.snippet)}
               </p>

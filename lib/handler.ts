@@ -28,3 +28,25 @@ export function downloadFile(data: string, filename: string, mimeType: string) {
   a.click();
   URL.revokeObjectURL(url);
 }
+
+export function parseDateWithTime(utcString?: string) {
+  if (!utcString) {
+    return { date: " ", month: " ", time: " " };
+  }
+
+  const d = new Date(utcString);
+  if (isNaN(d.getTime())) {
+    return { date: " ", month: " ", time: " " };
+  }
+
+  const date = String(d.getDate());
+  const month = d.toLocaleString("en-US", { month: "long" }) || " ";
+  let hours = d.getHours();
+  const minutes = d.getMinutes();
+  const ampm = hours >= 12 ? "PM" : "AM";
+  hours = hours % 12 || 12;
+
+  const time = `${String(hours).padStart(1)} ${ampm}`;
+
+  return { date, month, time };
+}

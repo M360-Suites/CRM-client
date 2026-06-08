@@ -7,29 +7,6 @@ import { CustomPopover } from "@/components/custom/common/customPopover";
 import { toUTC } from "@/lib/utils";
 import Link from "next/link";
 
-const TableData = [
-  {
-    name: "Sarah Johnson",
-    company: "Acne.com",
-    date: "May 11, 2026",
-  },
-  {
-    name: "Micheal Brown",
-    company: "Acne.com",
-    date: "May 11, 2026",
-  },
-  {
-    name: "Emily Watson",
-    company: "Acne.com",
-    date: "May 11, 2026",
-  },
-  {
-    name: "David Turner",
-    company: "Acne.com",
-    date: "May 11, 2026",
-  },
-];
-
 export default function DashTable() {
   const { data: dashboard } = useDashboard();
   return (
@@ -45,45 +22,80 @@ export default function DashTable() {
           </Link>
         </div>
         <div className="">
-          {dashboard?.recent_contacts.map((data) => (
-            <div
-              key={data.id}
-              className="flex justify-between items-center py-4 px-4 border-b border-[#E8E8E8]"
-            >
-              <div className="flex items-center space-x-4">
-                <div className="p-2 rounded-full bg-[#D8F3F1] text-[#2F9E94]">
-                  {getInitials(data.full_name)}
+          {dashboard?.recent_contacts &&
+          dashboard.recent_contacts.length > 0 ? (
+            dashboard.recent_contacts.map((data) => (
+              <div
+                key={data.id}
+                className="flex justify-between items-center py-4 px-4 border-b border-[#E8E8E8]"
+              >
+                <div className="flex items-center space-x-4">
+                  <div className="p-2 rounded-full bg-[#D8F3F1] text-[#2F9E94]">
+                    {getInitials(data.full_name)}
+                  </div>
+                  <div>
+                    <span className="block text-sm font-medium text-foreground capitalize">
+                      {data.full_name}
+                    </span>
+                  </div>
                 </div>
                 <div>
-                  <span className="block text-sm font-medium text-foreground capitalize">
-                    {data.full_name}
+                  <span className="block text-sm text-foreground">
+                    {data.company}
                   </span>
                 </div>
+                <div>
+                  <span className="text-sm text-foreground">
+                    {toUTC(data.created_at)}
+                  </span>
+                </div>
+                <div>
+                  <CustomPopover trigger={<MoreVerticalIcon size={18} />}>
+                    <div className="flex flex-col gap-1 items-start justify-start bg-white min-w-25">
+                      <button className="px-2 py-2 w-full border-b border-b-gray-200 cursor-pointer hover:bg-gray-100 rounded-md text-start">
+                        Edit
+                      </button>
+                      <button className="px-2 py-2 w-full hover:bg-gray-100 rounded-md cursor-pointer text-start">
+                        Delete
+                      </button>
+                    </div>
+                  </CustomPopover>
+                </div>
               </div>
-              <div>
-                <span className="block text-sm text-foreground">
-                  {data.company}
-                </span>
+            ))
+          ) : (
+            <div className="py-8 px-6 flex flex-col items-center justify-center gap-3 text-center">
+              <div className="h-12 w-12 rounded-full bg-gray-100 flex items-center justify-center">
+                <svg
+                  className="h-6 w-6 text-gray-400"
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="1.5"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                >
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
+                  <circle cx="12" cy="7" r="4" />
+                </svg>
               </div>
+              <span className="text-sm font-medium text-foreground">
+                No recent contacts
+              </span>
+              <p className="text-xs text-muted-foreground max-w-xs">
+                You don't have any recent contacts yet. Add a contact or view
+                all contacts to get started.
+              </p>
               <div>
-                <span className="text-sm text-foreground">
-                  {toUTC(data.created_at)}
-                </span>
-              </div>
-              <div>
-                <CustomPopover trigger={<MoreVerticalIcon size={18} />}>
-                  <div className="flex flex-col gap-1 items-start justify-start bg-white min-w-25">
-                    <button className="px-2 py-2 w-full border-b border-b-gray-200 cursor-pointer hover:bg-gray-100 rounded-md text-start">
-                      Edit
-                    </button>
-                    <button className="px-2 py-2 w-full hover:bg-gray-100 rounded-md cursor-pointer text-start">
-                      Delete
-                    </button>
-                  </div>
-                </CustomPopover>
+                <Link
+                  href="/contacts/new"
+                  className="inline-block mt-2 text-sm text-[#0041FF] hover:underline font-medium"
+                >
+                  Add contact
+                </Link>
               </div>
             </div>
-          ))}
+          )}
         </div>
       </div>
     </div>

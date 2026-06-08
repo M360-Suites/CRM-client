@@ -20,21 +20,40 @@ export default function DashCard() {
       title: "Open Deals",
       value: dashboardData?.cards.open_deals || 0,
       icon: TrendingUp,
+      change: dashboardData?.card_progress.open_deals.change || 0,
+      current: dashboardData?.card_progress.open_deals.current || 0,
+      previous: dashboardData?.card_progress.open_deals.previous || 0,
+      percentage: dashboardData?.card_progress.open_deals.percent_change || 0,
     },
     {
       title: "Revenue Forecast",
       value: formatNaira(dashboardData?.cards.revenue_forecast) || 0,
       icon: DollarSign,
+      change: dashboardData?.card_progress.revenue_forecast.change || 0,
+      current: dashboardData?.card_progress.revenue_forecast.current || 0,
+      previous: dashboardData?.card_progress.revenue_forecast.previous || 0,
+      percentage:
+        dashboardData?.card_progress.revenue_forecast.percent_change || 0,
     },
     {
       title: "Active Contacts",
       value: dashboardData?.cards.active_contacts || 0,
       icon: Users,
+      change: dashboardData?.card_progress.active_contacts.change || 0,
+      current: dashboardData?.card_progress.active_contacts.current || 0,
+      previous: dashboardData?.card_progress.active_contacts.previous || 0,
+      percentage:
+        dashboardData?.card_progress.active_contacts.percent_change || 0,
     },
     {
       title: "Active Companies",
       value: dashboardData?.cards.active_companies || 0,
       icon: Building2,
+      change: dashboardData?.card_progress.active_companies.change || 0,
+      current: dashboardData?.card_progress.active_companies.current || 0,
+      previous: dashboardData?.card_progress.active_companies.previous || 0,
+      percentage:
+        dashboardData?.card_progress.active_companies.percent_change || 0,
     },
   ];
 
@@ -108,8 +127,8 @@ export default function DashCard() {
                 </div>
 
                 <div className="text-sm flex flex-row items-center gap-1">
-                  <span>+8%</span>
-                  <span>vs last 7 days</span>
+                  <span>+{item.percentage}%</span>
+                  <span>vs {item.percentage} days</span>
                 </div>
               </div>
             ))}

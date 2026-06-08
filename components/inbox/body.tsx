@@ -6,50 +6,46 @@ import ShowMail from "./mail/show_mail";
 import MailAuthorisation from "./mail/page";
 import { useGmailStore } from "@/stores/gmail/gmail_store";
 import { useGmailStatus } from "@/hooks/gmail/gmail_connect_status";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import MailPage from "./mail/page";
-import { useState } from "react";
 import { useSearchParams } from "next/navigation";
 import AuthorisationPage from "./authorisation_layout";
 import { useGmailSync } from "@/hooks/gmail/gmail_sync";
 
 const InboxTabs = [
-  {
-    name: "All",
-    icon: InboxIcon,
-    value: "All",
-  },
-  {
-    name: "Mail",
-    icon: MailIcon,
-    value: MailPage,
-  },
+  { name: "All", icon: InboxIcon },
+  { name: "Mail", icon: MailIcon },
 ];
 
 export default function Body() {
   const searchParams = useSearchParams();
-  const initialTab = searchParams?.get("channel") ?? "All";
-  const tab = initialTab.charAt(0).toUpperCase() + initialTab.slice(1);
-  const [selectedTab, setSelectedTab] = useState(tab);
+  const channel = searchParams?.get("channel"); // e.g. "gmail"
+  const gmailConnected = searchParams?.get("gmail") === "true";
+
+  const [selectedTab, setSelectedTab] = useState("All");
+
   const { setConnectedChannels, connectedChannels } = useGmailStore();
   const { isPending: isStatusPending, data } = useGmailStatus();
-  const channel = searchParams?.get("channel");
-  const status = searchParams?.get("connected");
   const { mutate: handleSync, isPending } = useGmailSync();
 
+  // When redirected back from OAuth, store the connected channel
+  // and switch to the Mail tab automatically
   useEffect(() => {
-    if (channel && status) {
+    if (channel && gmailConnected) {
       setConnectedChannels([
         {
           id: channel,
           label: channel.charAt(0).toUpperCase() + channel.slice(1),
-          connected: status === "true",
+          connected: true,
         },
       ]);
+      setSelectedTab("Mail");
     }
-  }, [channel, status, setConnectedChannels]);
+  }, [channel, gmailConnected, setConnectedChannels]);
+
   return (
     <div className="grid grid-cols-4 gap-5">
+      {/* Sidebar tabs */}
       <div className="flex flex-col gap-1 px-2.5 py-5 sticky top-20 col-span-1 self-start border border-[#E8E8E8] rounded-[12px]">
         {InboxTabs.map((tab) => (
           <button
@@ -66,15 +62,15 @@ export default function Body() {
           </button>
         ))}
       </div>
+
+      {/* Content */}
       <div className="w-full col-span-3 border border-[#E8E8E8] rounded-[12px] p-5 flex flex-col gap-6">
-        {/* All channels view */}
+        {/* All tab */}
         {selectedTab === "All" && (
           <div className="w-full">
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-medium">All Channels</h3>
-            </div>
+            <h3 className="text-sm font-medium">All Channels</h3>
 
-            {connectedChannels && connectedChannels.length > 0 ? (
+            {connectedChannels.length > 0 ? (
               <ul className="mt-4 flex flex-col gap-3">
                 {connectedChannels.map((c) => (
                   <li
@@ -106,6 +102,7 @@ export default function Body() {
               </div>
             )}
 
+            {/* Show messages if gmail is connected */}
             {connectedChannels.some((c) => c.id === "gmail" && c.connected) && (
               <div className="mt-6">
                 <h3 className="text-sm font-medium mb-3">Messages</h3>
@@ -115,7 +112,7 @@ export default function Body() {
           </div>
         )}
 
-        {/* Mail view */}
+        {/* Mail tab — loading */}
         {selectedTab === "Mail" && isStatusPending && (
           <div className="flex items-center gap-2">
             <Loader size={16} className="animate-spin" />
@@ -125,6 +122,7 @@ export default function Body() {
           </div>
         )}
 
+        {/* Mail tab — loaded */}
         {selectedTab === "Mail" &&
           !isStatusPending &&
           (data?.connected ? (

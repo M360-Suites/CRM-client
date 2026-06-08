@@ -8,19 +8,22 @@ import AddTaskForm from "../form/add_task";
 import { useState } from "react";
 
 const ContactRowSkeleton = () => (
-  <div className="w-full px-4 py-4 rounded-[8px] border border-border flex items-center justify-between animate-pulse">
+  <div
+    className="w-full px-4 py-4 rounded-[8px] border border-border flex items-center justify-between cursor-pointer hover:bg-[#F9F9F9] transition-colors animate-pulse"
+    aria-hidden
+  >
     <div className="flex items-center gap-6">
-      <div className="flex items-center gap-3">
-        <div className="h-[40px] w-[40px] rounded-[6px] bg-gray-200" />
-        <div className="flex flex-col gap-1">
-          <div className="h-5 w-16 bg-gray-200 rounded" />
-          <div className="h-4 w-28 bg-gray-200 rounded" />
+      <div className="flex items-center gap-2">
+        {/* date box */}
+        <span className="block h-10 w-10 rounded-lg bg-gray-200" />
+        <div className="flex flex-col gap-0.5">
+          <span className="h-4 w-20 bg-gray-200 rounded" />
+          <span className="h-3 w-12 bg-gray-200 rounded" />
         </div>
       </div>
 
-      <div className="flex flex-col gap-2">
-        <div className="h-4 w-40 bg-gray-200 rounded" />
-        <div className="h-3 w-56 bg-gray-200 rounded" />
+      <div>
+        <span className="h-4 w-28 bg-gray-200 rounded block" />
       </div>
     </div>
 
@@ -41,9 +44,8 @@ export default function Body() {
   return (
     <div className="w-full flex-col flex gap-8">
       <div className="w-full">
-        {/* Loading state */}
         {isPending && (
-          <div className="border border-[#F3D9C4] rounded-t-[12px]">
+          <div className="grid grid-cols-3 gap-6">
             {Array.from({ length: 6 }).map((_, i) => (
               <ContactRowSkeleton key={i} />
             ))}

@@ -1,9 +1,8 @@
+import { redirect } from "next/navigation";
 import Image from "next/image";
 
 export default function Home() {
-  return (
-    <div>
-      <h2>This is the Home Screen</h2>
-    </div>
-  );
+  // Server-side redirect to the login page
+  redirect("/login");
+  return null;
 }

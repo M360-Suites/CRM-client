@@ -5,12 +5,14 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CustomInput from "@/components/custom/common/customInput";
+import { useResetPassword } from "@/hooks/auth/reset-password";
 
 interface ResetPasswordFormProps {
   token: string | null;
 }
 
 export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
+  const { mutate: resetPassword, isPending } = useResetPassword();
   const {
     register,
     handleSubmit,
@@ -19,7 +21,13 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
     resolver: zodResolver(resetPasswordSchema),
   });
   console.log("Reset token:", token);
-  const onSubmit: SubmitHandler<ResetRequestData> = (data) => console.log(data);
+  const onSubmit: SubmitHandler<ResetRequestData> = (data) => {
+    if (!token) {
+      console.error("No reset token provided");
+      return;
+    }
+    resetPassword({ ...data, token });
+  };
 
   return (
     <form
@@ -56,8 +64,8 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
           )}
         </div>
       </div>
-      <CustomButton type="submit" className="w-full py-3">
-        Continue
+      <CustomButton type="submit" disabled={isPending} className="w-full py-3">
+        {isPending ? "Resetting..." : "Reset Password"}
       </CustomButton>
     </form>
   );

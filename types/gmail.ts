@@ -7,6 +7,7 @@ export interface GmailStatusResponse {
   gmail_sync_enabled: boolean;
   last_sync_at: string;
   synced_count: number;
+  channel: string;
 }
 
 export interface SyncResponse {

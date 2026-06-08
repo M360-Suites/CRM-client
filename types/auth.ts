@@ -25,7 +25,7 @@ export interface ResendVerificationRequest {
 
 export interface ResetRequest {
   newPassword: string;
-  confirmPassword: string;
+  token: string;
 }
 
 export interface EmailVerificationRequest {

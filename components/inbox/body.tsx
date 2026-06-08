@@ -1,13 +1,14 @@
 "use client";
 
 import { MailIcon, InboxIcon, Loader, CloudSync } from "lucide-react";
+import { FcGoogle } from "react-icons/fc";
 import { CustomButton } from "../custom/common/customButton";
 import ShowMail from "./mail/show_mail";
 import MailAuthorisation from "./mail/page";
 import { useGmailStore } from "@/stores/gmail/gmail_store";
 import { useGmailStatus } from "@/hooks/gmail/gmail_connect_status";
 import { useEffect, useState } from "react";
-import MailPage from "./mail/page";
+// import MailPage from "./mail/page";
 import { useSearchParams } from "next/navigation";
 import AuthorisationPage from "./authorisation_layout";
 import { useGmailSync } from "@/hooks/gmail/gmail_sync";
@@ -19,13 +20,11 @@ const InboxTabs = [
 
 export default function Body() {
   const searchParams = useSearchParams();
-  const channel = searchParams?.get("channel"); // e.g. "gmail"
+  const channel = searchParams?.get("channel");
   const gmailConnected = searchParams?.get("gmail") === "true";
-
   const [selectedTab, setSelectedTab] = useState("All");
-
   const { setConnectedChannels, connectedChannels } = useGmailStore();
-  const { isPending: isStatusPending, data } = useGmailStatus();
+  const { isPending: isStatusPending, data: statusData } = useGmailStatus();
   const { mutate: handleSync, isPending } = useGmailSync();
 
   // When redirected back from OAuth, store the connected channel
@@ -42,6 +41,47 @@ export default function Body() {
       setSelectedTab("Mail");
     }
   }, [channel, gmailConnected, setConnectedChannels]);
+
+  // Sync API statusData into the local connectedChannels store.
+  // If statusData.channel === 'gmail' we'll ensure the store reflects it.
+  useEffect(() => {
+    if (!statusData?.channel) return;
+
+    const chId = statusData.channel;
+    const exists = connectedChannels.find((c) => c.id === chId);
+
+    if (exists) {
+      setConnectedChannels(
+        connectedChannels.map((c) =>
+          c.id === chId
+            ? {
+                ...c,
+                connected: !!statusData.connected,
+                label: c.label ?? (chId === "gmail" ? "Google Gmail" : chId),
+              }
+            : c,
+        ),
+      );
+    } else {
+      setConnectedChannels([
+        ...connectedChannels,
+        {
+          id: chId,
+          label:
+            chId === "gmail"
+              ? "Google Gmail"
+              : chId.charAt(0).toUpperCase() + chId.slice(1),
+          connected: !!statusData.connected,
+        },
+      ]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [statusData]);
+
+  // prefer statusData as authoritative for gmail connection when deciding to show messages
+  const gmailIsConnected =
+    (statusData?.channel === "gmail" && !!statusData?.connected) ||
+    connectedChannels.some((c) => c.id === "gmail" && c.connected);
 
   return (
     <div className="grid grid-cols-4 gap-5">
@@ -78,8 +118,8 @@ export default function Body() {
                     className="flex items-center justify-between p-3 border rounded-md"
                   >
                     <div className="flex items-center gap-3">
-                      <div className="w-8 h-8 rounded bg-[#F6F6F6] flex items-center justify-center text-sm font-medium">
-                        {(c.label ?? c.id).charAt(0).toUpperCase()}
+                      <div className="w-10 h-10 rounded bg-[#F6F6F6] flex items-center justify-center text-sm font-medium">
+                        <FcGoogle className="w-6 h-6" />
                       </div>
                       <div className="text-sm font-medium capitalize">
                         {c.label ?? c.id}
@@ -102,8 +142,8 @@ export default function Body() {
               </div>
             )}
 
-            {/* Show messages if gmail is connected */}
-            {connectedChannels.some((c) => c.id === "gmail" && c.connected) && (
+            {/* Show messages if gmail is connected (use statusData as authoritative where available) */}
+            {gmailIsConnected && (
               <div className="mt-6">
                 <h3 className="text-sm font-medium mb-3">Messages</h3>
                 <ShowMail />
@@ -125,7 +165,7 @@ export default function Body() {
         {/* Mail tab — loaded */}
         {selectedTab === "Mail" &&
           !isStatusPending &&
-          (data?.connected ? (
+          (statusData?.connected ? (
             <div className="w-full">
               <div className="flex justify-end gap-3 mb-4 w-full">
                 {isPending ? (

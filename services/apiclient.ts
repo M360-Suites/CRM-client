@@ -1,12 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import axios, { AxiosError } from "axios";
-import { PRODUCTION_API_URL } from "../constant";
+// import { PRODUCTION_API_URL } from "../constant";
 import { ApiResponse } from "../types/common";
 import { storage } from "@/lib/handler";
 import Cookies from "js-cookie";
 
-const IS_DEVELOPMENT = process.env.NODE_ENV === "development";
-const BASE_URL = IS_DEVELOPMENT ? "/api/proxy" : PRODUCTION_API_URL;
+const BASE_URL = "/api/proxy";
 
 export const authInstance = axios.create({
   baseURL: BASE_URL,

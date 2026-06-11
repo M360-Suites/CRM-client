@@ -10,7 +10,7 @@ import Link from "next/link";
 export default function DashTable() {
   const { data: dashboard } = useDashboard();
   return (
-    <div className="p-6 border border-[#E8E8E8] rounded-[12px]">
+    <div className="lg:p-6 p-4 border border-[#E8E8E8] rounded-[12px]">
       <div className="border border-[#E8E8E8] bg-[#FAFFFF] rounded-[12px]">
         <div className="flex w-full justify-between items-center py-6 px-4">
           <span>Recent Contacts</span>

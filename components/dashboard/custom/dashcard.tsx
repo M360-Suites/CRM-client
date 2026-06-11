@@ -75,7 +75,7 @@ export default function DashCard() {
   );
 
   const PipelineSkeleton = () => (
-    <div className="grid grid-cols-6 gap-4 w-full">
+    <div className="grid xl:grid-cols-6  md:grid-cols-3 grid-cols-2 gap-4 w-full">
       {Array.from({ length: 6 }).map((_, i) => (
         <div
           key={i}
@@ -89,19 +89,17 @@ export default function DashCard() {
     </div>
   );
 
-  console.log("dashboardData", dashboardData);
-
   return (
     <div className="flex flex-col gap-6 pt-8">
       <div className="flex flex-col gap-0.5">
-        <h2 className="text-2xl font-medium text-foreground capitalize">
+        <h2 className="lg:text-2xl text-xl font-medium text-foreground capitalize">
           {handleGreeting()}, {firstname}
         </h2>
-        <span className="text-base font-normal">
+        <span className="lg:text-base text-sm font-normal">
           Here&apos;s how your pipeline looks today.
         </span>
       </div>
-      <div className="grid xl:grid-cols-4 grid-cols-2 gap-5">
+      <div className="grid xl:grid-cols-4 md:grid-cols-2 grid-cols-1 gap-5 overflow-hidden">
         {isPending
           ? // show skeletons while loading
             Array.from({ length: DashData.length }).map((_, i) => (

@@ -27,39 +27,32 @@ export default function DashTable() {
             dashboard.recent_contacts.map((data) => (
               <div
                 key={data.id}
-                className="flex justify-between items-center py-4 px-4 border-b border-[#E8E8E8]"
+                className="grid grid-cols-3 xl:gap-10 py-4 px-4 border-b border-[#E8E8E8]"
               >
-                <div className="flex items-center space-x-4">
+                <div className="flex items-center space-x-4 col-span-2">
                   <div className="p-2 rounded-full bg-[#D8F3F1] text-[#2F9E94]">
                     {getInitials(data.full_name)}
                   </div>
-                  <div>
-                    <span className="block text-sm font-medium text-foreground capitalize">
-                      {data.full_name}
-                    </span>
-                  </div>
-                </div>
-                <div>
-                  <span className="block text-sm text-foreground">
-                    {data.company}
+                  <span className="block text-sm font-medium text-foreground capitalize">
+                    {data.full_name}
                   </span>
                 </div>
-                <div>
-                  <span className="text-sm text-foreground">
+                <div className="flex justify-between items-center gap-4">
+                  <span className="text-sm text-start self-center text-foreground">
                     {toUTC(data.created_at)}
                   </span>
-                </div>
-                <div>
-                  <CustomPopover trigger={<MoreVerticalIcon size={18} />}>
-                    <div className="flex flex-col gap-1 items-start justify-start bg-white min-w-25">
-                      <button className="px-2 py-2 w-full border-b border-b-gray-200 cursor-pointer hover:bg-gray-100 rounded-md text-start">
-                        Edit
-                      </button>
-                      <button className="px-2 py-2 w-full hover:bg-gray-100 rounded-md cursor-pointer text-start">
-                        Delete
-                      </button>
-                    </div>
-                  </CustomPopover>
+                  <div className="flex justify-end items-center">
+                    <CustomPopover trigger={<MoreVerticalIcon size={18} />}>
+                      <div className="flex flex-col gap-1 items-start justify-start bg-white min-w-25">
+                        <button className="px-2 py-2 w-full border-b border-b-gray-200 cursor-pointer hover:bg-gray-100 rounded-md text-start">
+                          Edit
+                        </button>
+                        <button className="px-2 py-2 w-full hover:bg-gray-100 rounded-md cursor-pointer text-start">
+                          Delete
+                        </button>
+                      </div>
+                    </CustomPopover>
+                  </div>
                 </div>
               </div>
             ))

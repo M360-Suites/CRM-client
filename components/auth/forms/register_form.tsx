@@ -24,22 +24,24 @@ export default function RegisterForm() {
 
   const handleContinue = async () => {
     const isValid = await trigger(["fullname", "email"]);
-    if (isValid) {
-      clearErrors();
-      setRegisterStep(registerStep + 1);
-    }
+    if (isValid) setRegisterStep(registerStep + 1);
   };
-  const onSubmit: SubmitHandler<RegisterRequestData> = async (data) => {
-    console.log(data);
-    console.log("Current Steps:", registerStep);
+
+  const onSubmit: SubmitHandler<RegisterRequestData> = (data) => {
     registerUser(data);
   };
 
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    if (registerStep === 1) {
+      e.preventDefault();
+      handleContinue();
+    } else {
+      handleSubmit(onSubmit)(e);
+    }
+  };
+
   return (
-    <form
-      onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-12 w-full"
-    >
+    <form onSubmit={handleFormSubmit} className="flex flex-col gap-12 w-full">
       {registerStep === 1 && (
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2 relative">
@@ -84,7 +86,7 @@ export default function RegisterForm() {
               {...register("companyName", { required: true })}
             />
             {errors.companyName && (
-              <span className="text-xs text-foundation-error-6 absolute left-0 -bottom-5">
+              <span className="text-xs text-foundation-error-6 absolute right-0 -bottom-5">
                 {errors.companyName.message}
               </span>
             )}
@@ -112,10 +114,9 @@ export default function RegisterForm() {
           Forgot password?
         </Link>*/}
       <CustomButton
-        type={registerStep === 1 ? "button" : "submit"}
-        onClick={registerStep === 1 ? handleContinue : undefined}
+        type="submit"
         disabled={isLoading}
-        className="w-full py-3"
+        className="w-full py-3.5"
       >
         {registerStep === 1
           ? "Continue"

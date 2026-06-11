@@ -45,7 +45,7 @@ export default function Body() {
     <div className="w-full flex-col flex gap-8">
       <div className="w-full">
         {isPending && (
-          <div className="grid grid-cols-3 gap-6">
+          <div className="grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-4">
             {Array.from({ length: 6 }).map((_, i) => (
               <ContactRowSkeleton key={i} />
             ))}
@@ -55,7 +55,7 @@ export default function Body() {
         {/* Contacts list */}
         {!isPending && !isError && tasks && tasksData.length > 0 && (
           <>
-            <div className="grid grid-cols-3 gap-6">
+            <div className="grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-4">
               {tasksData.map((task, index) => (
                 <TaskCard task={task} key={index} />
               ))}

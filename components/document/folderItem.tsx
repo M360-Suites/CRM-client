@@ -1,5 +1,4 @@
 import { Download, Trash2, MoreVertical, FileText } from "lucide-react";
-import { useDocumentStore } from "@/stores/document/doc_store";
 import { toUTC } from "@/lib/utils";
 import { Folder } from "@/types/document";
 
@@ -8,14 +7,13 @@ interface FolderItemProps {
   onClick: () => void;
 }
 export default function FolderItem({ folder, onClick }: FolderItemProps) {
-  const { onDownload, onDelete } = useDocumentStore();
   return (
-    <div
-      className="w-full bg-[#FFF3E6]/20 hover:bg-gray-50 hover:cursor-pointer grid grid-cols-6 border-b border-b-border last:border-b-0 pl-4 pr-8 py-2.5 overflow-hidden"
-      onClick={onClick}
-    >
+    <div className="w-full bg-[#FFF3E6]/20 hover:bg-gray-50 hover:cursor-pointer grid grid-cols-6 border-b gap-3 xl:gap-5 border-b-border last:border-b-0 pl-4 pr-8 py-2.5 overflow-hidden">
       {/* Icon + Info */}
-      <div className="flex items-center gap-3 py-0.5 col-span-1">
+      <div
+        className="flex items-center gap-3 py-0.5 col-span-1"
+        onClick={onClick}
+      >
         <div className="w-9 h-9 rounded-[8px] flex items-center justify-center shrink-0">
           <svg
             width="19"
@@ -39,12 +37,12 @@ export default function FolderItem({ folder, onClick }: FolderItemProps) {
             />
           </svg>
         </div>
-        <span className="text-xs font-medium text-foreground">
+        <span className="text-xs font-medium text-foreground truncate">
           {folder.name}
         </span>
       </div>
       <div className="col-span-2 flex items-center gap-4 py-0.5">
-        <span className="text-xs font-normal text-foreground">
+        <span className="text-xs font-normal text-foreground truncate">
           {folder.description}
         </span>
       </div>

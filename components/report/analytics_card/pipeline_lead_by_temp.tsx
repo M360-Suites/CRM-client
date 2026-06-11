@@ -14,7 +14,6 @@ const chartConfig = {
 
 export default function PipelineByLeadTemp() {
   const { data: chartData } = useReportLeadTemp();
-  console.log("data for temp:", chartData);
 
   const dataWithColors =
     chartData?.map((item, i) => ({
@@ -25,7 +24,10 @@ export default function PipelineByLeadTemp() {
   const total = dataWithColors.reduce((sum, item) => sum + item.value, 0);
 
   return (
-    <ChartContainer config={chartConfig} className="w-full pt-6">
+    <ChartContainer
+      config={chartConfig}
+      className="w-full pt-6 aspect-square max-h-[400px] min-h-[260px]"
+    >
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
@@ -34,46 +36,43 @@ export default function PipelineByLeadTemp() {
             nameKey="name"
             cx="50%"
             cy="50%"
-            outerRadius={120}
-            innerRadius={50}
+            outerRadius="80%"
+            innerRadius="45%"
             paddingAngle={4}
-            label
-          >
-            {/* center label */}
-            <text x="50%" y="42%" textAnchor="middle" dominantBaseline="middle">
-              <tspan x="50%" dy="0" fontSize={13} fill="#888" fontWeight={400}>
-                Total
-              </tspan>
-              <tspan
-                x="50%"
-                dy="20"
-                fontSize={22}
-                fontWeight={600}
-                fill="#1a1a1a"
-              >
-                {total.toLocaleString()}
-              </tspan>
-            </text>
-          </Pie>
+          />
+          {/* center label — sibling of Pie, not child */}
+          <text x="50%" y="45%" textAnchor="middle" dominantBaseline="middle">
+            <tspan x="50%" dy="0" fontSize={13} fill="#888" fontWeight={400}>
+              Total
+            </tspan>
+            <tspan
+              x="50%"
+              dy="22"
+              fontSize={22}
+              fontWeight={600}
+              fill="#1a1a1a"
+            >
+              {total.toLocaleString()}
+            </tspan>
+          </text>
           <Tooltip
             formatter={(value) =>
               value != null ? Number(value).toLocaleString() : ""
             }
           />
           <Legend
-            layout="horizontal"
-            align="center"
             verticalAlign="bottom"
-            iconSize={10}
             content={() => (
-              <div className="flex flex-wrap gap-4 justify-center mt-2">
+              <div className="flex flex-wrap gap-x-4 gap-y-2 justify-center mt-2 px-2">
                 {dataWithColors.map((item) => (
                   <div key={item.name} className="flex items-center gap-2">
                     <span
-                      className="w-4 h-4"
+                      className="w-3 h-3 shrink-0 rounded-sm"
                       style={{ background: item.fill }}
                     />
-                    <span className="text-sm">{item.name}</span>
+                    <span className="text-xs sm:text-sm whitespace-nowrap">
+                      {item.name}
+                    </span>
                   </div>
                 ))}
               </div>

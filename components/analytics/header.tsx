@@ -80,7 +80,7 @@ export default function Header() {
           Performance, conversion and team productivity at a glance
         </span>
       </div>
-      <div className="grid grid-cols-6 gap-5">
+      <div className="grid xl:grid-cols-6 lg:grid-cols-4 sm:grid-cols-2 gap-5">
         {isPending
           ? Array.from({ length: analyticsCardData.length }).map((_, i) => (
               <CardSkeleton key={i} />

@@ -23,10 +23,10 @@ export default function Header() {
     <div className="w-full pt-8">
       <div className="flex flex-row items-center justify-between w-full">
         <div className="flex flex-col gap-1">
-          <h2 className="text-2xl font-medium text-[#3A2418]">
+          <h2 className="xl:text-2xl lg:text-xl/[110%] text-lg/[110%] font-medium text-[#3A2418]">
             Task & Calendar
           </h2>
-          <span className="text-base font-medium text-foreground">
+          <span className="xl:text-base text-sm max-w-90 font-medium text-foreground">
             Plan your week, assign teammates, never miss a follow-up
           </span>
         </div>
@@ -41,9 +41,9 @@ export default function Header() {
                   console.log("clicking tab:", tab.value);
                   setActiveTab(tab.value);
                 }}
-                className="rounded-full flex text-sm font-medium flex-row items-center gap-1.5 px-4 py-2 border-none"
+                className="rounded-full flex text-sm font-medium flex-row items-center gap-1.5 xl:px-4 xl:py-2 px-2.5 py-1.5 border-none"
               >
-                {tab.icon && <tab.icon className="" />}
+                {tab.icon && <tab.icon className="xl:size-4.5 size-4" />}
                 {tab.label}
               </CustomButton>
             ))}
@@ -53,7 +53,7 @@ export default function Header() {
             trigger={
               <CustomButton
                 variant="default"
-                className="rounded-full flex flex-row items-center gap-3 px-12 py-2"
+                className="rounded-full flex flex-row items-center gap-3 xl:px-12 px-6 xl:py-2 py-1"
               >
                 <PlusIcon className="" />
                 <span>New</span>

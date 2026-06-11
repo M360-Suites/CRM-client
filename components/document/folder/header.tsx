@@ -46,10 +46,10 @@ export default function Header({ id }: HeaderProps) {
     <div className="w-full pt-8">
       <div className="flex flex-row items-center justify-between w-full">
         <div className="flex flex-col gap-1">
-          <h2 className="text-2xl font-medium text-[#3A2418]">
+          <h2 className="xl:text-2xl lg:text-xl/[110%] text-lg/[110%] font-medium text-[#3A2418]">
             {data?.name ?? "Folder"}
           </h2>
-          <span className="text-base font-medium text-foreground">
+          <span className="xl:text-base text-sm font-medium text-foreground">
             {data?.description}
           </span>
         </div>
@@ -59,7 +59,7 @@ export default function Header({ id }: HeaderProps) {
             trigger={
               <CustomButton
                 variant="default"
-                className="rounded-full flex text-sm flex-row items-center gap-2 px-8 py-3"
+                className="rounded-full flex text-sm flex-row items-center gap-2 xl:px-8 px-5 py-3"
               >
                 <PlusIcon />
                 <span>Add Files</span>

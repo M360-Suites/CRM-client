@@ -47,16 +47,16 @@ export const iconCardBg = (icon: string) => {
     case "Pipeline Value":
     case "Lead Conv.":
       return "bg-[#E8EEFF]";
-    case "Revenue Forecast":
+    case "Revenue":
     case "Won Revenue":
     case "Tasks":
     case "Total Deals":
       return "bg-[#D8F3F1]";
-    case "Active Contacts":
+    case "Contacts":
     case "Avg. Cycle":
     case "Won":
       return "bg-[#E8EEFF]";
-    case "Active Companies":
+    case "Companies":
     case "Win Rate":
     case "Lost":
       return "bg-[#FFE7D5]";
@@ -71,16 +71,16 @@ export const iconColor = (icon: string) => {
     case "Pipeline Value":
     case "Lead Conv.":
       return "#4A90E2";
-    case "Revenue Forecast":
+    case "Revenue":
     case "Won Revenue":
     case "Tasks":
     case "Total Deals":
       return "#2F9E94";
-    case "Active Contacts":
+    case "Contacts":
     case "Avg. Cycle":
     case "Won":
       return "#0041FF";
-    case "Active Companies":
+    case "Companies":
     case "Win Rate":
     case "Lost":
       return "#FF6D00";

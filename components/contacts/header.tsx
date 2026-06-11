@@ -38,8 +38,10 @@ export default function Header() {
     <div className="w-full pt-8">
       <div className="flex flex-row items-center justify-between w-full">
         <div className="flex flex-col gap-1">
-          <h2 className="text-2xl font-medium text-[#3A2418]">Contacts</h2>
-          <span className="text-base font-medium text-foreground">
+          <h2 className="xl:text-2xl lg:text-xl/[110%] text-lg font-medium text-[#3A2418]">
+            Contacts
+          </h2>
+          <span className="xl:text-base text-sm font-medium text-foreground">
             {contacts?.total} contacts
           </span>
         </div>

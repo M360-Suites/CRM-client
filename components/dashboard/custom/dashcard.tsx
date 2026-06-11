@@ -26,7 +26,7 @@ export default function DashCard() {
       percentage: dashboardData?.card_progress.open_deals.percent_change || 0,
     },
     {
-      title: "Revenue Forecast",
+      title: "Revenue",
       value: formatNaira(dashboardData?.cards.revenue_forecast) || 0,
       icon: DollarSign,
       change: dashboardData?.card_progress.revenue_forecast.change || 0,
@@ -36,7 +36,7 @@ export default function DashCard() {
         dashboardData?.card_progress.revenue_forecast.percent_change || 0,
     },
     {
-      title: "Active Contacts",
+      title: "Contacts",
       value: dashboardData?.cards.active_contacts || 0,
       icon: Users,
       change: dashboardData?.card_progress.active_contacts.change || 0,
@@ -46,7 +46,7 @@ export default function DashCard() {
         dashboardData?.card_progress.active_contacts.percent_change || 0,
     },
     {
-      title: "Active Companies",
+      title: "Companies",
       value: dashboardData?.cards.active_companies || 0,
       icon: Building2,
       change: dashboardData?.card_progress.active_companies.change || 0,
@@ -101,7 +101,7 @@ export default function DashCard() {
           Here&apos;s how your pipeline looks today.
         </span>
       </div>
-      <div className="grid grid-cols-4 gap-5">
+      <div className="grid xl:grid-cols-4 grid-cols-2 gap-5">
         {isPending
           ? // show skeletons while loading
             Array.from({ length: DashData.length }).map((_, i) => (
@@ -110,23 +110,28 @@ export default function DashCard() {
           : DashData.map((item) => (
               <div
                 key={item.title}
-                className="p-4 border border-[#E8E8E8] rounded-[8px] flex flex-col gap-2"
+                className="xl:p-4 lg:p-3 p-2 border border-[#E8E8E8] overflow-hidden rounded-[8px] flex flex-col gap-2"
               >
-                <div className="w-64 flex flex-col gap-3">
-                  <div className="flex flex-row items-center gap-3 py-4">
+                <div className="w-full flex flex-col gap-3">
+                  <div className="flex flex-row items-center gap-3 xl:py-4 py-2">
                     <div
                       className={`rounded-full p-2 ${iconCardBg(item.title)}`}
                     >
-                      <item.icon size={18} color={iconColor(item.title)} />
+                      <item.icon
+                        className="xl:size-4.5 size-4"
+                        color={iconColor(item.title)}
+                      />
                     </div>
-                    <span className="text-base font-medium text-foreground">
+                    <span className="xl:text-base text-sm font-medium text-foreground">
                       {item.title}
                     </span>
                   </div>
-                  <div className="text-3xl text-foreground">{item.value}</div>
+                  <div className="xl:text-3xl text-2xl text-foreground">
+                    {item.value}
+                  </div>
                 </div>
 
-                <div className="text-sm flex flex-row items-center gap-1">
+                <div className="xl:text-sm text-xs flex flex-row items-center gap-1">
                   <span>+{item.percentage}%</span>
                   <span>vs {item.percentage} days</span>
                 </div>
@@ -146,20 +151,20 @@ export default function DashCard() {
         {isPending ? (
           <PipelineSkeleton />
         ) : (
-          <div className="grid grid-cols-6 gap-4 w-full">
+          <div className="grid xl:grid-cols-6  md:grid-cols-3 grid-cols-2 gap-4 w-full">
             {dashboardData?.pipeline_review.map((data) => (
               <div
                 key={data.order}
-                className="bg-[#FAFFFF] border border-[#E8E8E8] py-3.5 px-5 rounded-[12px]"
+                className="bg-[#FAFFFF] overflow-hidden border border-[#E8E8E8] py-3.5 xl:px-5 px-2 rounded-[12px]"
               >
-                <div className="flex flex-col gap-2.5 w-42.5">
+                <div className="flex flex-col gap-2.5 w-full overflow-hidden">
                   <div className="flex flex-col gap-3">
-                    <span className="text-sm font-normal text-foreground">
+                    <h3 className="text-sm font-normal text-foreground">
                       {data.name}
-                    </span>
-                    <span className="text-3xl font-semibold text-foreground">
+                    </h3>
+                    <h2 className="text-3xl self-auto font-semibold text-foreground">
                       {data.count}
-                    </span>
+                    </h2>
                   </div>
                   <span className="text-xs font-normal text-foreground">
                     {formatNaira(data.value)}
@@ -170,7 +175,7 @@ export default function DashCard() {
           </div>
         )}
         <div className="flex flex-col items-center">
-          <span className="text-base font-medium">
+          <span className="xl:text-base text-sm font-medium">
             Total Pipeline Value:{" "}
             {formatNaira(dashboardData?.pipeline_total.value || 0)}
           </span>

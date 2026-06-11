@@ -12,8 +12,8 @@ export default function Body() {
     useAnalyticsPipelineStage();
 
   return (
-    <div className="flex flex-col gap-8 w-full">
-      <div className="grid grid-cols-2 gap-6 w-full min-h-80">
+    <div className="flex flex-col gap-8 w-full h-full">
+      <div className="grid xl:grid-cols-2 grid-cols-1 gap-6 w-full">
         <div className="p-4 border border-[#E8E8E8] rounded-[8px] flex flex-col gap-2">
           <h2 className="text-base font-medium text-foreground">
             Pipeline by stage

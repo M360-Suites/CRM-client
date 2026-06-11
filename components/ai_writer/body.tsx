@@ -19,8 +19,8 @@ const toneOptions = [
   { name: "Friendly", value: "friendly" },
   { name: "Professional", value: "professional" },
   { name: "Follow-up", value: "follow_up" },
-  { name: "Cold outreach", value: "cold_outreach" },
   { name: "Thank you", value: "thank_you" },
+  { name: "Cold outreach", value: "cold_outreach" },
 ];
 
 const lengthOptions = [
@@ -168,11 +168,11 @@ export default function Body() {
   };
 
   return (
-    <div className="grid grid-cols-2 gap-8">
+    <div className="grid lg:grid-cols-2 sm:grid-cols-1 xl:gap-8 gap-4">
       {/* Generate form */}
       <form
         onSubmit={handleSubmit(onGenerate)}
-        className="flex flex-col gap-8 border border-[#E8E8E8] rounded-[12px] p-5"
+        className="flex flex-col lg:gap-8 gap-4 sm:w-full border border-[#E8E8E8] rounded-[12px] xl:p-5 px-2 py-2.5"
       >
         <div className="flex flex-col gap-4">
           <Controller
@@ -203,12 +203,12 @@ export default function Body() {
           />
           <div className="flex flex-col gap-3">
             <h3 className="text-foreground font-medium">Tone</h3>
-            <div className="flex flex-wrap gap-y-4 gap-x-2">
+            <div className="flex flex-wrap xl:gap-y-4 gap-x-2 gap-y-3 ">
               {toneOptions.map((item) => (
                 <CustomButton
                   type="button"
                   key={item.value}
-                  className={`px-6 ${item.value !== selectedTone && "text-foreground"}`}
+                  className={`lg:px-6 px-3 max-lg:text-sm ${item.value !== selectedTone && "text-foreground"}`}
                   variant={item.value === selectedTone ? "default" : "ghost"}
                   onClick={() => setValue("tone", item.value)}
                 >
@@ -219,12 +219,12 @@ export default function Body() {
           </div>
           <div className="flex flex-col gap-3">
             <h3 className="text-foreground font-medium">Length</h3>
-            <div className="w-full flex justify-between gap-4 items-center">
+            <div className="w-full flex max-lg:flex-wrap justify-between xl:gap-4 gap-2 items-center">
               {lengthOptions.map((item) => (
                 <CustomButton
                   type="button"
                   key={item.value}
-                  className={`flex-1 ${item.value !== selectedLength && "text-foreground"}`}
+                  className={`max-lg:text-sm flex-1 ${item.value !== selectedLength && "text-foreground"}`}
                   variant={item.value === selectedLength ? "default" : "ghost"}
                   onClick={() => setValue("length", item.value)}
                 >
@@ -252,21 +252,27 @@ export default function Body() {
           disabled={isPending}
           className="rounded-full py-3.5"
         >
-          {isPending ? <Loader className="animate-spin" /> : <Sparkles />}
-          <span>{isPending ? "Generating" : "Generate draft"}</span>
+          {isPending ? (
+            <Loader className="animate-spin lg:size-4.5 size-3.5" />
+          ) : (
+            <Sparkles />
+          )}
+          <span className="lg:text-base text-sm">
+            {isPending ? "Generating" : "Generate draft"}
+          </span>
         </CustomButton>
       </form>
 
       {/* Send form */}
       <form
         // onSubmit={handleSendSubmit(onSend)}
-        className="flex flex-col gap-4 border border-[#E8E8E8] rounded-[12px] p-5"
+        className="flex flex-col gap-4 border max-sm:col-span-1 border-[#E8E8E8] rounded-[12px] p-5"
       >
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-base text-[#3A2418] font-medium">Draft</span>
-            <span className="bg-[#c6f7dc] border border-[#43f897] rounded-full py-1 px-2 text-[10px] text-[#128648] font-semibold">
+            <span className="bg-[#c6f7dc] max-xl:hidden border border-[#43f897] rounded-full py-1 px-2 text-[10px] text-[#128648] font-semibold">
               AI Generated
             </span>
           </div>

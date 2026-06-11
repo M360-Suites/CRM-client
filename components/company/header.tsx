@@ -37,12 +37,14 @@ export default function Header() {
       <div className="flex flex-row items-center justify-between w-full">
         <div className="flex flex-row items-start gap-2">
           <div className="flex flex-col gap-1">
-            <h2 className="text-2xl font-medium text-[#3A2418]">Companies</h2>
-            <span className="text-base font-medium text-foreground">
+            <h2 className="xl:text-2xl lg:text-xl/[110%] text-lg/[110%] font-medium text-[#3A2418]">
+              Companies
+            </h2>
+            <span className="xl:text-base text-sm font-medium text-foreground">
               {companies?.total} companies
             </span>
           </div>
-          <span className="text-[#E2725B] text-sm bg-[#FFF3E6] border border-border rounded-full py-1 px-3">
+          <span className="text-[#E2725B] xl:text-sm sm:text-xs text-[10px] bg-[#FFF3E6] border border-border rounded-full py-1 px-3">
             Sales rep
           </span>
         </div>

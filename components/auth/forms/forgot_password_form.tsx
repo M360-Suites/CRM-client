@@ -27,7 +27,7 @@ export default function ForgotPasswordForm() {
   return (
     <form
       onSubmit={handleSubmit(onSubmit)}
-      className="flex flex-col gap-10 w-lg max-md:w-full max-w-full"
+      className="flex flex-col gap-12 w-full"
     >
       <div className="flex flex-col gap-3 w-full">
         <div className="w-full relative">
@@ -45,7 +45,11 @@ export default function ForgotPasswordForm() {
           )}
         </div>
       </div>
-      <CustomButton type="submit" disabled={isLoading} className="w-full py-3">
+      <CustomButton
+        type="submit"
+        disabled={isLoading}
+        className="w-full py-3.5"
+      >
         {isLoading ? "Submitting..." : "Submit"}
       </CustomButton>
     </form>

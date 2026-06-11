@@ -84,14 +84,14 @@ export default function Body() {
     connectedChannels.some((c) => c.id === "gmail" && c.connected);
 
   return (
-    <div className="grid grid-cols-4 gap-5">
+    <div className="grid lg:grid-cols-4 gap-5 max-lg:w-full">
       {/* Sidebar tabs */}
-      <div className="flex flex-col gap-1 px-2.5 py-5 sticky top-20 col-span-1 self-start border border-[#E8E8E8] rounded-[12px]">
+      <div className="flex lg:flex-col gap-1 max-lg:w-full px-2.5 lg:py-5 py-2 sticky top-20 col-span-1 max-lg:bg-white lg:self-start border border-[#E8E8E8] lg:rounded-[12px] rounded-full">
         {InboxTabs.map((tab) => (
           <button
             key={tab.name}
             onClick={() => setSelectedTab(tab.name)}
-            className={`flex items-center gap-4 p-4 rounded-[10px] cursor-pointer ${
+            className={`flex items-center lg:gap-4 gap-2 lg:p-4 max-lg:py-2 max-lg:px-3 lg:rounded-[10px] rounded-full cursor-pointer ${
               selectedTab === tab.name
                 ? "bg-[#FFD9C0] hover:bg-[#FFD9C0]"
                 : "hover:bg-gray-50"
@@ -179,7 +179,7 @@ export default function Body() {
                     className="rounded-full px-3.5"
                   >
                     <CloudSync size={20} />
-                    <span className="text-sm">Sync Mail</span>
+                    <span className="text-sm">Sync mail</span>
                   </CustomButton>
                 )}
               </div>

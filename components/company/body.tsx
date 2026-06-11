@@ -29,7 +29,7 @@ export default function Body() {
     <div className="w-full flex flex-col gap-8">
       <div className="w-full">
         {isLoading ? (
-          <div className="py-2 grid grid-cols-3 gap-4">
+          <div className="py-2 grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-2 grid-cols-1 gap-4">
             {Array.from({ length: limit }).map((_, i) => (
               <CompanySkeleton key={i} />
             ))}
@@ -54,8 +54,8 @@ export default function Body() {
             </CustomDrawer>
           </div>
         ) : (
-          <>
-            <div className="py-2 grid grid-cols-3 gap-4">
+          <div className="w-full px-2">
+            <div className="py-2 grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-4 w-full">
               {companies.map((company: Company) => (
                 <CompanyCard key={company._id} company={company} />
               ))}
@@ -76,7 +76,7 @@ export default function Body() {
                 />
               </div>
             )}
-          </>
+          </div>
         )}
       </div>
     </div>

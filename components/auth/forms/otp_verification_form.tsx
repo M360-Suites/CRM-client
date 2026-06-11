@@ -28,6 +28,7 @@ export default function OtpVerificationForm({
     formState: { errors },
   } = useForm<EmailVerficationRequestData>({
     resolver: zodResolver(emailVerificationSchema),
+    defaultValues: { otp: "" },
   });
   const onSubmit: SubmitHandler<EmailVerficationRequestData> = (data) => {
     console.log(data);
@@ -46,11 +47,11 @@ export default function OtpVerificationForm({
   return (
     <form
       onSubmit={handleSubmit(onSubmit, onError)}
-      className="flex flex-col gap-10 w-lg max-w-full"
+      className="flex flex-col gap-10 max-lg:gap-10 w-full"
     >
-      <div className="flex flex-col gap-3 w-full">
-        <div className="flex flex-col gap-6 w-full">
-          <div className="w-full relative">
+      <div className="flex flex-col gap-3 ">
+        <div className="flex flex-col gap-6 max-md:gap-3 w-full">
+          <div className="w-full relative flex flex-col gap-2 justify-center items-center">
             <Controller
               name="otp"
               control={control}
@@ -62,34 +63,36 @@ export default function OtpVerificationForm({
                 />
               )}
             />
-            {/* {errors.otp && (
-              <span className="text-xs text-foundation-error-6 absolute -bottom-5 left-0">
+            {errors.otp && (
+              <span className="text-xs text-foundation-error-6 absolute -bottom-6 left-5 xl:left-20">
                 {errors.otp.message}
               </span>
-            )} */}
-          </div>
-          <div className="flex flex-row items-start gap-2 justify-start w-full">
-            <span className="text-foundation-gray-4 font-normal text-base/[20px]">
-              Didn&apos;t recieve the code?
-            </span>
-            <button
-              type="button"
-              onClick={handleResend}
-              disabled={isResending}
-              className="text-[#E2725B] text-base/[20px] hover:underline font-medium cursor-pointer"
-            >
-              Resend
-            </button>
+            )}
           </div>
         </div>
       </div>
-      <CustomButton
-        type="submit"
-        disabled={isPending || isResending}
-        className="w-full py-3"
-      >
-        {isPending ? "Verifying..." : "Continue"}
-      </CustomButton>
+      <div className="flex flex-col gap-5 max-lg:gap-2 w-full">
+        <div className="flex flex-row items-start gap-2 justify-start w-full">
+          <span className="text-foundation-gray-4 font-normal text-sm/[20px] max-lg:text-sm">
+            Didn&apos;t recieve the code?
+          </span>
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={isResending}
+            className="text-[#E2725B] max-lg:text-sm text-sm/[20px] hover:underline font-medium cursor-pointer"
+          >
+            Resend
+          </button>
+        </div>
+        <CustomButton
+          type="submit"
+          disabled={isPending || isResending}
+          className="w-full py-3.5"
+        >
+          {isPending ? "Verifying..." : "Continue"}
+        </CustomButton>
+      </div>
     </form>
   );
 }

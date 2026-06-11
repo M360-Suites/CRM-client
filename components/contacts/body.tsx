@@ -55,8 +55,8 @@ export default function Body() {
   const { mutate: deleteContact, isPending: isLoading } = useDeleteContact();
   return (
     <div className="w-full flex-col flex gap-8">
-      <div className="flex flex-row items-center gap-17">
-        <div className="border bg-[#FFF3E6] w-lg rounded-full text-[#3A2418] flex flex-row items-center gap-2 py-3 px-3">
+      <div className="flex  items-center justify-between w-full">
+        <div className="border bg-[#FFF3E6] xl:w-lg lg:w-sm w-72 rounded-full text-[#3A2418] flex flex-row items-center gap-2 py-3 px-3">
           <Search color="#3A2418" size={20} />
           <input
             type="text"
@@ -73,7 +73,7 @@ export default function Body() {
                 tab === ContactTabs.ALL
                   ? "rounded-full px-5"
                   : "rounded-full px-4"
-              } flex flex-row items-center cursor-pointer text-base font-normal capitalize gap-2 py-2 ${
+              } flex flex-row items-center cursor-pointer xl:text-base text-sm font-normal capitalize gap-2 py-2 ${
                 tab.toLowerCase() === activeTab.toLowerCase()
                   ? "bg-[#E2725B] text-white"
                   : "bg-[#FFF3E6] text-[#3A2418]"
@@ -113,7 +113,7 @@ export default function Body() {
 
         {/* Contacts list */}
         {!isPending && !isError && contacts && contacts.data.length > 0 && (
-          <>
+          <div className="w-full">
             <div className="border border-[#F3D9C4] rounded-t-[12px]">
               {contacts.data.map((contact, index) => (
                 <CustomDrawer
@@ -193,7 +193,7 @@ export default function Body() {
                 }}
               />
             </div>
-          </>
+          </div>
         )}
 
         {/* Filtered empty state */}

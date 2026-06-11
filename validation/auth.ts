@@ -28,7 +28,7 @@ export const resendVerificationSchema = z.object({
 
 export const emailVerificationSchema = z.object({
   otp: z
-    .string()
+    .string({ error: "OTP is required" })
     .min(5, "OTP must be 5 characters")
     .max(5, "OTP must be 5 characters"),
 });

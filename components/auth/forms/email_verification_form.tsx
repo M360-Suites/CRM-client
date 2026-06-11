@@ -46,7 +46,7 @@ export default function EmailVerificationForm({
   return (
     <form
       onSubmit={handleSubmit(onSubmit, onError)}
-      className="flex flex-col gap-10 w-lg max-w-full"
+      className="flex flex-col gap-10 w-full"
     >
       <div className="flex flex-col gap-3 w-full">
         <div className="flex flex-col gap-6 w-full">
@@ -62,11 +62,11 @@ export default function EmailVerificationForm({
                 />
               )}
             />
-            {/* {errors.otp && (
+            {errors.otp && (
               <span className="text-xs text-foundation-error-6 absolute -bottom-5 left-0">
                 {errors.otp.message}
               </span>
-            )} */}
+            )}
           </div>
           <div className="flex flex-row items-start gap-2 justify-start w-full">
             <span className="text-foundation-gray-4 font-normal text-base/[20px]">

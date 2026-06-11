@@ -64,7 +64,11 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
           )}
         </div>
       </div>
-      <CustomButton type="submit" disabled={isPending} className="w-full py-3">
+      <CustomButton
+        type="submit"
+        disabled={isPending}
+        className="w-full py-3.5"
+      >
         {isPending ? "Resetting..." : "Reset Password"}
       </CustomButton>
     </form>

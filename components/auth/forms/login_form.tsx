@@ -71,7 +71,7 @@ export default function LoginForm() {
       <CustomButton
         type="submit"
         disabled={isLoginLoading}
-        className="w-full py-3"
+        className="w-full py-3.5"
       >
         {isLoginLoading ? "Logging in..." : "Login"}
       </CustomButton>

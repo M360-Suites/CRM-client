@@ -1,5 +1,13 @@
 "use client";
-import { Bar, BarChart, CartesianGrid, XAxis, YAxis } from "recharts";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  XAxis,
+  YAxis,
+  ResponsiveContainer,
+  Tooltip,
+} from "recharts";
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
 import { useAnalyticsPipelineStage } from "@/hooks/analytics/analytics_pipeline_stage";
 
@@ -10,32 +18,59 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
+const truncate = (value: string, max = 8) =>
+  value.length > max ? `${value.slice(0, max)}…` : value;
+
 export default function PipelineByStage() {
   const { data: chartData } = useAnalyticsPipelineStage();
-  return (
-    <ChartContainer config={chartConfig} className="h-full w-full pt-6">
-      <BarChart accessibilityLayer data={chartData}>
-        <CartesianGrid vertical={false} />
-        <XAxis
-          dataKey="name"
-          tickLine={false}
-          tickMargin={10}
-          axisLine={false}
-          tickFormatter={(value) => String(value)}
-        />
 
-        <YAxis
-          tickLine={false}
-          tickMargin={10}
-          axisLine={false}
-          tickFormatter={(value) =>
-            typeof value === "number" ? value.toLocaleString() : String(value)
-          }
-        />
-        {/* use an actual data key from chartData (value or count) */}
-        <Bar dataKey="value" fill="var(--color-desktop)" radius={4} />
-        {/* <Bar dataKey="mobile" fill="var(--color-mobile)" radius={4} /> */}
-      </BarChart>
+  return (
+    <ChartContainer
+      config={chartConfig}
+      className="w-full pt-6 min-h-[260px] max-h-[400px]"
+    >
+      <ResponsiveContainer width="100%" height="100%">
+        <BarChart
+          data={chartData}
+          margin={{ top: 6, right: 8, left: 0, bottom: 6 }}
+        >
+          <CartesianGrid vertical={false} />
+          <XAxis
+            dataKey="name"
+            tickLine={false}
+            tickMargin={10}
+            axisLine={false}
+            interval={0}
+            tick={{ fontSize: 11 }}
+            tickFormatter={(value) => truncate(String(value))}
+          />
+          <YAxis
+            width={40}
+            tickLine={false}
+            tickMargin={4}
+            axisLine={false}
+            tick={{ fontSize: 11 }}
+            tickFormatter={(value) =>
+              typeof value === "number"
+                ? Intl.NumberFormat("en", { notation: "compact" }).format(value)
+                : String(value)
+            }
+            allowDecimals={false}
+          />
+          <Tooltip
+            cursor={{ fill: "rgba(226, 114, 91, 0.08)" }}
+            formatter={(value) =>
+              value != null ? Number(value).toLocaleString() : ""
+            }
+          />
+          <Bar
+            dataKey="value"
+            fill="var(--color-desktop)"
+            radius={4}
+            maxBarSize={60}
+          />
+        </BarChart>
+      </ResponsiveContainer>
     </ChartContainer>
   );
 }

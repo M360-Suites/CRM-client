@@ -22,7 +22,10 @@ export default function PipelineByLead() {
     })) ?? [];
 
   return (
-    <ChartContainer config={chartConfig} className="h-full w-full pt-6">
+    <ChartContainer
+      config={chartConfig}
+      className="w-full pt-6 aspect-square min-h-[260px] max-h-[400px]"
+    >
       <ResponsiveContainer width="100%" height="100%">
         <PieChart>
           <Pie
@@ -31,9 +34,8 @@ export default function PipelineByLead() {
             nameKey="name"
             cx="50%"
             cy="50%"
-            outerRadius={100}
+            outerRadius="80%"
             paddingAngle={4}
-            label
           />
           <Tooltip
             formatter={(value) =>
@@ -41,19 +43,18 @@ export default function PipelineByLead() {
             }
           />
           <Legend
-            layout="horizontal"
-            align="center"
             verticalAlign="bottom"
-            iconSize={10}
             content={() => (
-              <div className="flex flex-wrap gap-4 justify-center mt-2">
+              <div className="flex flex-wrap gap-x-4 gap-y-2 justify-center mt-2 px-2">
                 {dataWithColors.map((item) => (
                   <div key={item.name} className="flex items-center gap-2">
                     <span
-                      className="w-4 h-4"
+                      className="inline-block w-3 h-3 shrink-0 rounded-sm"
                       style={{ background: item.fill }}
                     />
-                    <span className="text-sm">{item.name}</span>
+                    <span className="text-xs sm:text-sm whitespace-nowrap">
+                      {item.name}
+                    </span>
                   </div>
                 ))}
               </div>

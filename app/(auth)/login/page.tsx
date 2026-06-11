@@ -3,11 +3,11 @@ const LoginPage = () => {
   return (
     <div className="flex flex-col h-full items-center justify-start w-full gap-8 bg-white">
       <div className="flex flex-col gap-2 items-center">
-        <h2 className="text-foreground text-[32px]/[120%] tracking-tight font-medium">
+        <h2 className="text-foreground text-[32px]/[120%] max-md:text-2xl/[120%] max-xs:text-lg tracking-tight font-medium">
           Welcome back
         </h2>
-        <p className="text-foreground text-base/[120%] font-normal">
-          Enter your email and password to access your account
+        <p className="text-foreground text-base/[120%]  font-normal">
+          Enter your credentials to access your account
         </p>
       </div>
       <LoginForm />

@@ -53,12 +53,14 @@ export default function Header() {
   return (
     <div className="w-full pt-8 flex flex-col gap-10">
       <div className="flex flex-col gap-1 w-full">
-        <h2 className="text-2xl font-medium text-[#3A2418]">Report</h2>
-        <span className="text-base font-medium text-foreground">
+        <h2 className="xl:text-2xl lg:text-xl/[110%] text-lg font-medium text-[#3A2418]">
+          Report
+        </h2>
+        <span className="xl:text-base text-sm font-medium text-foreground">
           Pipeline insights at a glance
         </span>
       </div>
-      <div className="grid grid-cols-4 gap-5">
+      <div className="grid xl:grid-cols-4 lg:grid-cols-2 gap-5">
         {isPending
           ? Array.from({ length: reportCardData.length }).map((_, i) => (
               <CardSkeleton key={i} />

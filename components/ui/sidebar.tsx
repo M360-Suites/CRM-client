@@ -198,7 +198,7 @@ function Sidebar({
             <SheetTitle>Sidebar</SheetTitle>
             <SheetDescription>Displays the mobile sidebar.</SheetDescription>
           </SheetHeader>
-          <div className="flex h-full w-full font-inter flex-col">
+          <div className="flex h-full w-full font-inter flex-col bg-[#fffaf2]">
             {children}
           </div>
         </SheetContent>
@@ -243,7 +243,7 @@ function Sidebar({
         <div
           data-sidebar="sidebar"
           data-slot="sidebar-inner"
-          className="flex size-full flex-col bg-sidebar group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:shadow-sm group-data-[variant=floating]:ring-1 group-data-[variant=floating]:ring-sidebar-border"
+          className="flex size-full flex-col bg-[#fffaf2] group-data-[variant=floating]:rounded-lg group-data-[variant=floating]:shadow-sm group-data-[variant=floating]:ring-1 group-data-[variant=floating]:ring-sidebar-border"
         >
           {children}
         </div>
@@ -257,7 +257,8 @@ function SidebarTrigger({
   onClick,
   ...props
 }: React.ComponentProps<typeof Button>) {
-  const { toggleSidebar } = useSidebar();
+  const { toggleSidebar, isMobile, open, openMobile } = useSidebar();
+  const isOpen = isMobile ? openMobile : open;
 
   return (
     <Button
@@ -265,6 +266,8 @@ function SidebarTrigger({
       data-slot="sidebar-trigger"
       variant="ghost"
       size="icon-sm"
+      aria-label="Toggle Sidebar"
+      aria-expanded={isOpen}
       className={cn(className)}
       onClick={(event) => {
         onClick?.(event);
@@ -272,7 +275,33 @@ function SidebarTrigger({
       }}
       {...props}
     >
-      <PanelLeftIcon />
+      {/* Hamburger for small screens */}
+      <span
+        className="lg:hidden flex flex-col justify-center items-center w-6 h-5 z-50 relative"
+        aria-hidden
+      >
+        <span
+          className={`w-6 h-0.5 bg-current transition-transform rounded-full duration-300 absolute ${
+            isOpen ? "rotate-45 top-2.5" : "-translate-y-1"
+          }`}
+        />
+        <span
+          className={`w-6 h-0.5 bg-current transition-transform rounded-full duration-300 absolute ${
+            isOpen ? "-rotate-45 top-2.5" : "translate-y-1"
+          }`}
+        />
+      </span>
+
+      {/* Panel icon for larger screens */}
+      <span className="max-lg:hidden lg:flex items-center justify-center w-6 h-6">
+        <PanelLeftIcon
+          className={cn(
+            "h-5 w-5 transition-transform duration-200",
+            isOpen ? "rotate-0" : "rotate-0", // keep placeholder if you want animation later
+          )}
+        />
+      </span>
+
       <span className="sr-only">Toggle Sidebar</span>
     </Button>
   );
@@ -386,7 +415,7 @@ function SidebarGroup({ className, ...props }: React.ComponentProps<"div">) {
       data-slot="sidebar-group"
       data-sidebar="group"
       className={cn(
-        "relative flex w-full min-w-0 flex-col px-7 py-5",
+        "relative flex w-full min-w-0 flex-col lg:px-7 px-5 py-5",
         className,
       )}
       {...props}

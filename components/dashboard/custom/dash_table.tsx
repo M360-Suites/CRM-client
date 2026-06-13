@@ -38,7 +38,7 @@ export default function DashTable() {
                   </span>
                 </div>
                 <div className="flex justify-between items-center gap-4">
-                  <span className="text-sm text-start self-center text-foreground">
+                  <span className="text-sm text-start self-center truncate text-foreground">
                     {toUTC(data.created_at)}
                   </span>
                   <div className="flex justify-end items-center">

@@ -34,10 +34,10 @@ export default function Header() {
 
   return (
     <div className="w-full pt-8">
-      <div className="flex flex-row items-center justify-between w-full">
+      <div className="flex max-md:flex-col items-center max-lg:items-start max-lg:gap-5 justify-between w-full">
         <div className="flex flex-row items-start gap-2">
           <div className="flex flex-col gap-1">
-            <h2 className="xl:text-2xl lg:text-xl/[110%] text-lg/[110%] font-medium text-[#3A2418]">
+            <h2 className="xl:text-2xl md:text-xl/[110%] text-lg/[110%] font-medium text-[#3A2418]">
               Companies
             </h2>
             <span className="xl:text-base text-sm font-medium text-foreground">
@@ -49,13 +49,13 @@ export default function Header() {
           </span>
         </div>
 
-        <div className="flex flex-row gap-4">
+        <div className="flex flex-row gap-4 max-md:gap-2">
           <CustomDrawer
             label="Export Companies"
             trigger={
               <CustomButton
                 variant="outline"
-                className="rounded-full flex flex-row items-center gap-2 px-5 py-2.5"
+                className="rounded-full flex flex-row items-center gap-2 md:px-5 px-3 py-2.5"
               >
                 <UploadIcon className="" />
                 <span>Export</span>
@@ -90,7 +90,7 @@ export default function Header() {
             trigger={
               <CustomButton
                 variant="outline"
-                className="rounded-full flex flex-row items-center gap-2 px-5 py-2.5"
+                className="rounded-full flex flex-row items-center gap-2 md:px-5 px-3 py-2.5"
               >
                 <Download className="" />
                 <span>Import</span>
@@ -104,7 +104,7 @@ export default function Header() {
             trigger={
               <CustomButton
                 variant="default"
-                className="rounded-full flex flex-row items-center gap-2 px-5 py-2.5"
+                className="rounded-full flex flex-row items-center gap-2 md:px-5 px-3 py-2.5"
               >
                 <PlusIcon className="" />
                 <span>Add Company</span>

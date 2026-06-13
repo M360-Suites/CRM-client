@@ -92,7 +92,7 @@ export default function DashCard() {
   return (
     <div className="flex flex-col gap-6 pt-8">
       <div className="flex flex-col gap-0.5">
-        <h2 className="lg:text-2xl text-xl font-medium text-foreground capitalize">
+        <h2 className="md:text-2xl text-xl font-medium text-foreground capitalize">
           {handleGreeting()}, {firstname}
         </h2>
         <span className="lg:text-base text-sm font-normal">
@@ -120,7 +120,7 @@ export default function DashCard() {
                         color={iconColor(item.title)}
                       />
                     </div>
-                    <span className="xl:text-base text-sm font-medium text-foreground">
+                    <span className="lg:text-base sm:text-sm font-medium text-foreground">
                       {item.title}
                     </span>
                   </div>
@@ -136,12 +136,12 @@ export default function DashCard() {
               </div>
             ))}
       </div>
-      <div className="py-6 px-5 border border-[#E8E8E8] rounded-lg flex flex-col gap-4">
+      <div className="lg:py-6 lg:px-5 py-4 px-3 border border-[#E8E8E8] rounded-lg flex flex-col gap-4">
         <div className="flex w-full justify-between items-center">
           <span>Pipeline Preview</span>
           <Link
             href="/pipeline"
-            className="text-sm text-[#FF9E55] hover:underline font-medium"
+            className="text-sm text-[#d48e58] hover:underline font-medium"
           >
             View all
           </Link>

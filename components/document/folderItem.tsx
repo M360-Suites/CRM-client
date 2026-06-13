@@ -8,13 +8,13 @@ interface FolderItemProps {
 }
 export default function FolderItem({ folder, onClick }: FolderItemProps) {
   return (
-    <div className="w-full bg-[#FFF3E6]/20 hover:bg-gray-50 hover:cursor-pointer grid grid-cols-6 border-b gap-3 xl:gap-5 border-b-border last:border-b-0 pl-4 pr-8 py-2.5 overflow-hidden">
+    <div className="w-full bg-[#FFF3E6]/20 hover:bg-gray-50 hover:cursor-pointer grid grid-cols-6 border-b gap-1 lg:gap-5 md:gap-3 border-b-border last:border-b-0 pl-4 md:pr-8 pr-4 py-2.5 overflow-hidden">
       {/* Icon + Info */}
       <div
-        className="flex items-center gap-3 py-0.5 col-span-1"
+        className="flex items-center md:gap-3 gap-1.5 py-0.5 col-span-2"
         onClick={onClick}
       >
-        <div className="w-9 h-9 rounded-[8px] flex items-center justify-center shrink-0">
+        <div className="md:w-9 md:h-9 w-5 h-5 rounded-[8px] flex items-center justify-center shrink-0">
           <svg
             width="19"
             height="15"
@@ -41,22 +41,23 @@ export default function FolderItem({ folder, onClick }: FolderItemProps) {
           {folder.name}
         </span>
       </div>
-      <div className="col-span-2 flex items-center gap-4 py-0.5">
+      <div className="col-span-1 flex items-center gap-4 py-0.5">
         <span className="text-xs font-normal text-foreground truncate">
           {folder.description}
         </span>
       </div>
       <div className=" flex items-center gap-2 py-0.5">
-        <FileText size={16} className="text-foreground" />
-        <span className="text-xs text-foreground">
-          {folder.document_count} files
+        <FileText size={16} className="text-foreground max-md:hidden" />
+        <span className="md:text-xs text-[10px] text-center text-foreground">
+          {folder.document_count}{" "}
+          {folder.document_count <= 1 ? "item" : "items"}
         </span>
       </div>
-      <div className="flex flex-col gap-1.5 py-0.5">
-        <span className="text-xs text-foreground">
+      <div className="flex flex-col gap-1.5 py-0.5 w-full">
+        <span className="md:text-xs text-[10px] truncate text-foreground">
           {toUTC(folder.updated_at)}
         </span>
-        <span className="text-xs text-foreground">
+        <span className="md:text-xs text-[10px] truncate text-foreground">
           by {folder.last_modified_by?.display_name}
         </span>
       </div>

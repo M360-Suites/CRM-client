@@ -80,12 +80,12 @@ export default function Body() {
         </div>
       ) : (
         <div className="flex border flex-col w-full rounded-t-[10px]">
-          <div className="grid grid-cols-6 px-5 py-6 rounded-t-[10px] border-b border-b-[#F3D9C4]  bg-[#FFF6EC]">
-            {["Name", "Description", "Items", "Last Modified", "Action"].map(
+          <div className="grid grid-cols-6 lg:px-5 px-3 md:py-6 py-4 gap-2 rounded-t-[10px] border-b border-b-[#F3D9C4]  bg-[#FFF6EC]">
+            {["Name", "Description", "Items", "Modified", "Action"].map(
               (header) => (
                 <span
                   key={header}
-                  className={`text-xs ${header === "Description" && "col-span-2"} ${header === "Action" && "text-right"} text-foreground font-medium`}
+                  className={`md:text-xs text-[10px] ${header === "Name" && "col-span-2"} ${header === "Action" && "text-right"} text-foreground font-medium`}
                 >
                   {header}
                 </span>

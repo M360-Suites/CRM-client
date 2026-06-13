@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import {
   Sidebar,
   SidebarContent,
@@ -7,6 +8,7 @@ import {
   SidebarGroup,
   SidebarHeader,
   SidebarMenuButton,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { useDashStore } from "@/stores/dash/dashboard_store";
 import {
@@ -26,6 +28,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { CustomButton } from "../custom/common/customButton";
 import { useLogout } from "@/hooks/auth/logout";
+import CRMLOGO from "@/public/assets/company/logo.png";
 
 const sideLinks = [
   {
@@ -91,6 +94,8 @@ export function AppSidebar() {
   const { activeLink, setActiveLink } = useDashStore();
   const currentPath = usePathname();
 
+  const { isMobile, setOpen, setOpenMobile } = useSidebar();
+
   useEffect(() => {
     const matchedLink = sideLinks.find((link) =>
       currentPath?.startsWith(link.url),
@@ -101,7 +106,15 @@ export function AppSidebar() {
   }, [currentPath, setActiveLink]);
   return (
     <Sidebar className="inset-0 h-full overflow-y-auto">
-      <SidebarHeader className="pt-15" />
+      <SidebarHeader className="lg:pt-15 pt-5 max-lg:px-7 flex items-start justify-start">
+        <Image
+          src={CRMLOGO}
+          alt="crm_logo"
+          width={800}
+          height={800}
+          className="lg:hidden h-11 w-auto object-contain"
+        />
+      </SidebarHeader>
       <SidebarContent className="flex justify-start items-center">
         <SidebarGroup className="flex items-center gap-2">
           {sideLinks.map((link, index) => (
@@ -111,6 +124,9 @@ export function AppSidebar() {
               onClick={() => {
                 setActiveLink(link.url);
                 router.push(`${link.url}`);
+                if (isMobile) {
+                  setOpenMobile(false);
+                }
               }}
             >
               {activeLink === link.url ? (
@@ -124,10 +140,13 @@ export function AppSidebar() {
                   <circle cx="4" cy="4" r="4" fill="#C95C47" />
                 </svg>
               ) : (
-                <link.icon className="h-5 w-5" color={"#3A2418"} />
+                <link.icon
+                  className="h-5 w-5"
+                  color={activeLink === link.url ? "#3A2418" : "#4a4a4a"}
+                />
               )}
               <span
-                className={`${activeLink === link.url ? "text-[#C95C47] text-sm font-medium" : "text-gray text-sm"}`}
+                className={`${activeLink === link.url ? "text-[#C95C47] text-sm font-medium" : "text-foreground text-sm"}`}
               >
                 {link.name}
               </span>
@@ -135,13 +154,13 @@ export function AppSidebar() {
           ))}
         </SidebarGroup>
       </SidebarContent>
-      <SidebarFooter className="pb-10 px-5">
+      <SidebarFooter className="pb-10 px-5 bg-transparent">
         <CustomButton
-          variant="outline"
+          variant="ghost"
           onClick={() => {
             logoutUser();
           }}
-          className="px-4 py-3 flex items-center border-none justify-start flex-row gap-4"
+          className="px-5 py-4 flex items-center border-none justify-start flex-row gap-4"
         >
           <LogOut className="h-6 w-6" color={"#3A2418"} />
           <span className="text-base font-medium text-[#3A2418]">

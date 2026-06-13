@@ -5,13 +5,11 @@ import { useReportSummary } from "@/hooks/report/report_summary";
 
 const CardSkeleton = () => (
   <div className="p-4 border border-[#E8E8E8] rounded-[8px] flex flex-col gap-2 animate-pulse">
-    <div className="w-64 flex flex-col gap-3">
-      <div className="flex flex-row items-center gap-3 py-4">
-        <div className="rounded-full p-2 bg-gray-200 w-9 h-9" />
-        <div className="h-4 w-32 bg-gray-200 rounded" />
-      </div>
-      <div className="h-10 w-28 bg-gray-200 rounded" />
+    <div className="flex flex-row items-center gap-3 py-2">
+      <div className="rounded-full p-2 bg-gray-200 w-9 h-9" />
+      <div className="h-4 w-32 bg-gray-200 rounded" />
     </div>
+    <div className="h-10 w-28 bg-gray-200 rounded" />
 
     <div className="text-sm flex flex-row items-center gap-1">
       <div className="h-4 w-12 bg-gray-200 rounded" />
@@ -53,7 +51,7 @@ export default function Header() {
   return (
     <div className="w-full pt-8 flex flex-col gap-10">
       <div className="flex flex-col gap-1 w-full">
-        <h2 className="xl:text-2xl lg:text-xl/[110%] text-lg font-medium text-[#3A2418]">
+        <h2 className="xl:text-2xl text-xl/[110%] font-medium text-[#3A2418]">
           Report
         </h2>
         <span className="xl:text-base text-sm font-medium text-foreground">

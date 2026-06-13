@@ -21,7 +21,7 @@ export default function Header() {
   const { activeTab, setActiveTab } = useTasksAndCalendarStore();
   return (
     <div className="w-full pt-8">
-      <div className="flex flex-row items-center justify-between w-full">
+      <div className="flex max-md:flex-col items-center max-md:items-start max-md:gap-6 justify-between w-full">
         <div className="flex flex-col gap-1">
           <h2 className="xl:text-2xl lg:text-xl/[110%] text-lg/[110%] font-medium text-[#3A2418]">
             Task & Calendar
@@ -53,10 +53,10 @@ export default function Header() {
             trigger={
               <CustomButton
                 variant="default"
-                className="rounded-full flex flex-row items-center gap-3 xl:px-12 px-6 xl:py-2 py-1"
+                className="rounded-full flex flex-row items-center gap-3 xl:px-12 px-6 md:py-2 py-0.5"
               >
                 <PlusIcon className="" />
-                <span>New</span>
+                <span className="max-md:text-sm">New</span>
               </CustomButton>
             }
           >

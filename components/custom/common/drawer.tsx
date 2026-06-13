@@ -51,7 +51,7 @@ export function CustomDrawer({
           </DrawerClose>
         </DrawerHeader>
 
-        <div className="no-scrollbar overflow-y-auto px-4 py-8">
+        <div className="no-scrollbar overflow-y-auto lg:px-4 px-0 py-8">
           {typeof children === "function" ? children(close) : children}
         </div>
       </DrawerContent>

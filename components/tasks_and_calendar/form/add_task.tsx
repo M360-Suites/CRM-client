@@ -201,7 +201,7 @@ export default function AddTaskForm({ onSuccess }: AddTaskFormProps) {
         )}
       </div>
 
-      <div className="pt-6 px-6">
+      <div className="pt-6 md:px-6">
         <CustomButton
           type="submit"
           disabled={isPending}

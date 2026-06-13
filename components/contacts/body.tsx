@@ -17,17 +17,17 @@ const ContactRowSkeleton = () => (
     <div className="flex items-center gap-4 flex-1">
       <div className="h-10 w-10 rounded-full bg-gray-200" />
       <div className="flex flex-col gap-2">
-        <div className="h-3.5 w-36 bg-gray-200 rounded-full" />
-        <div className="h-3 w-24 bg-gray-200 rounded-full" />
+        <div className="h-3.5 md:w-36 w-20 bg-gray-200 rounded-full" />
+        <div className="h-3  md:w-24 w-15 bg-gray-200 rounded-full" />
       </div>
     </div>
     <div className="flex-1">
-      <div className="h-3.5 w-28 bg-gray-200 rounded-full" />
+      <div className="h-3.5 md:w-28 w-14 bg-gray-200 rounded-full" />
     </div>
     <div className="flex-1">
-      <div className="h-3.5 w-24 bg-gray-200 rounded-full" />
+      <div className="h-3.5 md:w-24 w-14 bg-gray-200 rounded-full" />
     </div>
-    <div className="h-7 w-16 bg-gray-200 rounded-full" />
+    <div className="h-7 md:w-16 w-10  bg-gray-200 rounded-full" />
   </div>
 );
 
@@ -55,8 +55,8 @@ export default function Body() {
   const { mutate: deleteContact, isPending: isLoading } = useDeleteContact();
   return (
     <div className="w-full flex-col flex gap-8">
-      <div className="flex  items-center justify-between w-full">
-        <div className="border bg-[#FFF3E6] xl:w-lg lg:w-sm w-72 rounded-full text-[#3A2418] flex flex-row items-center gap-2 py-3 px-3">
+      <div className="flex max-md:flex-col max-md:gap-5 max-md:items-start items-center justify-between w-full">
+        <div className="border bg-[#FFF3E6] xl:w-lg md:w-sm w-full rounded-full text-[#3A2418] flex flex-row items-center gap-2 py-3 px-3">
           <Search color="#3A2418" size={20} />
           <input
             type="text"
@@ -121,49 +121,51 @@ export default function Body() {
                   label="Contact Details"
                   trigger={
                     <div
-                      className="flex flex-row items-center justify-between w-full p-4 border-b last:border-b-0 cursor-pointer"
+                      className="grid grid-cols-5 lg:gap-4 gap-1 w-full p-4 items-center border-b last:border-b-0 cursor-pointer"
                       onClick={() => setSelectedContact(contact)}
                     >
-                      <div className="flex flex-row items-center gap-4 flex-1">
-                        <div className="bg-[#D8F3F1] h-10 w-10 rounded-full flex items-center justify-center text-base font-medium text-[#2F9E94]">
+                      <div className="flex col-span-2 items-center gap-4 flex-1">
+                        <div className="bg-[#D8F3F1] h-10 w-10 max-md:h-8 max-md:w-8 rounded-full flex items-center justify-center md:text-base text-sm font-medium text-[#2F9E94]">
                           {getInitials(
                             contact.first_name + " " + contact.last_name,
                           )}
                         </div>
-                        <div className="flex flex-col items-start">
-                          <span className="text-sm font-normal">
+                        <div className="flex flex-col items-start ">
+                          <span className="md:text-sm text-xs font-normal">
                             {contact.first_name + " " + contact.last_name}
                           </span>
-                          <span className="text-sm font-medium text-foreground">
+                          <span className="md:text-sm text-xs font-medium text-foreground">
                             {contact.role_title}
                           </span>
                         </div>
                       </div>
 
-                      <div className="flex flex-col items-start flex-1">
-                        <span className="text-sm font-normal text-foreground">
-                          {contact.company_id?.name ?? "-------------"}
+                      <div className="flex flex-col items-center flex-1">
+                        <span className="md:text-sm text-xs font-normal text-foreground">
+                          {contact.company_id?.name ?? "-------"}
                         </span>
                       </div>
 
-                      <div className="flex flex-col items-start flex-1">
-                        <span className="text-sm font-normal text-foreground">
+                      <div className="flex flex-col items-center flex-1">
+                        <span className="md:text-sm text-xs truncate font-normal text-foreground">
                           {handleTime(contact.created_at)}
                         </span>
                       </div>
 
-                      <div
-                        className={`px-3 py-1 rounded-full text-sm font-medium ${
-                          contact.temperature === ContactTabs.HOT
-                            ? "bg-[#E6F7F1] text-[#2CA678]"
-                            : contact.temperature === ContactTabs.WARM
-                              ? "bg-[#FFF6EC] text-[#E2725B]"
-                              : "bg-[#F3D9C4] text-[#E2725B]"
-                        }`}
-                      >
-                        <span className="text-sm font-normal text-foreground">
-                          {contact.temperature}
-                        </span>
+                      <div className="flex flex-col items-end gap-2">
+                        <div
+                          className={`px-3 py-1 flex max-md:justify-center rounded-full md:text-sm text-xs self-auto font-medium ${
+                            contact.temperature === ContactTabs.HOT
+                              ? "bg-[#E6F7F1] text-[#2CA678]"
+                              : contact.temperature === ContactTabs.WARM
+                                ? "bg-[#FFF6EC] text-[#E2725B]"
+                                : "bg-[#F3D9C4] text-[#E2725B]"
+                          }`}
+                        >
+                          <span className="md:text-sm text-xs font-normal self-center text-foreground">
+                            {contact.temperature}
+                          </span>
+                        </div>
                       </div>
                     </div>
                   }

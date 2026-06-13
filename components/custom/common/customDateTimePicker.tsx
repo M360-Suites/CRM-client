@@ -148,65 +148,67 @@ export function CustomDateTimePicker({
       {error && <p className="text-foundation-error-6 text-sm">{error}</p>}
 
       {open && (
-        <div className="absolute top-full mt-1 z-50 bg-background border border-border rounded-[10px] shadow-sm overflow-hidden w-fit">
+        <div className="absolute top-full mt-1 z-50 bg-background border border-border rounded-[10px] shadow-sm overflow-hidden w-fit max-md:w-full">
           <div className="flex items-start divide-x divide-border">
             {/* Left — Calendar */}
-            <div className="p-2">
+            <div className="p-2 max-md:p-1">
               <Calendar mode="single" selected={date} onSelect={setDate} />
             </div>
 
             {/* Right — Time */}
-            <div className="flex flex-col justify-between p-4 w-[168px]">
+            <div className="flex flex-col justify-between md:p-4 p-2 w-42">
               <div>
                 <p className="text-xs text-foundation-gray-4 mb-4 text-center">
                   Select time
                 </p>
 
-                <div className="flex items-center justify-center gap-2">
+                <div className="flex items-center max-md:gap-4 max-md:flex-col justify-center gap-2">
                   {/* Hours */}
-                  <div className="flex flex-col items-center gap-1.5">
-                    <button
-                      type="button"
-                      className={spinnerBtn}
-                      onClick={() => setHr((h) => (h % 12) + 1)}
-                    >
-                      <ChevronUp size={14} />
-                    </button>
-                    <div className={spinnerVal}>{pad(hr)}</div>
-                    <button
-                      type="button"
-                      className={spinnerBtn}
-                      onClick={() => setHr((h) => ((h - 2 + 12) % 12) + 1)}
-                    >
-                      <ChevronDown size={14} />
-                    </button>
-                  </div>
+                  <div className="flex flex-row items-center gap-2">
+                    <div className="flex flex-col items-center gap-1.5">
+                      <button
+                        type="button"
+                        className={spinnerBtn}
+                        onClick={() => setHr((h) => (h % 12) + 1)}
+                      >
+                        <ChevronUp size={14} />
+                      </button>
+                      <div className={spinnerVal}>{pad(hr)}</div>
+                      <button
+                        type="button"
+                        className={spinnerBtn}
+                        onClick={() => setHr((h) => ((h - 2 + 12) % 12) + 1)}
+                      >
+                        <ChevronDown size={14} />
+                      </button>
+                    </div>
 
-                  <span className="text-2xl font-medium text-foundation-gray-4">
-                    :
-                  </span>
+                    <span className="text-2xl font-medium text-foundation-gray-4">
+                      :
+                    </span>
 
-                  {/* Minutes */}
-                  <div className="flex flex-col items-center gap-1.5">
-                    <button
-                      type="button"
-                      className={spinnerBtn}
-                      onClick={() => setMin((m) => (m + 5) % 60)}
-                    >
-                      <ChevronUp size={14} />
-                    </button>
-                    <div className={spinnerVal}>{pad(min)}</div>
-                    <button
-                      type="button"
-                      className={spinnerBtn}
-                      onClick={() => setMin((m) => (m - 5 + 60) % 60)}
-                    >
-                      <ChevronDown size={14} />
-                    </button>
+                    {/* Minutes */}
+                    <div className="flex flex-col items-center gap-1.5">
+                      <button
+                        type="button"
+                        className={spinnerBtn}
+                        onClick={() => setMin((m) => (m + 5) % 60)}
+                      >
+                        <ChevronUp size={14} />
+                      </button>
+                      <div className={spinnerVal}>{pad(min)}</div>
+                      <button
+                        type="button"
+                        className={spinnerBtn}
+                        onClick={() => setMin((m) => (m - 5 + 60) % 60)}
+                      >
+                        <ChevronDown size={14} />
+                      </button>
+                    </div>
                   </div>
 
                   {/* AM/PM */}
-                  <div className="flex flex-col gap-1.5">
+                  <div className="flex flex-col max-md:flex-row max-md:gap-3 gap-1.5">
                     {(["AM", "PM"] as const).map((period) => (
                       <button
                         key={period}

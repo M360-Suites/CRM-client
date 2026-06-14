@@ -37,6 +37,11 @@ const sideLinks = [
     url: "/dashboard",
   },
   {
+    name: "Inbox",
+    icon: Inbox,
+    url: "/inbox",
+  },
+  {
     name: "Contacts",
     icon: Users,
     url: "/contacts",
@@ -55,11 +60,6 @@ const sideLinks = [
     name: "Task & Calendar",
     icon: CalendarCheck,
     url: "/tasks_and_calendar",
-  },
-  {
-    name: "Inbox",
-    icon: Inbox,
-    url: "/inbox",
   },
   {
     name: "Documents",

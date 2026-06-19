@@ -23,6 +23,7 @@ import {
   Sparkles,
   ChartColumn,
   LogOut,
+  Settings,
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
@@ -59,7 +60,7 @@ const sideLinks = [
   {
     name: "Task & Calendar",
     icon: CalendarCheck,
-    url: "/tasks_and_calendar",
+    url: "/tasks",
   },
   {
     name: "Documents",
@@ -85,6 +86,14 @@ const sideLinks = [
     name: "Report",
     icon: ChartColumn,
     url: "/report",
+  },
+];
+
+const otherSides = [
+  {
+    name: "Settings",
+    icon: Settings,
+    url: "/settings",
   },
 ];
 
@@ -118,6 +127,44 @@ export function AppSidebar() {
       <SidebarContent className="flex justify-start items-center">
         <SidebarGroup className="flex items-center gap-2">
           {sideLinks.map((link, index) => (
+            <SidebarMenuButton
+              key={index}
+              className={` hover:bg-[#FAF1EB] [&_svg]:size-5 ${activeLink === link.url && "bg-[#FFE4D1] hover:bg-[#FFE4D1] [&_svg]:size-3"}`}
+              onClick={() => {
+                setActiveLink(link.url);
+                router.push(`${link.url}`);
+                if (isMobile) {
+                  setOpenMobile(false);
+                }
+              }}
+            >
+              {activeLink === link.url ? (
+                <svg
+                  width="4"
+                  height="4"
+                  viewBox="0 0 8 8"
+                  fill="none"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <circle cx="4" cy="4" r="4" fill="#C95C47" />
+                </svg>
+              ) : (
+                <link.icon
+                  className="h-5 w-5"
+                  color={activeLink === link.url ? "#3A2418" : "#4a4a4a"}
+                />
+              )}
+              <span
+                className={`${activeLink === link.url ? "text-[#C95C47] text-sm font-medium" : "text-foreground text-sm"}`}
+              >
+                {link.name}
+              </span>
+            </SidebarMenuButton>
+          ))}
+        </SidebarGroup>
+
+        <SidebarGroup className="flex items-center gap-2 border-t">
+          {otherSides.map((link, index) => (
             <SidebarMenuButton
               key={index}
               className={` hover:bg-[#FAF1EB] [&_svg]:size-5 ${activeLink === link.url && "bg-[#FFE4D1] hover:bg-[#FFE4D1] [&_svg]:size-3"}`}

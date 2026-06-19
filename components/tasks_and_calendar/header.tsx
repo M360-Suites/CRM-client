@@ -31,8 +31,8 @@ export default function Header() {
           </span>
         </div>
 
-        <div className="flex flex-row gap-4">
-          <div className="flex flex-row items-center gap-2 border border-[#F3D9C4] rounded-full py-2 px-2.5 ">
+        <div className="flex flex-row gap-4 max-md:justify-between max-md:w-full items-center">
+          <div className="flex flex-row items-center gap-2 border border-[#F3D9C4] rounded-full py-2 md:px-2.5 px-1.5">
             {tabs.map((tab) => (
               <CustomButton
                 key={tab.value}
@@ -53,7 +53,7 @@ export default function Header() {
             trigger={
               <CustomButton
                 variant="default"
-                className="rounded-full flex flex-row items-center gap-3 xl:px-12 px-6 md:py-2 py-0.5"
+                className="rounded-full flex flex-row items-center gap-3 xl:px-12 px-6 max-md:py-3 py-2.5"
               >
                 <PlusIcon className="" />
                 <span className="max-md:text-sm">New</span>

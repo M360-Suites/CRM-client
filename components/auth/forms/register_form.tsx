@@ -41,7 +41,10 @@ export default function RegisterForm() {
   };
 
   return (
-    <form onSubmit={handleFormSubmit} className="flex flex-col gap-12 w-full">
+    <form
+      onSubmit={handleFormSubmit}
+      className="flex flex-col gap-12 min-w-full w-full"
+    >
       {registerStep === 1 && (
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2 relative">
@@ -125,12 +128,12 @@ export default function RegisterForm() {
             : "Sign up"}
       </CustomButton>
       <div className="flex flex-row items-center gap-2 justify-center">
-        <span className="text-foundation-gray-4 font-normal text-base/[20px]">
+        <span className="text-foundation-gray-4 font-normal text-base/[20px] max-sm:text-sm/[120%]">
           Already have an account?
         </span>
         <Link
           href="/login"
-          className="text-[#E2725B] text-sm/[20px] font-medium"
+          className="text-[#E2725B] text-sm/[20px] font-medium max-sm:text-sm/[120%]"
         >
           Sign in
         </Link>

@@ -281,13 +281,18 @@ function SidebarTrigger({
         aria-hidden
       >
         <span
-          className={`w-6 h-0.5 bg-current transition-transform rounded-full duration-300 absolute ${
-            isOpen ? "rotate-45 top-2.5" : "-translate-y-1"
+          className={`absolute left-0 w-6 h-0.5 bg-current rounded-full origin-center transition-transform duration-300 ${
+            isOpen ? "top-2.5 rotate-45" : "top-1.5"
           }`}
         />
         <span
-          className={`w-6 h-0.5 bg-current transition-transform rounded-full duration-300 absolute ${
-            isOpen ? "-rotate-45 top-2.5" : "translate-y-1"
+          className={`absolute left-0 w-6 h-0.5 bg-current rounded-full origin-center transition-opacity duration-200 ${
+            isOpen ? "opacity-0" : "top-3"
+          }`}
+        />
+        <span
+          className={`absolute left-0 w-6 h-0.5 bg-current rounded-full origin-center transition-transform duration-300 ${
+            isOpen ? "top-2.5 -rotate-45" : "top-4.5"
           }`}
         />
       </span>

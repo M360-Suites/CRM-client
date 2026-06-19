@@ -1,4 +1,4 @@
-import { useState } from "react";
+// import { useState } from "react";
 
 const Tabs = [
   {
@@ -14,7 +14,7 @@ const Tabs = [
 ];
 
 export default function Body() {
-  const [activeTab, setActiveTab] = useState("");
+  // const [activeTab, setActiveTab] = useState("");
   return (
     <div>
       {Tabs.map((tab) => (

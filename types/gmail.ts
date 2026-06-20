@@ -71,3 +71,8 @@ export interface SendMailResponse {
   thread_id: string;
   sent_at: string;
 }
+
+export interface DisconnectGmailResponse {
+  connected: boolean;
+  gmail_sync_enabled: boolean;
+}

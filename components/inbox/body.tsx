@@ -7,8 +7,8 @@ import ShowMail from "./mail/show_mail";
 import MailAuthorisation from "./mail/page";
 import { useGmailStore } from "@/stores/gmail/gmail_store";
 import { useGmailStatus } from "@/hooks/gmail/gmail_connect_status";
+import { useMailDisconnect } from "@/hooks/gmail/disconnect_mail";
 import { useEffect, useState } from "react";
-// import MailPage from "./mail/page";
 import { useSearchParams } from "next/navigation";
 import AuthorisationPage from "./authorisation_layout";
 import { useGmailSync } from "@/hooks/gmail/gmail_sync";
@@ -26,6 +26,8 @@ export default function Body() {
   const { setConnectedChannels, connectedChannels } = useGmailStore();
   const { isPending: isStatusPending, data: statusData } = useGmailStatus();
   const { mutate: handleSync, isPending } = useGmailSync();
+  const { mutate: disconnectMail, isPending: isDisconnectPending } =
+    useMailDisconnect();
 
   // When redirected back from OAuth, store the connected channel
   // and switch to the Mail tab automatically
@@ -168,20 +170,34 @@ export default function Body() {
           (statusData?.connected ? (
             <div className="w-full">
               <div className="flex justify-end gap-3 mb-4 w-full">
-                {isPending ? (
-                  <CustomButton className="bg-[#FFD9C0] px-3.5 rounded-full cursor-pointer">
-                    <Loader size={20} className="animate-spin" />
-                    <span className="text-sm">Syncing</span>
-                  </CustomButton>
-                ) : (
+                <div className="flex gap-3 items-center">
                   <CustomButton
+                    disabled={isDisconnectPending}
+                    onClick={() => disconnectMail()}
+                    className="rounded-full px-3.5 "
+                  >
+                    {/* <CloudSync size={20} /> */}
+                    <span className="text-sm">
+                      {isDisconnectPending
+                        ? "Disconnecting..."
+                        : "Disconnect mail"}
+                    </span>
+                  </CustomButton>
+                  <CustomButton
+                    disabled={isPending}
                     onClick={() => handleSync()}
                     className="rounded-full px-3.5"
                   >
-                    <CloudSync size={20} />
-                    <span className="text-sm">Sync mail</span>
+                    {isPending ? (
+                      <Loader size={20} className={"animate-spin"} />
+                    ) : (
+                      <CloudSync size={20} />
+                    )}
+                    <span className="text-sm">
+                      {isPending ? "syncing" : "Sync mail"}
+                    </span>
                   </CustomButton>
-                )}
+                </div>
               </div>
               <ShowMail />
             </div>

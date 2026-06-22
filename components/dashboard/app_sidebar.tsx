@@ -103,16 +103,18 @@ export function AppSidebar() {
   const { activeLink, setActiveLink } = useDashStore();
   const currentPath = usePathname();
 
-  const { isMobile, setOpen, setOpenMobile } = useSidebar();
+  const { isMobile, setOpenMobile } = useSidebar();
 
   useEffect(() => {
-    const matchedLink = sideLinks.find((link) =>
+    const allLinks = [...sideLinks, ...otherSides];
+    const matchedLink = allLinks.find((link) =>
       currentPath?.startsWith(link.url),
     );
     if (matchedLink) {
       setActiveLink(matchedLink.url);
     }
   }, [currentPath, setActiveLink]);
+
   return (
     <Sidebar className="inset-0 h-full overflow-y-auto">
       <SidebarHeader className="lg:pt-15 pt-5 max-lg:px-7 flex items-start justify-start">

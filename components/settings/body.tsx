@@ -3,12 +3,11 @@
 import { useState, useEffect } from "react";
 import Profile from "./profile/page";
 import RolesAccess from "./roles/page";
-import { CustomButton } from "../custom/common/customButton";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 const Tabs = [
   { name: "Profile", value: "profile", component: Profile },
-  { name: "Roles and Permissions", value: "roles", component: RolesAccess },
+  { name: "Roles & Permissions", value: "roles", component: RolesAccess },
 ];
 
 export default function Body() {
@@ -34,20 +33,18 @@ export default function Body() {
 
   return (
     <div>
-      <div className={`flex items-center gap-3 sticky`}>
+      <div className={`flex items-center gap-3 sticky border-b`}>
         {Tabs.map((t) => (
-          <CustomButton
+          <button
             key={t.value}
-            variant="link"
             onClick={() => handleTabChange(t.value)}
-            className={`${activeTab === t.value && "border-b border-b-[#C95C47] rounded-none"} px-10 py-3 no-underline`}
+            className={`${activeTab === t.value ? "border-b-2 border-b-[#C95C47] rounded-none text-black" : "hover:text-black"} px-10 py-3 cursor-pointer`}
           >
-            <h3 className="no-underline">{t.name}</h3>
-          </CustomButton>
+            <h3>{t.name}</h3>
+          </button>
         ))}
       </div>
-
-      <div className="pt-6">{ActiveComponent && <ActiveComponent />}</div>
+      <div className="pt-4">{ActiveComponent && <ActiveComponent />}</div>
     </div>
   );
 }

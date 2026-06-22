@@ -6,7 +6,7 @@ export default function Header() {
           Settings
         </h2>
         <span className="xl:text-base text-sm font-medium text-foreground">
-          Manage your account, preferences, and application settings
+          Manage your account, preferences, and roles management
         </span>
       </div>
     </div>

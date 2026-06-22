@@ -40,7 +40,7 @@ export default function Body() {
             onClick={() => handleTabChange(t.value)}
             className={`${activeTab === t.value ? "border-b-2 border-b-[#C95C47] rounded-none text-black" : "hover:text-black"} px-10 py-3 cursor-pointer`}
           >
-            <h3>{t.name}</h3>
+            <h3 className="text-sm font-medium">{t.name}</h3>
           </button>
         ))}
       </div>

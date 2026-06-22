@@ -41,7 +41,7 @@ export default function Profile() {
         ) : (
           // real content
           <div className="flex flex-col items-start md:gap-4 gap-1 w-full h-full ">
-            <div className="bg-[#F5B7A3] flex justify-center shrink-0 items-center md:h-20 md:w-20 h-60 w-60 lg:text-3xl text-sm font-semibold text-foreground rounded-lg">
+            <div className="bg-[#F5B7A3] flex justify-center shrink-0 items-center md:h-20 md:w-20  lg:text-3xl text-sm font-semibold text-foreground rounded-lg">
               {getInitials(profile?.display_name).toUpperCase()}
             </div>
             <div className="flex flex-col w-full border  rounded-lg">

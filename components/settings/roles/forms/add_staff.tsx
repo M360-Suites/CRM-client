@@ -6,26 +6,60 @@ import { CustomSelect } from "@/components/custom/common/customSelect";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { AddStaffData, addStaffSchema } from "@/validation/roles";
 import { zodResolver } from "@hookform/resolvers/zod";
-import useCreateFolder from "@/hooks/document/create_document";
+import { useAddStaff } from "@/hooks/user/admin/add_staff";
+import { useEditStaff } from "@/hooks/user/admin/edit_staff";
+import { UserInvitationResponse } from "@/types/user";
 
-interface AddFolderFormProps {
+interface AddStaffFormProps {
   onSuccess?: () => void;
+  staff?: UserInvitationResponse;
 }
 
-export default function AddStaffForm({ onSuccess }: AddFolderFormProps) {
-  const { mutate: addDocument, isPending: isAdding } = useCreateFolder();
+export default function AddStaffForm({ onSuccess, staff }: AddStaffFormProps) {
+  const isEditing = !!staff;
+
+  const { mutate: addStaff, isPending: isAdding } = useAddStaff();
+  const { mutate: updateStaff, isPending: isUpdating } = useEditStaff();
+
+  const isPending = isAdding || isUpdating;
+
   const {
     control,
     register,
     handleSubmit,
     reset,
-    formState: { errors },
+    formState: { errors, isDirty },
   } = useForm<AddStaffData>({
     resolver: zodResolver(addStaffSchema),
+    defaultValues: staff
+      ? {
+          fullname: staff.display_name,
+          email: staff.email,
+          role: staff.role as "admin" | "sales_rep" | "sales_manager" | "viewer",
+        }
+      : undefined,
   });
+
   const onSubmit: SubmitHandler<AddStaffData> = (data) => {
-    console.log(data);
-  };
+  if (isEditing) {
+    updateStaff(
+      { _id: staff._id, ...data },
+      {
+        onSuccess: () => {
+          reset();
+          onSuccess?.();
+        },
+      }
+    );
+  } else {
+    addStaff(data, {
+      onSuccess: () => {
+        reset();
+        onSuccess?.();
+      },
+    });
+  }
+};
 
   return (
     <form
@@ -73,8 +107,8 @@ export default function AddStaffForm({ onSuccess }: AddFolderFormProps) {
               error={errors.role?.message}
               selectable={[
                 { name: "Admin", value: "admin" },
-                { name: "Sales Rep", value: "sales-rep" },
-                { name: "Sales Manager", value: "sales-manager" },
+                { name: "Sales Rep", value: "sales_rep" },
+                { name: "Sales Manager", value: "sales_manager" },
                 { name: "Viewer", value: "viewer" },
               ]}
             />
@@ -87,13 +121,19 @@ export default function AddStaffForm({ onSuccess }: AddFolderFormProps) {
         )}
       </div>
 
-      <div className="w-full px-8 pt-10">
+      <div className="w-full pt-10">
         <CustomButton
           type="submit"
-          disabled={isAdding}
+          disabled={isPending || !isDirty}
           className="w-full px-6 py-4 font-dm rounded-lg"
         >
-          {isAdding ? "Adding Staff..." : "Add staff"}
+          {isPending
+            ? isEditing
+              ? "Updating Staff..."
+              : "Adding Staff..."
+            : isEditing
+            ? "Update Staff"
+            : "Add Staff"}
         </CustomButton>
       </div>
     </form>

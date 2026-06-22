@@ -1,5 +1,7 @@
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
+import type { UserRole } from "@/types/user";
+
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
@@ -162,3 +164,18 @@ export function formatNaira(
 
   return `${n < 0 ? "-" : ""}${showSymbol ? "₦" : ""}${absFmt}`;
 }
+
+export const handleRoleDisplay = (role: UserRole) => {
+  switch (role) {
+    case "admin":
+      return "Admin";
+    case "sales_manager":
+      return "Sales Manager";
+    case "sales_rep":
+      return "Sales Rep";
+    case "viewer":
+      return "Viewer";
+    default:
+      return role;
+  }
+};

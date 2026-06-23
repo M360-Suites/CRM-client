@@ -3,11 +3,13 @@
 import { useState, useEffect } from "react";
 import Profile from "./profile/page";
 import RolesAccess from "./roles/page";
+import Staffs from "./staffs/page";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 const Tabs = [
   { name: "Profile", value: "profile", component: Profile },
   { name: "Roles & Permissions", value: "roles", component: RolesAccess },
+  {name: "Staffs", value: "staffs", component: Staffs},
 ];
 
 export default function Body() {

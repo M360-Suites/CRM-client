@@ -43,3 +43,26 @@ export  interface UserInvitationResponse {
       updated_at: string,
       __v: number
 }
+
+export interface StaffResponse  {
+    data: 
+      {
+        _id: string,
+        email: string,
+        display_name: string,
+        role: string,
+        organization_id: string,
+        is_active: boolean,
+        gmail_sync_enabled: true,
+        created_at: string,
+        updated_at: string,
+        __v: number,
+        google_access_token: string,
+        google_refresh_token: string,
+        last_gmail_sync_at: string
+      }[],
+    total: number,
+    page: number,
+    limit: number,
+    total_pages: number
+}

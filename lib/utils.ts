@@ -165,7 +165,7 @@ export function formatNaira(
   return `${n < 0 ? "-" : ""}${showSymbol ? "₦" : ""}${absFmt}`;
 }
 
-export const handleRoleDisplay = (role: UserRole) => {
+export const handleRoleDisplay = (role: string) => {
   switch (role) {
     case "admin":
       return "Admin";

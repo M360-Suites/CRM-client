@@ -9,8 +9,11 @@ export default function useSendGmail() {
   return useMutation({
     mutationFn: (data: SendMailRequest) => SendGmail(data),
     onSuccess: (data) => {
-      toast.success(data.message || "Email sent successfully");
+      if (data.status) {
+        toast.success(data.message || "Email sent successfully");
       queryClient.invalidateQueries({ queryKey: ["emails"] });
+      }
+      toast.error(data.message || "Failed to send email");
     },
     onError: () => {
       toast.error("Failed to send email");

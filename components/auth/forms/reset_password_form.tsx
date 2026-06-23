@@ -8,10 +8,11 @@ import CustomInput from "@/components/custom/common/customInput";
 import { useResetPassword } from "@/hooks/auth/reset-password";
 
 interface ResetPasswordFormProps {
-  token: string | null;
+  token?: string | null;
+  invitationToken?: string | null;
 }
 
-export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
+export default function ResetPasswordForm({ token, invitationToken }: ResetPasswordFormProps) {
   const { mutate: resetPassword, isPending } = useResetPassword();
   const {
     register,
@@ -26,7 +27,12 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
       console.error("No reset token provided");
       return;
     }
-    resetPassword({ ...data, token });
+    if (token) {
+      resetPassword({ ...data, token });
+    }
+    // if (invitationToken) {
+    //   resetPassword({ ...data, invitationToken });
+    // }
   };
 
   return (

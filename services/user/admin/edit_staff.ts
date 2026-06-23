@@ -11,6 +11,6 @@ export const EditStaff = async (
   if (data.role !== undefined) payload.role = data.role;
   
 
-  const response = apiClient.patch(`/user/${data._id}`, payload);
+  const response = apiClient.patch(`/users/${data._id}`, payload);
   return response;
 };

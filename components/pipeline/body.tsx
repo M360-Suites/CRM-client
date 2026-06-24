@@ -221,8 +221,6 @@ export default function Body() {
 											)}
 										</div>
 									</div>
-
-									{/* )} */}
 								</div>
 							</div>
 							<Droppable id={stage.id}>

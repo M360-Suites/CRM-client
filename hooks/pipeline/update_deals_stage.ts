@@ -6,69 +6,78 @@ import { toast } from "sonner";
 type MoveLeadArgs = { dealId: string; stageId: string };
 
 export default function useMoveLeadToStage() {
-  const queryClient = useQueryClient();
+	const queryClient = useQueryClient();
 
-  return useMutation({
-    mutationFn: ({ dealId, stageId }: MoveLeadArgs) =>
-      moveLeadToStage(dealId, stageId),
+	return useMutation({
+		mutationFn: ({ dealId, stageId }: MoveLeadArgs) =>
+			moveLeadToStage(dealId, stageId),
 
-    onMutate: async ({ dealId, stageId }: MoveLeadArgs) => {
-      await queryClient.cancelQueries({ queryKey: ["pipeline"] });
+		onMutate: async ({ dealId, stageId }: MoveLeadArgs) => {
+			await queryClient.cancelQueries({ queryKey: ["pipeline"] });
 
-      const previous = queryClient.getQueryData<PipelineBoard>(["pipeline"]);
+			const previous = queryClient.getQueryData<PipelineBoard>([
+				"pipeline",
+			]);
 
-      queryClient.setQueryData<PipelineBoard>(["pipeline"], (old) => {
-        if (!old) return old;
+			queryClient.setQueryData<PipelineBoard>(["pipeline"], (old) => {
+				if (!old) return old;
 
-        let movedDeal: PipelineBoard["stages"][0]["deals"][0] | undefined;
+				let movedDeal:
+					| PipelineBoard["stages"][0]["deals"][0]
+					| undefined;
 
-        const stages = old.stages.map((stage) => {
-          const dealIndex = stage.deals.findIndex((d) => d.id === dealId);
-          if (dealIndex === -1) return stage;
+				const stages = old.stages.map((stage) => {
+					const dealIndex = stage.deals.findIndex(
+						(d) => d.id === dealId,
+					);
+					if (dealIndex === -1) return stage;
 
-          movedDeal = stage.deals[dealIndex];
-          return {
-            ...stage,
-            deals: stage.deals.filter((d) => d.id !== dealId),
-            total_deals: stage.total_deals - 1,
-          };
-        });
+					movedDeal = stage.deals[dealIndex];
+					return {
+						...stage,
+						deals: stage.deals.filter((d) => d.id !== dealId),
+						total_deals: stage.total_deals - 1,
+					};
+				});
 
-        if (!movedDeal) return old;
+				if (!movedDeal) return old;
 
-        return {
-          ...old,
-          stages: stages.map((stage) => {
-            if (stage.id !== stageId) return stage;
-            return {
-              ...stage,
-              deals: [{ ...movedDeal!, stage_id: stageId }, ...stage.deals],
-              total_deals: stage.total_deals + 1,
-            };
-          }),
-        };
-      });
+				return {
+					...old,
+					stages: stages.map((stage) => {
+						if (stage.id !== stageId) return stage;
+						return {
+							...stage,
+							deals: [
+								{ ...movedDeal!, stage_id: stageId },
+								...stage.deals,
+							],
+							total_deals: stage.total_deals + 1,
+						};
+					}),
+				};
+			});
 
-      return { previous };
-    },
+			return { previous };
+		},
 
-    onError: (_err, _vars, context) => {
-      if (context?.previous) {
-        queryClient.setQueryData(["pipeline"], context.previous);
-      }
-      toast.error("Failed to move deal");
-    },
+		onError: (_err, _vars, context) => {
+			if (context?.previous) {
+				queryClient.setQueryData(["pipeline"], context.previous);
+			}
+			toast.error("Failed to move deal");
+		},
 
-    onSuccess: (data) => {
-      if (data?.status) {
-        // toast.success(data.message || "Deal moved successfully");
-      } else {
-        toast.error(data?.message || "Failed to move deal");
-      }
-    },
+		onSuccess: (data) => {
+			if (data?.status) {
+				// toast.success(data.message || "Deal moved successfully");
+			} else {
+				toast.error(data?.message || "Failed to move deal");
+			}
+		},
 
-    onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["pipeline"] });
-    },
-  });
+		onSettled: () => {
+			queryClient.invalidateQueries({ queryKey: ["pipeline"] });
+		},
+	});
 }

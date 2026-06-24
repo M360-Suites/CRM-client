@@ -9,6 +9,7 @@ import { CustomPopover } from "@/components/custom/common/customPopover";
 import { CustomButton } from "@/components/custom/common/customButton";
 import useAssignDeal from "@/hooks/pipeline/assign_stage";
 import { useDeleteAssigned } from "@/hooks/pipeline/delete_assigned_user";
+import { getInitials } from "@/lib/utils";
 
 export default function Body() {
 	const { data: pipelineData, isPending } = useGetPipelineBoard();
@@ -30,155 +31,208 @@ export default function Body() {
 	return (
 		<DraggableLayout className="w-full h-full rounded-md">
 			<div className="flex w-full gap-3">
-				{stages?.map((stage) => (
-					<div
-						key={stage.id}
-						className="flex flex-col border rounded-md flex-1 min-w-0"
-					>
-						<div className="border-b p-4 flex flex-col gap-4">
-							<div className="flex flex-col gap-2 w-full">
-								<div className="flex items-center justify-between w-full text-foreground text-sm font-medium">
-									<span className="capitalize">
-										{stage.name}
+				{stages?.map((stage) => {
+					const assignedUsers = stage.assignees ?? [];
+
+					return (
+						<div
+							key={stage.id}
+							className="flex flex-col border rounded-md flex-1 min-w-0"
+						>
+							<div className="border-b p-4 flex flex-col gap-4">
+								<div className="flex flex-col gap-2 w-full">
+									<div className="flex items-center justify-between w-full text-foreground text-sm font-medium">
+										<span className="capitalize">
+											{stage.name}
+										</span>
+										<span>{stage.total_deals}</span>
+									</div>
+									<span className="text-foreground font-medium text-sm">
+										₦{stage.total_value.toLocaleString()}
 									</span>
-									<span>{stage.total_deals}</span>
 								</div>
-								<span className="text-foreground font-medium text-sm">
-									₦{stage.total_value.toLocaleString()}
-								</span>
-							</div>
-							<div className="flex items-center justify-between w-full">
-								<div className="flex flex-row-reverse items-center w-full justify-between gap-1 text-foreground/50 text-xs">
-									<CustomPopover
-										trigger={
-											<UserRoundPlus
-												size={14}
-												className="cursor-pointer hover:text-foreground"
-											/>
-										}
-										title="Team members"
-									>
-										<div className="flex flex-col gap-1 items-start justify-start bg-white min-w-30">
-											<div className="flex flex-col gap-1 w-full">
-												{team_members?.map((member) => (
-													<CustomButton
-														variant="secondary"
-														disabled={isAssigning}
-														onClick={() =>
-															assignDeal({
-																stage_id:
-																	stage.id,
-																user_id:
-																	member.id,
-															})
-														}
-														key={member.id}
-														className="px-2 py-1 w-full flex  justify-start cursor-pointer hover:bg-[#FFF3E6] rounded-md  text-sm text-foreground font-norma cursor-pointerl"
-													>
-														<div className="flex w-full items-center justify-between gap-2">
-															<div className="flex min-w-0 flex-col items-start text-left">
-																<span className="text-xs text-start">
-																	{
-																		member.display_name
-																	}
-																</span>
-																<span className="text-[9px] font-medium text-foreground/50">
-																	{
-																		member.email
-																	}
-																</span>
-															</div>
-															<div className="flex items-center gap-1">
-																{stage
-																	.assignedTo
-																	?.id ===
-																	member.id && (
-																	<Check
-																		size={8}
-																		className="shrink-0 text-foreground"
-																	/>
-																)}
-																{stage
-																	.assignedTo
-																	?.id ===
-																	member.id && (
-																	<button
-																		type="button"
-																		disabled={
-																			isDeleting &&
-																			deleteVariables?.stageId ===
-																				stage.id &&
-																			deleteVariables?.userId ===
-																				member.id
-																		}
-																		onClick={(
-																			event,
-																		) => {
-																			event.stopPropagation();
-																			event.preventDefault();
-																			deleteAssignedUser(
-																				{
-																					stageId:
-																						stage.id,
-																					userId: member.id,
-																				},
-																			);
-																		}}
-																		className="inline-flex items-center justify-center text-foreground/50 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
-																		aria-label="Delete assigned user"
-																	>
-																		{isDeleting &&
-																		deleteVariables?.stageId ===
-																			stage.id &&
-																		deleteVariables?.userId ===
-																			member.id ? (
-																			<Loader
-																				className="animate-spin"
+								<div className="flex items-center justify-between w-full">
+									<div className="flex flex-row-reverse items-center w-full justify-between gap-1 text-foreground/50 text-xs">
+										<CustomPopover
+											trigger={
+												<UserRoundPlus
+													size={14}
+													className="cursor-pointer hover:text-foreground"
+												/>
+											}
+											title="Team members"
+										>
+											<div className="flex flex-col gap-1 items-start justify-start bg-white min-w-30">
+												<div className="flex flex-col gap-1 w-full">
+													{team_members?.map(
+														(member) => (
+															<CustomButton
+																variant="secondary"
+																disabled={
+																	isAssigning
+																}
+																onClick={() =>
+																	assignDeal({
+																		stage_id:
+																			stage.id,
+																		user_id:
+																			member.id,
+																	})
+																}
+																key={member.id}
+																className="px-2 py-1 w-full flex  justify-start cursor-pointer hover:bg-[#FFF3E6] rounded-md  text-sm text-foreground font-norma cursor-pointerl"
+															>
+																<div className="flex w-full items-center justify-between gap-2">
+																	<div className="flex min-w-0 flex-col items-start text-left">
+																		<span className="text-xs text-start">
+																			{
+																				member.display_name
+																			}
+																		</span>
+																		<span className="text-[9px] font-medium text-foreground/50">
+																			{
+																				member.email
+																			}
+																		</span>
+																	</div>
+																	<div className="flex items-center gap-1">
+																		{assignedUsers.some(
+																			(
+																				assignedUser,
+																			) =>
+																				assignedUser.id ===
+																				member.id,
+																		) && (
+																			<Check
 																				size={
-																					12
+																					6
 																				}
-																			/>
-																		) : (
-																			<Trash2
-																				size={
-																					12
-																				}
+																				className=" text-foreground"
 																			/>
 																		)}
-																	</button>
-																)}
-															</div>
-														</div>
-														{isAssigning &&
-															variables?.stage_id ===
-																stage.id &&
-															variables?.user_id ===
-																member.id && (
-																<Loader className="animate-spin" />
-															)}
-													</CustomButton>
-												))}
+																		{assignedUsers.some(
+																			(
+																				assignedUser,
+																			) =>
+																				assignedUser.id ===
+																				member.id,
+																		) && (
+																			<button
+																				type="button"
+																				disabled={
+																					isDeleting &&
+																					deleteVariables?.stageId ===
+																						stage.id &&
+																					deleteVariables?.userId ===
+																						member.id
+																				}
+																				onClick={(
+																					event,
+																				) => {
+																					event.stopPropagation();
+																					event.preventDefault();
+																					deleteAssignedUser(
+																						{
+																							stageId:
+																								stage.id,
+																							userId: member.id,
+																						},
+																					);
+																				}}
+																				className="inline-flex items-center justify-center text-foreground/50 hover:text-foreground disabled:cursor-not-allowed disabled:opacity-50"
+																				aria-label="Delete assigned user"
+																			>
+																				{isDeleting &&
+																				deleteVariables?.stageId ===
+																					stage.id &&
+																				deleteVariables?.userId ===
+																					member.id ? (
+																					<Loader className="animate-spin text-lg" />
+																				) : (
+																					<Trash2
+																						size={
+																							7
+																						}
+																						className="text-foundation-error-6 cursor-pointer"
+																					/>
+																				)}
+																			</button>
+																		)}
+																	</div>
+																</div>
+																{isAssigning &&
+																	variables?.stage_id ===
+																		stage.id &&
+																	variables?.user_id ===
+																		member.id && (
+																		<Loader className="animate-spin" />
+																	)}
+															</CustomButton>
+														),
+													)}
+												</div>
 											</div>
+										</CustomPopover>
+										<div className="flex items-center relative gap-1 flex-wrap justify-end">
+											{assignedUsers.length > 0 ? (
+												<>
+													{assignedUsers
+														.slice(0, 3)
+														.map(
+															(
+																assignedUser,
+																index,
+															) => (
+																<span
+																	key={
+																		assignedUser.id
+																	}
+																	className={`inline-flex h-6 w-6 items-center justify-center font-semibold rounded-full bg-[#E2725B] border border-[#fcafa0] p-1.5 text-[10px] text-foreground ${index > 0 ? "-ml-2 top-4" : ""}`}
+																	style={{
+																		zIndex:
+																			assignedUsers.length -
+																			index,
+																	}}
+																>
+																	{getInitials(
+																		assignedUser.display_name,
+																	)}
+																</span>
+															),
+														)}
+													{assignedUsers.length >
+														3 && (
+														<span
+															className="inline-flex h-6 w-6 items-center justify-center font-semibold rounded-full bg-[#E2725B] border border-[#fcafa0] p-1.5 text-[10px] text-foreground -ml-2"
+															style={{
+																zIndex: 1,
+															}}
+														>
+															+
+															{assignedUsers.length -
+																3}
+														</span>
+													)}
+												</>
+											) : (
+												<span className="text-xs text-foreground/50">
+													No assignees
+												</span>
+											)}
 										</div>
-									</CustomPopover>
-									<span
-										className={`text-xs text-start ${stage.assignedTo ? "text-foreground" : "text-foreground/50"}`}
-									>
-										{stage.assignedTo?.display_name ||
-											"No assignees"}
-									</span>
-								</div>
+									</div>
 
-								{/* )} */}
+									{/* )} */}
+								</div>
 							</div>
+							<Droppable id={stage.id}>
+								{stage.deals.map((deal) => (
+									<Draggable key={deal.id} lead={deal} />
+								))}
+							</Droppable>
 						</div>
-						<Droppable id={stage.id}>
-							{stage.deals.map((deal) => (
-								<Draggable key={deal.id} lead={deal} />
-							))}
-						</Droppable>
-					</div>
-				))}
+					);
+				})}
 			</div>
 		</DraggableLayout>
 	);

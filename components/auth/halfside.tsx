@@ -45,6 +45,10 @@ const halfSideData: DataProp[] = [
     type: "reset-password",
     url: ResetImg,
   },
+  {
+    type: "accept-invite",
+    url: ResetImg,
+  },
 ];
 
 export default function HalfSide() {

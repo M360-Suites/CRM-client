@@ -35,7 +35,7 @@ export function CustomPopover({
             )}
           </div>
         )}
-        {children && <div className="p-2">{children}</div>}
+        {children && <div className="px-2 pb-2 ">{children}</div>}
       </PopoverContent>
     </Popover>
   );

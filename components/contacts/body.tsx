@@ -97,18 +97,25 @@ export default function Body() {
         )}
 
         {/* Error state */}
-        {isError && !isPending && (
+        {!isPending &&  contacts?.data.length === 0 && (
           <div className="flex flex-col items-center gap-4 py-20 border border-[#E8E8E8] rounded-[12px]">
-            <span className="text-base font-normal text-foreground">
-              Failed to load contacts
-            </span>
-            <CustomButton
-              className="px-4 py-2 rounded-full"
-              onClick={() => refetch()}
-            >
-              <span className="text-sm">Retry</span>
-            </CustomButton>
-          </div>
+                      <span className="text-base font-normal text-foreground">
+                        No companies yet
+                      </span>
+                      <CustomDrawer
+                        label="Add Company"
+                        trigger={
+                          <CustomButton
+                            variant="default"
+                            className="rounded-full flex flex-row items-center gap-2 px-5 py-2.5"
+                          >
+                            <span>Add your first contact</span>
+                          </CustomButton>
+                        }
+                      >
+                        {(close) => <AddContactForm onSuccess={close} />}
+                      </CustomDrawer>
+                    </div>
         )}
 
         {/* Contacts list */}

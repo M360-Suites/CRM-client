@@ -1,3 +1,4 @@
+
 "use client";
 
 import { resetPasswordSchema, type ResetRequestData } from "@/validation/auth";
@@ -5,14 +6,15 @@ import { useForm, SubmitHandler } from "react-hook-form";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { zodResolver } from "@hookform/resolvers/zod";
 import CustomInput from "@/components/custom/common/customInput";
-import { useResetPassword } from "@/hooks/auth/reset-password";
+import useAcceptInvitation from "@/hooks/user/accept_invitations"
 
-interface ResetPasswordFormProps {
-  token: string | null;
+interface AcceptInviteFormProps {
+  invitationToken?: string | null;
+  displayName?: string | null;
 }
 
-export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
-  const { mutate: resetPassword, isPending } = useResetPassword();
+export default function AcceptInviteForm({ invitationToken, displayName }: AcceptInviteFormProps) {
+  const {mutate: acceptInvitation, isPending: isAcceptingInvite} = useAcceptInvitation();
   const {
     register,
     handleSubmit,
@@ -20,13 +22,12 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
   } = useForm<ResetRequestData>({
     resolver: zodResolver(resetPasswordSchema),
   });
-  console.log("Reset token:", token);
   const onSubmit: SubmitHandler<ResetRequestData> = (data) => {
-    if (!token) {
-      return;
-    }
-      resetPassword({ ...data, token });
     
+    if (invitationToken && displayName) {
+      console.log("Accepting invitation with token:", invitationToken, "and display name:", displayName);
+      acceptInvitation({ invitationToken, display_name: displayName, password: data.newPassword });
+    }
   };
 
   return (
@@ -66,10 +67,10 @@ export default function ResetPasswordForm({ token }: ResetPasswordFormProps) {
       </div>
       <CustomButton
         type="submit"
-        disabled={isPending}
+        disabled={ isAcceptingInvite}
         className="w-full py-3.5"
       >
-        {isPending ? "Resetting..." : "Reset Password"}
+        {isAcceptingInvite ? "setting password..." : "Set password"}
       </CustomButton>
     </form>
   );

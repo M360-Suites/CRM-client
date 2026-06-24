@@ -2,13 +2,17 @@
 
 import { Droppable } from "./droppable";
 import { Draggable } from "@/components/pipeline/draggable";
-import { UserRound, UserRoundPlus } from "lucide-react";
+import { UserRound, UserRoundPlus, Loader } from "lucide-react";
 import { useGetPipelineBoard } from "@/hooks/pipeline/get_pipeline_board";
 import { DraggableLayout } from "./draggableLayout";
+import { CustomPopover } from "@/components/custom/common/customPopover";
+import {CustomButton} from "@/components/custom/common/customButton";
+import useAssignDeal from "@/hooks/pipeline/assign_stage";
 
 export default function Body() {
   const { data: pipelineData, isPending } = useGetPipelineBoard();
-  const { stages } = pipelineData || {};
+	const { stages, team_members } = pipelineData || {};
+  const { mutate: assignDeal, isPending: isAssigning, variables } = useAssignDeal();
   console.log("pipeline:", pipelineData);
 
   if (isPending) return <PipelineSkeleton />;
@@ -32,17 +36,41 @@ export default function Body() {
                 </span>
               </div>
               <div className="flex items-center justify-between w-full">
-                {stage.assignedTo ? (
-                  <div className="flex -space-x-2">
-                    <span>{stage.assignedTo.display_name}</span>
-                    <UserRound size={18} />
+                {/* {stage.assignedTo ? (
+                  <div className="flex -space-x-2 w-full justify-between items-center text-foreground text-xs font-normal">
+                    <span className="text-xs text-start">{stage.assignedTo.display_name}</span>
+                    <UserRound size={16} />
                   </div>
-                ) : (
-                  <div className="flex flex-row-reverse items-center gap-1 text-foreground/50 text-xs">
-                    <UserRoundPlus size={14} />
-                    <span>No assignees</span>
-                  </div>
-                )}
+                ) : ( */}
+                  <div className="flex flex-row-reverse items-center w-full justify-between gap-1 text-foreground/50 text-xs">
+                      
+                      <CustomPopover trigger={<UserRoundPlus size={14}  className="cursor-pointer hover:text-foreground"/>} title="Team members">
+										<div className="flex flex-col gap-1 items-start justify-start bg-white min-w-30">
+											
+											<div className="flex flex-col gap-1 w-full">
+                                            {team_members?.map((member) => (
+												<CustomButton
+													variant="secondary"
+													disabled={isAssigning}
+													onClick={() => assignDeal({ stage_id: stage.id, user_id: member.id })}
+													key={member.id}
+													className="px-2 py-2 w-full flex  justify-start cursor-pointer hover:bg-[#FFF3E6] rounded-md  text-sm text-foreground font-norma cursor-pointerl"
+											  >
+													<span className="text-xs text-start">{member.display_name}</span>
+													<span className="text-[9px] font-medium text-foreground/50">{member.email}</span>
+                          {isAssigning && variables?.stage_id === stage.id && variables?.user_id === member.id && (
+                            <Loader className="animate-spin" />
+                          )}
+													
+											  </CustomButton>
+											))}
+											</div>
+                                          </div>
+                                        </CustomPopover>
+                    <span className={`text-xs text-start ${stage.assignedTo ? 'text-foreground' : 'text-foreground/50'}`}>{stage.assignedTo?.display_name || "No assignees"}</span>
+                    </div>
+                    
+                {/* )} */}
               </div>
             </div>
             <Droppable id={stage.id}>

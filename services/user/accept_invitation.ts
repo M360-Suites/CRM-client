@@ -1,11 +1,16 @@
 import { apiClient } from "@/services/apiclient";
-import { AddStaffData } from "@/validation/roles";
 
-export const acceptInvitation = async (data: AddStaffData) => {
+interface InvitationProps {
+  invitationToken: string;
+  display_name: string;
+  password: string;
+}
+
+export const acceptInvitation = async (data: InvitationProps) => {
   const response = await apiClient.post("/users/invitations/accept", {
-    display_name: data.fullname,
-    email: data.email,
-    role: data.role,
+    invitationToken: data.invitationToken,
+    display_name: data.display_name,
+    password: data.password
   }, true);
   return response;
 }

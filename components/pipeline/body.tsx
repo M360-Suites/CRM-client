@@ -30,7 +30,7 @@ export default function Body() {
 
 	return (
 		<DraggableLayout className="w-full h-full rounded-md">
-			<div className="flex w-full gap-3">
+			<div className="grid xl:grid-cols-6 lg:grid-cols-4 gap-3 max-lg:grid-cols-3 max-sm:grid-cols-2 max-xs:grid-cols-1 w-full">
 				{stages?.map((stage) => {
 					const assignedUsers = stage.assignees ?? [];
 

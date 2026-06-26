@@ -48,20 +48,22 @@ export default function Header() {
               </CustomButton>
             ))}
           </div>
-          <CustomDrawer
-            label="Add Task"
-            trigger={
-              <CustomButton
-                variant="default"
-                className="rounded-full flex flex-row items-center gap-3 xl:px-12 px-6 max-md:py-3 py-2.5"
-              >
-                <PlusIcon className="" />
-                <span className="max-md:text-sm">New</span>
-              </CustomButton>
-            }
-          >
-            {(close) => <AddTaskForm onSuccess={close} />}
-          </CustomDrawer>
+          {activeTab === "list" && (
+            <CustomDrawer
+              label="Add Task"
+              trigger={
+                <CustomButton
+                  variant="default"
+                  className="rounded-full flex flex-row items-center gap-3 xl:px-8 px-6 max-md:py-3.5 py-2.5"
+                >
+                  <PlusIcon className="" />
+                  <span className="max-md:text-sm">New</span>
+                </CustomButton>
+              }
+            >
+              {(close) => <AddTaskForm onSuccess={close} />}
+            </CustomDrawer>
+          )}
         </div>
       </div>
     </div>

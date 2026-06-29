@@ -1,5 +1,10 @@
 import DashCard from "@/components/dashboard/custom/dashcard";
 import DashTable from "@/components/dashboard/custom/dash_table";
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Dashboard | CRM360",
+};
 
 const Page = () => {
   return (

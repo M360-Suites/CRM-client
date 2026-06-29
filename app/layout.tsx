@@ -1,4 +1,3 @@
-import { Toaster } from "sonner";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, Inter } from "next/font/google";
 import Providers from "@/components/provider/queryProvider";
@@ -25,9 +24,19 @@ export const viewport = {
 };
 
 export const metadata: Metadata = {
-  title: "CRM client",
+  title: "CRM360 | ",
   description:
-    "A Customer Relationship Management (CRM) client application for firms",
+    "CRM 360 helps firms manage contacts, deals, and conversations in one place. Track your pipeline, organize tasks, and stay on top of every customer relationship.",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "CRM360",
+  },
+  icons: {
+    apple: "/logo.png",
+    icon: "/logo.png",
+  },
 };
 
 export default function RootLayout({

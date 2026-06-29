@@ -1,5 +1,10 @@
+import { Metadata } from "next";
 import Header from "@/components/pipeline/header";
 import Body from "@/components/pipeline/body";
+
+export const metadata: Metadata = {
+  title: "Pipeline | CRM360",
+};
 
 export default function page() {
   return (

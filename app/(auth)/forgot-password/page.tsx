@@ -1,4 +1,9 @@
+import { Metadata } from "next";
 import ForgotPasswordForm from "@/components/auth/forms/forgot_password_form";
+
+export const metadata: Metadata = {
+  title: "Forgot Password | CRM360",
+};
 
 const Page = () => {
   return (

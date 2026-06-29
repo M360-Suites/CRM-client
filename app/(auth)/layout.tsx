@@ -3,13 +3,34 @@
 import Image from "next/image";
 import HalfSide from "@/components/auth/halfside";
 import CRMLOGO from "@/public/assets/company/logo.png";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth/auth_store";
+import { useEffect } from "react";
 
 const AuthLayout = ({ children }: { children: React.ReactNode }) => {
   const pathname = usePathname();
+  const router = useRouter();
   const { setOnboardingStep, onboardingStep } = useAuthStore();
   const isOnboardingPage = pathname === "/onboarding";
+
+  useEffect(() => {
+    // Check if user is already authenticated via server-side endpoint
+    const checkAuth = async () => {
+      try {
+        const response = await fetch("/api/auth-status");
+        const data = await response.json();
+
+        if (data.isAuthenticated) {
+          // User is authenticated and verified, redirect to dashboard
+          router.replace("/dashboard");
+        }
+      } catch (error) {
+        console.error("Error checking auth status:", error);
+      }
+    };
+
+    checkAuth();
+  }, [router]);
 
   const handleSkipClick = () => {
     if (onboardingStep === 1) {

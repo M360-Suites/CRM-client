@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { storage } from "@/lib/handler";
+import { isTokenValid } from "@/lib/auth-utils";
 
 const PROTECTED_PATHS = [
   "/dashboard",
@@ -23,21 +24,23 @@ export function proxy(request: NextRequest) {
 
   const accessToken = cookies.get(storage.ACCESS_TOKEN)?.value;
   const isVerified = cookies.get(storage.IS_VERIFIED)?.value === "true";
+  const tokenExpiry = cookies.get(storage.ACCESS_TOKEN_EXPIRY)?.value;
 
   const isProtectedRoute = PROTECTED_PATHS.some((path) =>
     pathname.startsWith(path),
   );
 
-  console.log("Is protected route:", isProtectedRoute);
-  console.log("Access token present:", accessToken);
-  console.log("Is user verified:", isVerified);
-
   // If token is expired or missing on a protected route
   if (isProtectedRoute) {
-    // Not authenticated -> require login
-    if (!accessToken) {
+    const hasValidToken = isTokenValid(accessToken, tokenExpiry);
+
+    // Not authenticated or token expired -> require login
+    if (!hasValidToken) {
       const loginUrl = new URL(`/login`, request.url);
-      loginUrl.searchParams.set("r", "auth_required");
+      loginUrl.searchParams.set(
+        "r",
+        !accessToken ? "auth_required" : "token_expired",
+      );
       const response = NextResponse.redirect(loginUrl);
 
       // Clear sensitive cookies
@@ -57,8 +60,10 @@ export function proxy(request: NextRequest) {
       response.cookies.set(
         "auth_notice",
         JSON.stringify({
-          type: "auth_required",
-          message: "Please sign in to access that page.",
+          type: !accessToken ? "auth_required" : "token_expired",
+          message: !accessToken
+            ? "Please sign in to access that page."
+            : "Your session has expired. Please sign in again.",
         }),
         { path: "/", httpOnly: false, maxAge: 60 * 5 },
       );
@@ -67,7 +72,7 @@ export function proxy(request: NextRequest) {
     }
 
     // Authenticated but not verified -> prompt verification flow
-    if (accessToken && !isVerified) {
+    if (hasValidToken && !isVerified) {
       // Try to extract email from stored user cookie if available
       let userEmail = "";
       const rawUser = cookies.get(storage.LOGGED_IN_USER)?.value;
@@ -76,7 +81,7 @@ export function proxy(request: NextRequest) {
           const parsed = JSON.parse(rawUser);
           userEmail = parsed?.email ?? "";
         }
-      } catch (e) {
+      } catch {
         userEmail = "";
       }
 
@@ -106,6 +111,12 @@ export function proxy(request: NextRequest) {
       );
 
       return response;
+    }
+
+    // Token is valid and user is verified - allow access
+    if (hasValidToken && isVerified) {
+      console.log("User authenticated and verified - allowing access");
+      return NextResponse.next();
     }
   }
 

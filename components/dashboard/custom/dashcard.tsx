@@ -1,5 +1,11 @@
 "use client";
-import { Users, TrendingUp, DollarSign, Building2 } from "lucide-react";
+import {
+  Users,
+  TrendingUp,
+  TrendingDown,
+  DollarSign,
+  Building2,
+} from "lucide-react";
 import {
   iconCardBg,
   iconColor,
@@ -9,6 +15,37 @@ import {
 import { useUserProfile } from "@/hooks/user/profile";
 import { useDashboard } from "@/hooks/user/dashboard";
 import Link from "next/link";
+
+const CardSkeleton = () => (
+  <div className="p-4 border border-[#E8E8E8] rounded-[8px] flex flex-col gap-2 animate-pulse">
+    <div className="w-64 flex flex-col gap-3">
+      <div className="flex flex-row items-center gap-3 py-4">
+        <div className="rounded-full p-2 bg-gray-200 w-9 h-9" />
+        <div className="h-4 w-32 bg-gray-200 rounded" />
+      </div>
+      <div className="h-10 w-28 bg-gray-200 rounded" />
+    </div>
+    <div className="text-sm flex flex-row items-center gap-1">
+      <div className="h-4 w-12 bg-gray-200 rounded" />
+      <div className="h-4 w-28 bg-gray-200 rounded" />
+    </div>
+  </div>
+);
+
+const PipelineSkeleton = () => (
+  <div className="grid xl:grid-cols-6 md:grid-cols-3 grid-cols-2 gap-4 w-full">
+    {Array.from({ length: 6 }).map((_, i) => (
+      <div
+        key={i}
+        className="bg-[#FAFFFF] border border-[#E8E8E8] py-3.5 px-5 rounded-[12px] animate-pulse"
+      >
+        <div className="h-6 w-32 bg-gray-200 rounded mb-2" />
+        <div className="h-8 w-20 bg-gray-200 rounded mb-1" />
+        <div className="h-4 w-16 bg-gray-200 rounded" />
+      </div>
+    ))}
+  </div>
+);
 
 export default function DashCard() {
   const { data: user } = useUserProfile();
@@ -57,38 +94,6 @@ export default function DashCard() {
     },
   ];
 
-  const CardSkeleton = () => (
-    <div className="p-4 border border-[#E8E8E8] rounded-[8px] flex flex-col gap-2 animate-pulse">
-      <div className="w-64 flex flex-col gap-3">
-        <div className="flex flex-row items-center gap-3 py-4">
-          <div className="rounded-full p-2 bg-gray-200 w-9 h-9" />
-          <div className="h-4 w-32 bg-gray-200 rounded" />
-        </div>
-        <div className="h-10 w-28 bg-gray-200 rounded" />
-      </div>
-
-      <div className="text-sm flex flex-row items-center gap-1">
-        <div className="h-4 w-12 bg-gray-200 rounded" />
-        <div className="h-4 w-28 bg-gray-200 rounded" />
-      </div>
-    </div>
-  );
-
-  const PipelineSkeleton = () => (
-    <div className="grid xl:grid-cols-6  md:grid-cols-3 grid-cols-2 gap-4 w-full">
-      {Array.from({ length: 6 }).map((_, i) => (
-        <div
-          key={i}
-          className="bg-[#FAFFFF] border border-[#E8E8E8] py-3.5 px-5 rounded-[12px] animate-pulse"
-        >
-          <div className="h-6 w-32 bg-gray-200 rounded mb-2" />
-          <div className="h-8 w-20 bg-gray-200 rounded mb-1" />
-          <div className="h-4 w-16 bg-gray-200 rounded" />
-        </div>
-      ))}
-    </div>
-  );
-
   return (
     <div className="flex flex-col gap-6 pt-8">
       <div className="flex flex-col gap-0.5">
@@ -130,8 +135,22 @@ export default function DashCard() {
                 </div>
 
                 <div className="xl:text-sm text-xs flex flex-row items-center gap-1">
-                  <span>+{item.percentage}%</span>
-                  <span>vs {item.percentage} days</span>
+                  {item.percentage >= 0 ? (
+                    <TrendingUp className="size-3.5 text-green-600 shrink-0" />
+                  ) : (
+                    <TrendingDown className="size-3.5 text-red-500 shrink-0" />
+                  )}
+                  <span
+                    className={
+                      item.percentage >= 0
+                        ? "text-green-600 font-medium"
+                        : "text-red-500 font-medium"
+                    }
+                  >
+                    {item.percentage >= 0 ? "+" : ""}
+                    {item.percentage}%
+                  </span>
+                  <span className="text-muted-foreground">vs last period</span>
                 </div>
               </div>
             ))}

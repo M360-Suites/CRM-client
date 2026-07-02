@@ -9,30 +9,70 @@ import {
 } from "@/validation/document";
 import { zodResolver } from "@hookform/resolvers/zod";
 import useCreateFolder from "@/hooks/document/create_document";
+import { useEditFolder } from "@/hooks/document/edit_folder";
+import { Folder } from "@/types/document";
 
 interface AddFolderFormProps {
   onSuccess?: () => void;
+  folder?: Folder;
 }
 
-export default function AddFolderForm({ onSuccess }: AddFolderFormProps) {
+export default function AddFolderForm({
+  onSuccess,
+  folder,
+}: AddFolderFormProps) {
+  const isEditMode = !!folder;
+
   const { mutate: addDocument, isPending: isAdding } = useCreateFolder();
+  const { mutate: editDocument, isPending: isEditing } = useEditFolder();
+
   const {
     register,
     handleSubmit,
     reset,
+    watch,
     formState: { errors },
   } = useForm<AddDocumentRequestData>({
     resolver: zodResolver(addDocumentSchema),
+    defaultValues: isEditMode
+      ? { folderName: folder.name, folderDescription: folder.description }
+      : {},
   });
+
+  // Track live values to detect changes in edit mode
+  const watchedName = watch("folderName");
+  const watchedDescription = watch("folderDescription");
+  const hasChanged = isEditMode
+    ? watchedName !== folder.name || watchedDescription !== folder.description
+    : true;
+
   const onSubmit: SubmitHandler<AddDocumentRequestData> = (data) => {
-    console.log(data);
-    addDocument(data, {
-      onSuccess: () => {
-        reset();
-        onSuccess?.();
-      },
-    });
+    if (isEditMode) {
+      editDocument(
+        {
+          id: folder._id,
+          data: {
+            name: data.folderName,
+            description: data.folderDescription ?? "",
+          },
+        },
+        {
+          onSuccess: () => {
+            onSuccess?.();
+          },
+        },
+      );
+    } else {
+      addDocument(data, {
+        onSuccess: () => {
+          reset();
+          onSuccess?.();
+        },
+      });
+    }
   };
+
+  const isPending = isAdding || isEditing;
 
   return (
     <form
@@ -54,6 +94,7 @@ export default function AddFolderForm({ onSuccess }: AddFolderFormProps) {
       </div>
       <div className="relative w-full">
         <CustomInput
+          textArea
           label="Description"
           placeholder="Enter description"
           error={errors.folderDescription?.message}
@@ -69,10 +110,16 @@ export default function AddFolderForm({ onSuccess }: AddFolderFormProps) {
       <div className="w-full px-8 pt-10">
         <CustomButton
           type="submit"
-          disabled={isAdding}
+          disabled={isPending || !hasChanged}
           className="w-full px-6 py-4 font-dm rounded-lg"
         >
-          {isAdding ? "Creating Folder..." : "Create Folder"}
+          {isPending
+            ? isEditMode
+              ? "Saving..."
+              : "Creating Folder..."
+            : isEditMode
+              ? "Save Changes"
+              : "Create Folder"}
         </CustomButton>
       </div>
     </form>

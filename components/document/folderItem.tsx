@@ -1,12 +1,29 @@
-import { Download, Trash2, MoreVertical, FileText } from "lucide-react";
+import {
+  Trash2,
+  MoreVertical,
+  FileText,
+  FolderOpen,
+  Pencil,
+  Loader2,
+} from "lucide-react";
+import { CustomPopover } from "../custom/common/customPopover";
 import { toUTC } from "@/lib/utils";
 import { Folder } from "@/types/document";
 
 interface FolderItemProps {
   folder: Folder;
+  isDeleting: boolean;
   onClick: () => void;
+  onEdit?: () => void;
+  onDelete: () => void;
 }
-export default function FolderItem({ folder, onClick }: FolderItemProps) {
+export default function FolderItem({
+  folder,
+  isDeleting,
+  onClick,
+  onEdit,
+  onDelete,
+}: FolderItemProps) {
   return (
     <div className="w-full bg-[#FFF3E6]/20 hover:bg-gray-50 hover:cursor-pointer grid grid-cols-6 border-b gap-1 lg:gap-5 md:gap-3 border-b-border last:border-b-0 pl-4 md:pr-8 pr-4 py-2.5 overflow-hidden">
       {/* Icon + Info */}
@@ -62,7 +79,38 @@ export default function FolderItem({ folder, onClick }: FolderItemProps) {
         </span>
       </div>
       <div className="py-0.5 flex flex-col items-end justify-center">
-        <MoreVertical size={17} className="text-foreground/80" />
+        <CustomPopover
+          trigger={<MoreVertical size={17} className="text-foreground/80" />}
+        >
+          <div className="flex flex-col w-36 pt-2">
+            <button
+              onClick={onClick}
+              className="flex items-center gap-2.5 px-2.5 py-2 text-sm text-foreground hover:bg-gray-100 rounded-md transition-colors w-full text-left"
+            >
+              <FolderOpen size={15} className="text-foreground/70" />
+              Open
+            </button>
+            <button
+              onClick={onEdit}
+              className="flex items-center gap-2.5 px-2.5 py-2 text-sm text-foreground hover:bg-gray-100 rounded-md transition-colors w-full text-left"
+            >
+              <Pencil size={15} className="text-foreground/70" />
+              Edit
+            </button>
+            <button
+              onClick={onDelete}
+              disabled={isDeleting}
+              className="flex items-center gap-2.5 px-2.5 py-2 text-sm text-red-500 hover:bg-red-50 rounded-md transition-colors w-full text-left disabled:opacity-60 disabled:cursor-not-allowed"
+            >
+              {isDeleting ? (
+                <Loader2 size={15} className="animate-spin" />
+              ) : (
+                <Trash2 size={15} />
+              )}
+              {isDeleting ? "Deleting..." : "Delete"}
+            </button>
+          </div>
+        </CustomPopover>
       </div>
     </div>
   );

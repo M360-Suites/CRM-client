@@ -3,6 +3,10 @@
 import { CustomButton } from "@/components/custom/common/customButton";
 import { useGetFolderById } from "@/hooks/document/get_folder_by_id";
 import FileItem from "../fileItem";
+import { useState } from "react";
+import { Document } from "@/types/document";
+import { CustomDrawer } from "@/components/custom/common/drawer";
+import EditFileForm from "../form/edit_file_form";
 
 interface BodyProps {
   onDownload?: (file: File) => void;
@@ -11,6 +15,7 @@ interface BodyProps {
 
 export default function Body({ id }: { id: string }) {
   const { data: folderData, isLoading: isFolderLoading } = useGetFolderById(id);
+  const [editingFile, setEditingFile] = useState<Document | null>(null);
 
   // normalize: folderData may be ApiResponse wrapper or raw folder
   const documents =
@@ -60,10 +65,36 @@ export default function Body({ id }: { id: string }) {
         <div className="flex border flex-col w-full rounded-t-[10px]">
           <div className="flex flex-col rounded-b-[8px]">
             {documents.map((file: any) => (
-              <FileItem key={file._id} file={file} />
+              <FileItem
+                key={file._id}
+                file={file}
+                onEdit={() => setEditingFile(file)}
+              />
             ))}
           </div>
         </div>
+      )}
+
+      {editingFile && (
+        <CustomDrawer
+          key={editingFile._id}
+          trigger={<span />}
+          label="Rename File"
+          defaultOpen
+          onOpenChange={(o) => {
+            if (!o) setEditingFile(null);
+          }}
+        >
+          {(close) => (
+            <EditFileForm
+              file={editingFile}
+              onSuccess={() => {
+                close();
+                setEditingFile(null);
+              }}
+            />
+          )}
+        </CustomDrawer>
       )}
     </div>
   );

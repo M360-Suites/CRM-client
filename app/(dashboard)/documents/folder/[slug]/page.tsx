@@ -10,7 +10,7 @@ export default async function FolderSlugPage({
   console.log("route slug:", slug);
 
   return (
-    <div className="w-full flex flex-col gap-12 pb-8">
+    <div className="w-full flex flex-col gap-8 pb-8">
       <Header id={slug} />
       <Body id={slug} />
     </div>

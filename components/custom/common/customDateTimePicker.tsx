@@ -50,6 +50,29 @@ interface DateTimePickerProps {
   onBlur?: () => void;
 }
 
+interface PickerState {
+  date: Date | undefined;
+  hr: number;
+  min: number;
+  ampm: "AM" | "PM";
+}
+
+function parseToPickerState(value: string | null | undefined): PickerState {
+  const base: PickerState = { date: undefined, hr: 12, min: 0, ampm: "AM" };
+  if (!value) return base;
+  const d = new Date(value);
+  if (isNaN(d.getTime())) return base;
+  let h = d.getHours();
+  const period: "AM" | "PM" = h >= 12 ? "PM" : "AM";
+  h = h % 12 || 12;
+  return {
+    date: new Date(d.getFullYear(), d.getMonth(), d.getDate()),
+    hr: h,
+    min: d.getMinutes(),
+    ampm: period,
+  };
+}
+
 export function CustomDateTimePicker({
   label,
   error,
@@ -59,25 +82,18 @@ export function CustomDateTimePicker({
   onBlur,
 }: DateTimePickerProps) {
   const [open, setOpen] = useState(false);
-  const [date, setDate] = useState<Date | undefined>(undefined);
-  const [hr, setHr] = useState(12);
-  const [min, setMin] = useState(0);
-  const [ampm, setAmpm] = useState<"AM" | "PM">("AM");
+  // Draft only matters while the picker is open; no effect needed
+  const [draft, setDraft] = useState<PickerState>(() =>
+    parseToPickerState(value),
+  );
+  const { date, hr, min, ampm } = draft;
   const ref = useRef<HTMLDivElement>(null);
 
-  // Sync from external UTC value
-  useEffect(() => {
-    if (!value) return;
-    const d = new Date(value);
-    if (isNaN(d.getTime())) return;
-    setDate(new Date(d.getFullYear(), d.getMonth(), d.getDate()));
-    let h = d.getHours();
-    const period: "AM" | "PM" = h >= 12 ? "PM" : "AM";
-    h = h % 12 || 12;
-    setHr(h);
-    setMin(d.getMinutes());
-    setAmpm(period);
-  }, [value]);
+  // Initialise draft from the current value each time the picker opens
+  const handleOpen = () => {
+    setDraft(parseToPickerState(value));
+    setOpen(true);
+  };
 
   // Close on outside click + trigger onBlur
   useEffect(() => {
@@ -130,7 +146,7 @@ export function CustomDateTimePicker({
 
       <button
         type="button"
-        onClick={() => setOpen((o) => !o)}
+        onClick={handleOpen}
         className={`rounded-[10px] border flex flex-row justify-between items-center px-4 py-4.5 bg-[#FFF3E6] w-full text-left ${
           error ? "border-foundation-error-6" : "border-border"
         }`}
@@ -152,7 +168,11 @@ export function CustomDateTimePicker({
           <div className="flex items-start divide-x divide-border">
             {/* Left — Calendar */}
             <div className="p-2 max-md:p-1">
-              <Calendar mode="single" selected={date} onSelect={setDate} />
+              <Calendar
+                mode="single"
+                selected={date}
+                onSelect={(d) => setDraft((p) => ({ ...p, date: d }))}
+              />
             </div>
 
             {/* Right — Time */}
@@ -169,7 +189,9 @@ export function CustomDateTimePicker({
                       <button
                         type="button"
                         className={spinnerBtn}
-                        onClick={() => setHr((h) => (h % 12) + 1)}
+                        onClick={() =>
+                          setDraft((p) => ({ ...p, hr: (p.hr % 12) + 1 }))
+                        }
                       >
                         <ChevronUp size={14} />
                       </button>
@@ -177,7 +199,12 @@ export function CustomDateTimePicker({
                       <button
                         type="button"
                         className={spinnerBtn}
-                        onClick={() => setHr((h) => ((h - 2 + 12) % 12) + 1)}
+                        onClick={() =>
+                          setDraft((p) => ({
+                            ...p,
+                            hr: ((p.hr - 2 + 12) % 12) + 1,
+                          }))
+                        }
                       >
                         <ChevronDown size={14} />
                       </button>
@@ -192,7 +219,9 @@ export function CustomDateTimePicker({
                       <button
                         type="button"
                         className={spinnerBtn}
-                        onClick={() => setMin((m) => (m + 5) % 60)}
+                        onClick={() =>
+                          setDraft((p) => ({ ...p, min: (p.min + 5) % 60 }))
+                        }
                       >
                         <ChevronUp size={14} />
                       </button>
@@ -200,7 +229,12 @@ export function CustomDateTimePicker({
                       <button
                         type="button"
                         className={spinnerBtn}
-                        onClick={() => setMin((m) => (m - 5 + 60) % 60)}
+                        onClick={() =>
+                          setDraft((p) => ({
+                            ...p,
+                            min: (p.min - 5 + 60) % 60,
+                          }))
+                        }
                       >
                         <ChevronDown size={14} />
                       </button>
@@ -213,7 +247,9 @@ export function CustomDateTimePicker({
                       <button
                         key={period}
                         type="button"
-                        onClick={() => setAmpm(period)}
+                        onClick={() =>
+                          setDraft((p) => ({ ...p, ampm: period }))
+                        }
                         className={`px-2 py-1.5 text-sm font-medium rounded-[8px] border transition-colors cursor-pointer ${
                           ampm === period
                             ? "bg-[#C95C47] text-white border-[#C95C47]"

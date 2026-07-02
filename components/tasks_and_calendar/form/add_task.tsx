@@ -6,34 +6,56 @@ import { CustomSelect } from "@/components/custom/common/customSelect";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { AddTaskRequestData, addTaskSchema } from "@/validation/task";
 import { useAddTask } from "@/hooks/tasks/add_task";
+import { useEditTask } from "@/hooks/tasks/edit_task";
 import { ControlledDateTimePicker } from "@/components/custom/common/customDateTimePicker";
 import { useGetDeals } from "@/hooks/pipeline/get_deals";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Task } from "@/types/task";
 
 interface AddTaskFormProps {
   onSuccess?: () => void;
+  task?: Task;
 }
 
-export default function AddTaskForm({ onSuccess }: AddTaskFormProps) {
+export default function AddTaskForm({ onSuccess, task }: AddTaskFormProps) {
+  const isEditing = !!task;
+
   const {
     control,
     register,
     handleSubmit,
-    formState: { errors },
-  } = useForm<AddTaskRequestData, Error>({
+    formState: { errors, isDirty },
+  } = useForm<AddTaskRequestData>({
     resolver: zodResolver(addTaskSchema),
-    defaultValues: {
-      status: "pending",
-    },
+    defaultValues: task
+      ? {
+          title: task.title,
+          type: task.type,
+          priority: task.priority,
+          status: task.status,
+          description: task.description ?? "",
+          due_at: task.due_at,
+          duration_minutes: task.duration_minutes?.toString() ?? "",
+          location: task.location ?? "",
+          meeting_url: task.meeting_url ?? "",
+          deal_id: task.deal_id?._id ?? "",
+        }
+      : {
+          status: "pending",
+        },
   });
+
   const { data: deals } = useGetDeals();
-  const { mutate: addTask, isPending } = useAddTask();
+  const { mutate: addTask, isPending: isAdding } = useAddTask();
+  const { mutate: editTask, isPending: isUpdating } = useEditTask();
+  const isPending = isAdding || isUpdating;
 
   const onSubmit: SubmitHandler<AddTaskRequestData> = (data) => {
-    console.log("Form Data:", data);
-    addTask(data, {
-      onSuccess: () => onSuccess?.(),
-    });
+    if (isEditing) {
+      editTask({ _id: task._id, ...data }, { onSuccess: () => onSuccess?.() });
+    } else {
+      addTask(data, { onSuccess: () => onSuccess?.() });
+    }
   };
 
   const dealData = deals?.map((d) => ({ name: d.title, value: d.id })) ?? [];
@@ -57,6 +79,7 @@ export default function AddTaskForm({ onSuccess }: AddTaskFormProps) {
           </span>
         )}
       </div>
+
       <ControlledDateTimePicker
         name="due_at"
         control={control}
@@ -118,6 +141,30 @@ export default function AddTaskForm({ onSuccess }: AddTaskFormProps) {
           )}
         </div>
       </div>
+
+      {isEditing && (
+        <div className="relative w-full">
+          <Controller
+            name="status"
+            control={control}
+            render={({ field }) => (
+              <CustomSelect
+                {...field}
+                label="Status"
+                value={field.value}
+                onChange={(v) => field.onChange(v)}
+                placeholder="Select status"
+                error={errors.status?.message}
+                selectable={[
+                  { name: "Pending", value: "pending" },
+                  { name: "In Progress", value: "in_progress" },
+                  { name: "Completed", value: "completed" },
+                ]}
+              />
+            )}
+          />
+        </div>
+      )}
 
       <div className="flex items-center gap-3">
         <div className="relative w-full">
@@ -204,10 +251,16 @@ export default function AddTaskForm({ onSuccess }: AddTaskFormProps) {
       <div className="pt-6 md:px-6">
         <CustomButton
           type="submit"
-          disabled={isPending}
+          disabled={isPending || (isEditing && !isDirty)}
           className="w-full px-6 py-4 font-inter"
         >
-          {isPending ? "Adding..." : "Add Task"}
+          {isPending
+            ? isEditing
+              ? "Updating..."
+              : "Adding..."
+            : isEditing
+              ? "Update Task"
+              : "Add Task"}
         </CustomButton>
       </div>
     </form>

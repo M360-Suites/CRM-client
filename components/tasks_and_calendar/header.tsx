@@ -9,7 +9,7 @@ import AddTaskForm from "./form/add_task";
 interface Tab {
   label: string;
   value: "list" | "calendar";
-  icon: React.ComponentType<any>;
+  icon: React.ComponentType<{ className?: string }>;
 }
 
 const tabs: Tab[] = [

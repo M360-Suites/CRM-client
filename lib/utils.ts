@@ -106,7 +106,7 @@ export enum PipelineTabs {
   CLOSED = "closed",
 }
 
-export default function getDirtyValues<T extends Record<string, any>>(
+export default function getDirtyValues<T extends Record<string, unknown>>(
   dirtyFields: Partial<Record<keyof T, boolean | object>>,
   values: T,
 ): Partial<T> {

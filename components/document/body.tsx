@@ -2,40 +2,21 @@
 
 import { FolderRowSkeleton } from "./skeleton/folder_row_skeleton";
 import { useGetFolders } from "@/hooks/document/get_folders";
+import { useDeleteFolder } from "@/hooks/document/delete_folder";
 import { CustomButton } from "../custom/common/customButton";
 import { CustomDrawer } from "../custom/common/drawer";
 import AddFolderForm from "./form/add_document";
 import { useRouter } from "next/navigation";
 import FolderItem from "./folderItem";
 import { useState } from "react";
-
-type PinStage = "setup" | "verify" | "granted";
+import { Folder } from "@/types/document";
 
 export default function Body() {
   const router = useRouter();
   const { data: folders, isPending } = useGetFolders();
-
-  const [stage, setStage] = useState<PinStage>(() => {
-    if (typeof window === "undefined") return "setup";
-    const hasPin = localStorage.getItem("doc_pin");
-    return hasPin ? "verify" : "setup";
-  });
-
-  // if (stage === "setup") {
-  //   return <PinSetup onSuccess={() => setStage("verify")} />;
-  // }
-
-  // if (stage === "verify") {
-  //   return (
-  //     <PinVerify
-  //       onSuccess={() => setStage("granted")}
-  //       onReset={() => {
-  //         localStorage.removeItem("doc_pin");
-  //         setStage("setup");
-  //       }}
-  //     />
-  //   );
-  // }
+  const { mutate: deleteFolder } = useDeleteFolder();
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [editingFolder, setEditingFolder] = useState<Folder | null>(null);
 
   return (
     <div className="w-full flex flex-col">
@@ -96,7 +77,15 @@ export default function Body() {
             {folders?.map((folder) => (
               <FolderItem
                 key={folder._id}
+                isDeleting={deletingId === folder._id}
                 folder={folder}
+                onDelete={() => {
+                  setDeletingId(folder._id);
+                  deleteFolder(folder._id, {
+                    onSettled: () => setDeletingId(null),
+                  });
+                }}
+                onEdit={() => setEditingFolder(folder)}
                 onClick={() => {
                   router.push(`/documents/folder/${folder._id}`);
                 }}
@@ -104,6 +93,29 @@ export default function Body() {
             ))}
           </div>
         </div>
+      )}
+
+      {/* Edit drawer — remounts with defaultOpen whenever editingFolder changes */}
+      {editingFolder && (
+        <CustomDrawer
+          key={editingFolder._id}
+          trigger={<span />}
+          label="Edit Folder"
+          defaultOpen
+          onOpenChange={(o) => {
+            if (!o) setEditingFolder(null);
+          }}
+        >
+          {(close) => (
+            <AddFolderForm
+              folder={editingFolder}
+              onSuccess={() => {
+                close();
+                setEditingFolder(null);
+              }}
+            />
+          )}
+        </CustomDrawer>
       )}
     </div>
   );

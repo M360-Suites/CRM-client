@@ -1,12 +1,13 @@
-import { Download, Trash2, FileText, Loader } from "lucide-react";
+import { Download, Trash2, FileText, Loader, Pencil } from "lucide-react";
 import { Document } from "@/types/document";
 import { useDeleteFile } from "@/hooks/document/delete_file";
 
 interface FileItemProps {
   file: Document;
+  onEdit?: () => void;
 }
 
-export default function FileItem({ file }: FileItemProps) {
+export default function FileItem({ file, onEdit }: FileItemProps) {
   const { mutate: deleteFile, isPending } = useDeleteFile();
 
   const handleDownload = async () => {
@@ -38,6 +39,12 @@ export default function FileItem({ file }: FileItemProps) {
 
       {/* Actions */}
       <div className="flex items-center gap-6">
+        <button
+          className="text-foreground/40 hover:text-foreground/70 transition-colors cursor-pointer"
+          onClick={onEdit}
+        >
+          <Pencil size={17} color="#4A4A4A" />
+        </button>
         <button
           className="text-foreground/40 hover:text-foreground/70 transition-colors cursor-pointer"
           onClick={handleDownload}

@@ -5,7 +5,12 @@ import {
   emailVerificationSchema,
   type EmailVerficationRequestData,
 } from "@/validation/auth";
-import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import {
+  useForm,
+  SubmitHandler,
+  Controller,
+  FieldErrors,
+} from "react-hook-form";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { CustomOtpInput } from "@/components/custom/common/customOtpInput";
@@ -35,7 +40,7 @@ export default function EmailVerificationForm({
     verifyEmail(payload);
   };
 
-  const onError = (errors: any) => {
+  const onError = (errors: FieldErrors<EmailVerficationRequestData>) => {
     console.log("Validation errors:", errors);
   };
 

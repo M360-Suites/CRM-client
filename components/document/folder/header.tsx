@@ -1,11 +1,12 @@
 "use client";
 
 import { CustomButton } from "@/components/custom/common/customButton";
-import { PlusIcon } from "lucide-react";
+import { PlusIcon, ArrowLeft } from "lucide-react";
 import { CustomDrawer } from "@/components/custom/common/drawer";
 import AddFileForm from "../form/add_file";
 import { useGetFolders } from "@/hooks/document/get_folders";
 import { useGetFolderById } from "@/hooks/document/get_folder_by_id";
+import Link from "next/link";
 import { useMemo } from "react";
 
 interface HeaderProps {
@@ -43,7 +44,7 @@ export default function Header({ id }: HeaderProps) {
   if (loading) return <FolderHeaderSkeleton />;
 
   return (
-    <div className="w-full pt-8">
+    <div className="w-full pt-8 flex flex-col gap-4">
       <div className="flex flex-row items-center justify-between w-full">
         <div className="flex flex-col gap-1">
           <h2 className="xl:text-2xl lg:text-xl/[110%] text-lg/[110%] font-medium text-[#3A2418]">
@@ -72,6 +73,12 @@ export default function Header({ id }: HeaderProps) {
           </CustomDrawer>
         </div>
       </div>
+      <Link href="/documents" className="flex items-center gap-2">
+        <ArrowLeft color="#3A2418" className="h-3 w-3" />
+        <span className="text-xs text-[#3A2418] font-medium">
+          Go back to folders
+        </span>
+      </Link>
     </div>
   );
 }

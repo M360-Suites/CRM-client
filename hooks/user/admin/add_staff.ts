@@ -1,18 +1,24 @@
-import { useQueryClient, useMutation} from "@tanstack/react-query";
+import { useQueryClient, useMutation } from "@tanstack/react-query";
 import { AddStaff } from "@/services/user/admin/add_staff";
 import { toast } from "sonner";
 
 export const useAddStaff = () => {
-    const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
   return useMutation({
     mutationKey: ["addStaff"],
     mutationFn: AddStaff,
-    onSuccess: (data) => {      
+    onSuccess: (data) => {
+      if (data.status) {
         toast.success(data.message || "Staff added successfully");
         queryClient.invalidateQueries({ queryKey: ["staff"] });
+      } else {
+        toast.error(data.message || "Failed to add staff");
+      }
     },
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Failed to add staff");
+      toast.error(
+        error instanceof Error ? error.message : "Failed to add staff",
+      );
     },
   });
 };

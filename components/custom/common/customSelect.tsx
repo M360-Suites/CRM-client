@@ -47,11 +47,17 @@ export function CustomSelect({
         <SelectContent position="popper" align="center">
           <SelectGroup>
             <SelectLabel>{placeholder}</SelectLabel>
-            {selectable.map((opt) => (
-              <SelectItem key={opt.value} value={opt.value} className="py-3">
-                {opt.name}
-              </SelectItem>
-            ))}
+            {selectable.length === 0 ? (
+              <div className="py-3 font-inter px-2 text-sm text-muted-foreground text-center">
+                {`No ${label ?? "options"} available`}
+              </div>
+            ) : (
+              selectable.map((opt) => (
+                <SelectItem key={opt.value} value={opt.value} className="py-3">
+                  {opt.name}
+                </SelectItem>
+              ))
+            )}
           </SelectGroup>
         </SelectContent>
       </Select>

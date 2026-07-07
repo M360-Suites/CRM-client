@@ -44,7 +44,6 @@ export default function Body() {
     data: contacts,
     isPending,
     isError,
-    refetch,
   } = useGetContacts({
     temperature:
       activeTab === ContactTabs.ALL ? undefined : activeTab.toLowerCase(),
@@ -53,6 +52,8 @@ export default function Body() {
     search,
   });
   const { mutate: deleteContact, isPending: isLoading } = useDeleteContact();
+
+  console.log("contacts:", contacts);
   return (
     <div className="w-full flex-col flex gap-8">
       <div className="flex max-md:flex-col max-md:gap-5 max-md:items-start items-center justify-between w-full">
@@ -97,25 +98,25 @@ export default function Body() {
         )}
 
         {/* Error state */}
-        {!isPending &&  contacts?.data.length === 0 && (
+        {!isPending && contacts?.data.length === 0 && (
           <div className="flex flex-col items-center gap-4 py-20 border border-[#E8E8E8] rounded-[12px]">
-                      <span className="text-base font-normal text-foreground">
-                        No companies yet
-                      </span>
-                      <CustomDrawer
-                        label="Add Company"
-                        trigger={
-                          <CustomButton
-                            variant="default"
-                            className="rounded-full flex flex-row items-center gap-2 px-5 py-2.5"
-                          >
-                            <span>Add your first contact</span>
-                          </CustomButton>
-                        }
-                      >
-                        {(close) => <AddContactForm onSuccess={close} />}
-                      </CustomDrawer>
-                    </div>
+            <span className="text-base font-normal text-foreground">
+              No companies yet
+            </span>
+            <CustomDrawer
+              label="Add Company"
+              trigger={
+                <CustomButton
+                  variant="default"
+                  className="rounded-full flex flex-row items-center gap-2 px-5 py-2.5"
+                >
+                  <span>Add your first contact</span>
+                </CustomButton>
+              }
+            >
+              {(close) => <AddContactForm onSuccess={close} />}
+            </CustomDrawer>
+          </div>
         )}
 
         {/* Contacts list */}
@@ -134,7 +135,9 @@ export default function Body() {
                       <div className="flex col-span-2 items-center gap-4 flex-1">
                         <div className="bg-[#D8F3F1] h-10 w-10 max-md:h-8 max-md:w-8 rounded-full flex items-center justify-center md:text-base text-sm font-medium text-[#2F9E94]">
                           {getInitials(
-                            contact.first_name + " " + contact.last_name,
+                            [contact.first_name, contact.last_name]
+                              .filter(Boolean)
+                              .join(" "),
                           )}
                         </div>
                         <div className="flex flex-col items-start ">

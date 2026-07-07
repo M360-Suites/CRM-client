@@ -6,9 +6,9 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export const getInitials = (name?: string | null) => {
-  if (!name?.trim()) return "?";
+  if (!name?.trim()) return "N/A";
 
-  const names = name.trim().split(" ");
+  const names = name.trim().split(/\s+/).filter(Boolean);
   if (names.length > 1) {
     return (names[0][0] + names[1][0]).toUpperCase();
   }

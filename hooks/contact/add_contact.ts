@@ -8,8 +8,12 @@ export const useAddContact = () => {
   const mutation = useMutation({
     mutationFn: AddContact,
     onSuccess: (data) => {
-      toast.success(data.message || "Contact added successfully");
-      queryClient.invalidateQueries({ queryKey: ["contacts"] });
+      if (data.status) {
+        toast.success(data.message || "Contact added successfully");
+        queryClient.invalidateQueries({ queryKey: ["contacts"] });
+      } else {
+        toast.error(data.message);
+      }
     },
     onError: () => {
       toast.error("Failed to add contact");

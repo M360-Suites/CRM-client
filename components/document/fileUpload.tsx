@@ -28,7 +28,7 @@ interface FileUploadProps {
 
 export default function FileUpload({
   multiple = true,
-  accept = ".pdf,.doc,.docx,.xlsx,.csv,.png,.jpg,.jpeg",
+  accept = ".pdf,.doc,.docx,.xlsx,.csv,.png,.jpg,.jpeg, .mp3",
   maxSizeMB = 10,
   onUpload,
   onRemove,

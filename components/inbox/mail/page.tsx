@@ -23,10 +23,10 @@ const Permissions = [
 ];
 
 export default function MailAuthorisation() {
-  const { setConnectedChannels } = useGmailStore();
-  const { mutate, isPending } = useGmailAuth();
-  const { isPending: isStatusPending, data } = useGmailStatus();
   const searchParams = useSearchParams();
+  const { mutate, isPending } = useGmailAuth();
+  const { setConnectedChannels } = useGmailStore();
+  const { isPending: isStatusPending, data } = useGmailStatus();
   const channel = searchParams?.get("channel");
   const status = searchParams?.get("connected");
 

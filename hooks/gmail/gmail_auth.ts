@@ -1,14 +1,16 @@
 "use client";
 import { useMutation } from "@tanstack/react-query";
 import { AuthorizeGmail } from "@/services/email/gmail_auth";
-import { GmailAuthResponse } from "@/types/gmail";
+import { toast } from "sonner";
 
 export const useGmailAuth = () => {
-  return useMutation<GmailAuthResponse>({
+  return useMutation({
     mutationFn: AuthorizeGmail,
     onSuccess: (data) => {
-      if (data.url) {
-        window.location.href = data.url;
+      if (data.status) {
+        window.location.href = data?.data?.url || "";
+      } else {
+        toast.error(data.message);
       }
     },
   });

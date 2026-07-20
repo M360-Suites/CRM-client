@@ -26,6 +26,30 @@ function buildForwardHeaders(req: NextRequest) {
   return headers;
 }
 
+type FailureKind = "timeout" | "network" | "unknown";
+
+function classifyFetchError(error: unknown): {
+  kind: FailureKind;
+  code?: string;
+} {
+  if (error instanceof Error && error.name === "TimeoutError") {
+    return { kind: "timeout" };
+  }
+
+  // undici wraps transport errors as TypeError("fetch failed") with the
+  // real cause underneath
+  if (
+    error instanceof TypeError &&
+    error.message === "fetch failed" &&
+    error.cause instanceof Error
+  ) {
+    const code = (error.cause as NodeJS.ErrnoException).code;
+    return { kind: "network", code };
+  }
+
+  return { kind: "unknown" };
+}
+
 // change helper from an exported symbol to a local helper so Next.js doesn't treat it as a route export
 async function proxyHandler(req: NextRequest, path: string[]) {
   console.log("Proxying API BASE:", API_BASE);
@@ -168,19 +192,27 @@ async function proxyHandler(req: NextRequest, path: string[]) {
       headers: resHeaders,
     });
   } catch (error) {
-    console.error("Proxy fetch error:", error);
-    console.error("Target URL was:", targetUrl);
+    const { kind, code } = classifyFetchError(error);
+
+    const status = kind === "timeout" ? 504 : kind === "network" ? 502 : 500;
+
+    // Full technical detail stays server-side for debugging
+    console.error("Proxy fetch error:", { kind, code, targetUrl, error });
+
+    const userMessage =
+      kind === "timeout"
+        ? "This is taking longer than expected. Please try again in a moment."
+        : kind === "network"
+          ? "We're having trouble connecting right now. Please check your internet connection and try again."
+          : "Something went wrong on our end. Please try again, and contact support if it keeps happening.";
+
     return NextResponse.json(
       {
         status: false,
-        message: "Proxy error",
-        targetUrl,
-        error:
-          error instanceof Error
-            ? `${error.name}: ${error.message}`
-            : String(error),
+        message: userMessage,
+        retryable: kind === "timeout" || kind === "network",
       },
-      { status: 500 },
+      { status },
     );
   }
 }

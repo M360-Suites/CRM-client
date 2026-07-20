@@ -2,9 +2,12 @@
 
 import { MailIcon, InboxIcon, Loader, CloudSync } from "lucide-react";
 import { FcGoogle } from "react-icons/fc";
+import { FaWhatsapp } from "react-icons/fa";
 import { CustomButton } from "../custom/common/customButton";
 import ShowMail from "./mail/show_mail";
+import ShowWhatsapp from "./whatsapp/show_whatsapp";
 import MailAuthorisation from "./mail/page";
+import WhatsappAuthorisation from "./whatsapp/page";
 import { useGmailStore } from "@/stores/gmail/gmail_store";
 import { useGmailStatus } from "@/hooks/gmail/gmail_connect_status";
 import { useMailDisconnect } from "@/hooks/gmail/disconnect_mail";
@@ -16,9 +19,11 @@ import { useGmailSync } from "@/hooks/gmail/gmail_sync";
 const InboxTabs = [
   { name: "All", icon: InboxIcon },
   { name: "Mail", icon: MailIcon },
+  { name: "Whatsapp", icon: FaWhatsapp },
 ];
 
 export default function Body() {
+  const isWhatsappConnected = false;
   const searchParams = useSearchParams();
   const channel = searchParams?.get("channel");
   const gmailConnected = searchParams?.get("gmail") === "true";
@@ -40,7 +45,7 @@ export default function Body() {
           connected: true,
         },
       ]);
-      setSelectedTab("Mail");
+      // setSelectedTab("Mail");
     }
   }, [channel, gmailConnected, setConnectedChannels]);
 
@@ -93,9 +98,9 @@ export default function Body() {
           <button
             key={tab.name}
             onClick={() => setSelectedTab(tab.name)}
-            className={`flex items-center lg:gap-4 gap-2 lg:p-4 max-lg:py-2 max-lg:px-3 lg:rounded-[10px] rounded-full cursor-pointer ${
+            className={`flex items-center lg:gap-4 gap-3 lg:p-3 max-lg:py-2 max-lg:px-3 lg:rounded-[10px] rounded-full cursor-pointer ${
               selectedTab === tab.name
-                ? "bg-[#FFD9C0] hover:bg-[#FFD9C0]"
+                ? "bg-[#FFD9C0] hover:bg-[#FFD9C8]"
                 : "hover:bg-gray-50"
             }`}
           >
@@ -151,6 +156,7 @@ export default function Body() {
                 <ShowMail />
               </div>
             )}
+            {isWhatsappConnected && <ShowWhatsapp />}
           </div>
         )}
 
@@ -211,6 +217,39 @@ export default function Body() {
               }
             >
               <MailAuthorisation />
+            </AuthorisationPage>
+          ))}
+        {selectedTab === "Whatsapp" &&
+          (isWhatsappConnected ? (
+            <div className="w-full">
+              <div className="flex justify-end gap-3 mb-4 w-full">
+                <CustomButton
+                  disabled={isPending}
+                  onClick={() => handleSync()}
+                  className="rounded-full px-3.5"
+                >
+                  {isPending ? (
+                    <Loader size={20} className={"animate-spin"} />
+                  ) : (
+                    <CloudSync size={20} />
+                  )}
+                  <span className="text-sm">
+                    {isPending ? "syncing" : "Sync mail"}
+                  </span>
+                </CustomButton>
+              </div>
+              <ShowMail />
+            </div>
+          ) : (
+            <AuthorisationPage
+              label="Allow access to Whatsapp"
+              trigger={
+                <CustomButton className="py-3 px-6 rounded-full">
+                  Authorize
+                </CustomButton>
+              }
+            >
+              <WhatsappAuthorisation />
             </AuthorisationPage>
           ))}
       </div>

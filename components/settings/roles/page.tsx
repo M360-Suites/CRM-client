@@ -42,7 +42,7 @@ export default function RolesAccess() {
           trigger={
             <CustomButton
               variant="default"
-              className="rounded-full flex flex-row items-center gap-2 md:px-5 max-md:px-4 py-2"
+              className="rounded-full flex flex-row max-md:hidden items-center gap-2 md:px-5 max-md:px-4 py-2"
             >
               <UserPlus className="" />
               <span>Invite staff</span>
@@ -60,8 +60,8 @@ export default function RolesAccess() {
       </div>
       <div>
         {isLoading ? (
-          <div className="overflow-hidden border border-[#E8E8E8] rounded-[12px]">
-            <table className="w-full">
+          <div className="overflow-x-auto border border-[#E8E8E8] rounded-[12px]">
+            <table className="w-full min-w-[600px]">
               <thead className="bg-[#F5B7A3]">
                 <tr>
                   <th className="text-left px-6 py-3  lg:text-sm text-xs font-medium text-foreground">
@@ -87,7 +87,7 @@ export default function RolesAccess() {
           </div>
         ) : isEmpty ? (
           <div className="flex flex-col items-center gap-4 py-20 border border-[#E8E8E8] rounded-[12px]">
-            <span className="text-base font-normal text-foreground">
+            <span className="text-base max-md:text-sm font-normal text-foreground">
               No Invitations yet
             </span>
             <CustomDrawer
@@ -98,7 +98,7 @@ export default function RolesAccess() {
                   className="rounded-full flex flex-row items-center gap-2 md:px-7 max-md:px-4 py-2"
                 >
                   <UserPlus />
-                  <span>Invite staff</span>
+                  <span className="text-base max-md:text-sm">Invite staff</span>
                 </CustomButton>
               }
             >

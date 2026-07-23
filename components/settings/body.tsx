@@ -9,7 +9,7 @@ import { useSearchParams, useRouter, usePathname } from "next/navigation";
 const Tabs = [
   { name: "Profile", value: "profile", component: Profile },
   { name: "Roles & Permissions", value: "roles", component: RolesAccess },
-  {name: "Staffs", value: "staffs", component: Staffs},
+  { name: "Staffs", value: "staffs", component: Staffs },
 ];
 
 export default function Body() {
@@ -34,19 +34,21 @@ export default function Body() {
   const ActiveComponent = Tabs.find((t) => t.value === activeTab)?.component;
 
   return (
-    <div>
-      <div className={`flex items-center gap-3 sticky border-b`}>
+    <div className="w-full">
+      <div className={`flex items-center gap-3 max-md:gap-2 sticky border-b`}>
         {Tabs.map((t) => (
           <button
             key={t.value}
             onClick={() => handleTabChange(t.value)}
-            className={`${activeTab === t.value ? "border-b-2 border-b-[#C95C47] rounded-none text-black" : "hover:text-black"} px-10 py-3 cursor-pointer`}
+            className={`${activeTab === t.value ? "border-b-2 border-b-[#C95C47] rounded-none text-black" : "hover:text-black"} px-10 max-md:px-4 py-3 cursor-pointer`}
           >
-            <h3 className="text-sm font-medium">{t.name}</h3>
+            <h3 className="text-sm max-md:text-xs font-medium">{t.name}</h3>
           </button>
         ))}
       </div>
-      <div className="pt-4">{ActiveComponent && <ActiveComponent />}</div>
+      <div className="pt-4 w-full">
+        {ActiveComponent && <ActiveComponent />}
+      </div>
     </div>
   );
 }

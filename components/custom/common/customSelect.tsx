@@ -31,7 +31,7 @@ export function CustomSelect({
   return (
     <div className="w-full flex flex-col gap-3 font-inter">
       {label && (
-        <label className="text-foreground font-regular text-base/[120%]">
+        <label className="text-foreground font-regular max-md:text-xs text-base/[120%]">
           {label}
         </label>
       )}
@@ -46,14 +46,18 @@ export function CustomSelect({
         </SelectTrigger>
         <SelectContent position="popper" align="center">
           <SelectGroup>
-            <SelectLabel>{placeholder}</SelectLabel>
+            <SelectLabel className="max-md:text-sm">{placeholder}</SelectLabel>
             {selectable.length === 0 ? (
               <div className="py-3 font-inter px-2 text-sm text-muted-foreground text-center">
                 {`No ${label ?? "options"} available`}
               </div>
             ) : (
               selectable.map((opt) => (
-                <SelectItem key={opt.value} value={opt.value} className="py-3">
+                <SelectItem
+                  key={opt.value}
+                  value={opt.value}
+                  className="py-3 max-md:text-sm"
+                >
                   {opt.name}
                 </SelectItem>
               ))

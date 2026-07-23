@@ -4,6 +4,10 @@ import { getInitials } from "@/lib/utils";
 import { MoreVerticalIcon } from "lucide-react";
 import { useDashboard } from "@/hooks/user/dashboard";
 import { CustomPopover } from "@/components/custom/common/customPopover";
+import { CustomButton } from "@/components/custom/common/customButton";
+import { PlusIcon } from "lucide-react";
+import { CustomDrawer } from "@/components/custom/common/drawer";
+import AddContactForm from "@/components/contacts/forms/add_contact";
 import { toUTC } from "@/lib/utils";
 import Link from "next/link";
 
@@ -13,7 +17,9 @@ export default function DashTable() {
     <div className="lg:p-6 p-4 border border-[#E8E8E8] rounded-[12px]">
       <div className="border border-[#E8E8E8] bg-[#FAFFFF] rounded-[12px]">
         <div className="flex w-full justify-between items-center py-6 px-4">
-          <span>Recent Contacts</span>
+          <span className="text-foreground font-medium text-base max-md:text-sm">
+            Recent Contacts
+          </span>
           <Link
             href="/contacts"
             className="text-sm text-[#0041FF] hover:underline font-medium"
@@ -76,17 +82,29 @@ export default function DashTable() {
                 No recent contacts
               </span>
               <p className="text-xs text-muted-foreground max-w-xs">
-                You don't have any recent contacts yet. Add a contact or view
-                all contacts to get started.
+                You don&apos;t have any recent contacts yet. Add a contact or
+                view all contacts to get started.
               </p>
-              <div>
-                <Link
-                  href="/contacts/new"
-                  className="inline-block mt-2 text-sm text-[#0041FF] hover:underline font-medium"
-                >
-                  Add contact
-                </Link>
-              </div>
+              <CustomDrawer
+                label="Add Contacts"
+                trigger={
+                  <CustomButton
+                    variant="default"
+                    className="rounded-full flex flex-row items-center max-md:hidden gap-2 md:px-5 max-md:px-4 py-2.5"
+                  >
+                    <PlusIcon className="" />
+                    <span>Add Contact</span>
+                  </CustomButton>
+                }
+              >
+                {(close: () => void) => (
+                  <AddContactForm
+                    onSuccess={() => {
+                      close();
+                    }}
+                  />
+                )}
+              </CustomDrawer>
             </div>
           )}
         </div>

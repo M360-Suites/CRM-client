@@ -25,13 +25,13 @@ export default function FolderItem({
   onDelete,
 }: FolderItemProps) {
   return (
-    <div className="w-full bg-[#FFF3E6]/20 hover:bg-gray-50 hover:cursor-pointer grid grid-cols-6 border-b gap-1 lg:gap-5 md:gap-3 border-b-border last:border-b-0 pl-4 md:pr-8 pr-4 py-2.5 overflow-hidden">
+    <div className="w-full bg-[#FFF3E6]/20 hover:bg-gray-50 hover:cursor-pointer grid grid-cols-6 border-b gap-1 lg:gap-5 md:gap-3 border-b-border last:border-b-0 pl-2 md:pr-8 pr-1 py-2.5 overflow-hidden">
       {/* Icon + Info */}
       <div
         className="flex items-center md:gap-3 gap-1.5 py-0.5 col-span-2"
         onClick={onClick}
       >
-        <div className="md:w-9 md:h-9 w-5 h-5 rounded-[8px] flex items-center justify-center shrink-0">
+        <div className="md:w-9 md:h-9 w-4 h-4 rounded-[8px] flex items-center justify-center shrink-0">
           <svg
             width="19"
             height="15"
@@ -54,12 +54,12 @@ export default function FolderItem({
             />
           </svg>
         </div>
-        <span className="text-xs font-medium text-foreground truncate">
+        <span className="text-xs max-md:text-[10px] font-medium text-foreground truncate">
           {folder.name}
         </span>
       </div>
-      <div className="col-span-1 flex items-center gap-4 py-0.5">
-        <span className="text-xs font-normal text-foreground truncate">
+      <div className="flex  items-center gap-4 py-0.5">
+        <span className="text-xs max-md:text-[10px] font-normal truncate text-foreground">
           {folder.description}
         </span>
       </div>
@@ -82,17 +82,17 @@ export default function FolderItem({
         <CustomPopover
           trigger={<MoreVertical size={17} className="text-foreground/80" />}
         >
-          <div className="flex flex-col w-36 pt-2">
+          <div className="flex flex-col w-36 max-md:w-32 pt-2">
             <button
               onClick={onClick}
-              className="flex items-center gap-2.5 px-2.5 py-2 text-sm text-foreground hover:bg-gray-100 rounded-md transition-colors w-full text-left"
+              className="flex items-center gap-2.5 px-2.5 py-2 text-sm max-md:text-xs text-foreground hover:bg-gray-100 rounded-md transition-colors w-full text-left"
             >
               <FolderOpen size={15} className="text-foreground/70" />
               Open
             </button>
             <button
               onClick={onEdit}
-              className="flex items-center gap-2.5 px-2.5 py-2 text-sm text-foreground hover:bg-gray-100 rounded-md transition-colors w-full text-left"
+              className="flex items-center gap-2.5 px-2.5 py-2 text-sm max-md:text-xs text-foreground hover:bg-gray-100 rounded-md transition-colors w-full text-left"
             >
               <Pencil size={15} className="text-foreground/70" />
               Edit
@@ -100,7 +100,7 @@ export default function FolderItem({
             <button
               onClick={onDelete}
               disabled={isDeleting}
-              className="flex items-center gap-2.5 px-2.5 py-2 text-sm text-red-500 hover:bg-red-50 rounded-md transition-colors w-full text-left disabled:opacity-60 disabled:cursor-not-allowed"
+              className="flex items-center gap-2.5 px-2.5 max-md:text-xs py-2 text-sm text-red-500 hover:bg-red-50 rounded-md transition-colors w-full text-left disabled:opacity-60 disabled:cursor-not-allowed"
             >
               {isDeleting ? (
                 <Loader2 size={15} className="animate-spin" />

@@ -21,24 +21,24 @@ export default function FileItem({ file, onEdit }: FileItemProps) {
     URL.revokeObjectURL(url);
   };
   return (
-    <div className="flex items-center justify-between bg-[#FFF3E6] first:rounded-t-[8px] last:rounded-b-[8px] border-b border-b-border last:border-b-0 pl-4 pr-8 py-2.5 overflow-hidden">
+    <div className="flex items-center justify-between bg-[#FFF3E6] max-md:grid max-md:grid-cols-3 max-md:gap-6 max-md:w-full first:rounded-t-[8px] last:rounded-b-[8px] border-b border-b-border last:border-b-0 pl-4 max-md:pl-2 pr-8 max-md:pr-2 py-2.5 overflow-hidden">
       {/* Icon + Info */}
-      <div className="flex items-center gap-4 py-0.5">
-        <div className="w-9 h-9 rounded-[8px] bg-[#FFD9C0] flex items-center justify-center shrink-0">
-          <FileText size={16} className="text-[#3A2418]" />
+      <div className="flex items-center gap-4 max-md:gap-2 max-md:col-span-2 py-0.5 ">
+        <div className="w-9 h-9 max-md:h-6 max-md:w-6 p-1 rounded-[8px] bg-[#FFD9C0] flex items-center justify-center">
+          <FileText className="text-[#3A2418] text-2xl max-md:text-base" />
         </div>
-        <div className="flex flex-col gap-1.5">
-          <span className="text-sm font-medium text-[#3A2418]">
+        <div className="flex flex-col gap-1.5 truncate">
+          <span className="text-sm max-md:text-xs font-medium truncate text-[#3A2418]">
             {file.original_name}
           </span>
-          <span className="text-xs text-foreground">
+          <span className="text-xs max-md:text-[10px] text-foreground">
             {(file.file_size / (1024 * 1024)).toFixed(2)} MB
           </span>
         </div>
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-6">
+      <div className="flex items-center gap-6 max-md:gap-2 max-md:col-span-1 justify-end w-full">
         <button
           className="text-foreground/40 hover:text-foreground/70 transition-colors cursor-pointer"
           onClick={onEdit}

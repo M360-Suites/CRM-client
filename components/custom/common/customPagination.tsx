@@ -23,7 +23,7 @@ export default function CustomPagination({
     <div className="flex items-center justify-between gap-4 w-full pt-3">
       {/* Rows per page */}
       <div className="flex items-center gap-2">
-        <span className="text-sm text-foreground whitespace-nowrap">
+        <span className="text-sm max-md:text-xs text-foreground whitespace-nowrap">
           Rows per page
         </span>
         <select
@@ -44,8 +44,11 @@ export default function CustomPagination({
 
       {/* Page info + navigation */}
       <div className="flex items-center gap-3">
-        <span className="text-sm text-foreground">
+        <span className="text-sm max-md:hidden text-foreground">
           Page {page} of {totalPages}
+        </span>
+        <span className="text-xs md:hidden text-foreground">
+          {page} of {totalPages}
         </span>
         <div className="flex items-center gap-1">
           <button

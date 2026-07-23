@@ -107,11 +107,11 @@ export default function AddFolderForm({
           </span>
         )}
       </div>
-      <div className="w-full px-8 pt-10">
+      <div className="w-full px-8 max-md:px-1 pt-10">
         <CustomButton
           type="submit"
           disabled={isPending || !hasChanged}
-          className="w-full px-6 py-4 font-dm rounded-lg"
+          className="w-full px-6 py-4 font-inter max-md:text-sm rounded-lg"
         >
           {isPending
             ? isEditMode

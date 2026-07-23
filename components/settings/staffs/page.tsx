@@ -69,20 +69,20 @@ export default function Staffs() {
             </span>
           </div>
         ) : (
-          <div className="overflow-hidden border border-[#E8E8E8] rounded-t-[12px]">
-            <table className="w-full">
-              <thead className="bg-[#F5B7A3]/50">
-                <tr>
-                  <th className="text-left px-6 py-3 lg:text-sm text-xs font-medium text-foreground">
+          <div className="w-full overflow-x-auto rounded-[12px]">
+            <table className="w-full min-w-[600px]">
+              <thead>
+                <tr className="bg-[#F5B7A3]/50">
+                  <th className="text-left px-6 max-md:px-3 py-3 text-xs md:text-sm font-medium text-foreground">
                     Name
                   </th>
-                  <th className="text-left px-6 py-3 lg:text-sm text-xs font-medium text-foreground">
+                  <th className="text-left px-6 max-md:px-3 py-3 text-xs md:text-sm font-medium text-foreground">
                     Email
                   </th>
-                  <th className="text-left px-6 py-3 lg:text-sm text-xs font-medium text-foreground">
+                  <th className="text-left px-6 max-md:px-3 py-3 text-xs md:text-sm font-medium text-foreground">
                     Role
                   </th>
-                  <th className="text-end px-6 py-3 lg:text-sm text-xs font-medium text-foreground">
+                  <th className="text-end px-6 max-md:px-3 py-3 text-xs md:text-sm font-medium text-foreground">
                     Actions
                   </th>
                 </tr>
@@ -90,17 +90,17 @@ export default function Staffs() {
               <tbody>
                 {staffs?.data.map((staff) => (
                   <tr key={staff._id} className="border-t border-[#E8E8E8]">
-                    <td className="px-6 py-4 text-sm font-normal text-foreground">
+                    <td className="px-6 max-md:px-3 py-4 text-xs md:text-sm font-normal text-foreground">
                       {staff.display_name}
                     </td>
-                    <td className="px-6 py-4 text-sm font-normal text-foreground">
+                    <td className="px-6 max-md:px-3 py-4 truncate max-w-[200px] text-xs md:text-sm font-normal text-foreground">
                       {staff.email}
                     </td>
-                    <td className="px-6 py-4 text-sm font-normal text-foreground">
+                    <td className="px-6 max-md:px-3 py-4 text-xs md:text-sm font-normal text-foreground">
                       {handleRoleDisplay(staff.role)}
                     </td>
-                    <td className="px-6 py-4 text-sm font-normal text-foreground">
-                      <div className="flex items-center justify-end lg:gap-5 gap-4">
+                    <td className="px-6 max-md:px-3 py-4 text-xs md:text-sm font-normal text-foreground">
+                      <div className="flex items-center justify-end gap-3 md:gap-5">
                         <CustomDrawer
                           label="Edit Staff"
                           trigger={

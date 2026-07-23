@@ -35,18 +35,41 @@ export default function Header() {
   return (
     <div className="w-full pt-8">
       <div className="flex max-md:flex-col items-center max-lg:items-start max-lg:gap-5 justify-between w-full">
-        <div className="flex flex-row items-start gap-2">
-          <div className="flex flex-col gap-1">
-            <h2 className="xl:text-2xl md:text-xl/[110%] text-lg/[110%] font-medium text-[#3A2418]">
-              Companies
-            </h2>
-            <span className="xl:text-base text-sm font-medium text-foreground">
-              {companies?.total} companies
+        <div className="flex items-center justify-between w-full">
+          <div className="flex flex-row items-start gap-2">
+            <div className="flex flex-col gap-1">
+              <h2 className="xl:text-2xl md:text-xl/[110%] text-lg/[110%] font-medium text-[#3A2418]">
+                Companies
+              </h2>
+              <span className="xl:text-base text-sm font-medium text-foreground">
+                {companies?.total} companies
+              </span>
+            </div>
+            <span className="text-[#E2725B] xl:text-sm max-md:hidden w-fit max-md:text-[8px] text-[10px] bg-[#FFF3E6] border border-border rounded-full py-1 px-3">
+              Sales rep
             </span>
           </div>
-          <span className="text-[#E2725B] xl:text-sm sm:text-xs text-[10px] bg-[#FFF3E6] border border-border rounded-full py-1 px-3">
-            Sales rep
-          </span>
+          <CustomDrawer
+            label="Add Company"
+            trigger={
+              <CustomButton
+                variant="default"
+                className="rounded-full flex flex-row md:hidden items-center gap-2 md:px-5 px-3 py-2.5"
+              >
+                <PlusIcon className="" />
+                <span>Add Company</span>
+              </CustomButton>
+            }
+          >
+            {(close) => (
+              <AddCompanyForm
+                mode="add"
+                onSuccess={() => {
+                  close();
+                }}
+              />
+            )}
+          </CustomDrawer>
         </div>
 
         <div className="flex flex-row gap-4 max-md:gap-2">
@@ -104,7 +127,7 @@ export default function Header() {
             trigger={
               <CustomButton
                 variant="default"
-                className="rounded-full flex flex-row items-center gap-2 md:px-5 px-3 py-2.5"
+                className="rounded-full flex flex-row items-center max-md:hidden gap-2 md:px-5 px-3 py-2.5"
               >
                 <PlusIcon className="" />
                 <span>Add Company</span>

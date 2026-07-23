@@ -27,7 +27,6 @@ export const metadata: Metadata = {
   title: "CRM360 | ",
   description:
     "CRM 360 helps firms manage contacts, deals, and conversations in one place. Track your pipeline, organize tasks, and stay on top of every customer relationship.",
-  manifest: "/manifest.webmanifest",
   appleWebApp: {
     capable: true,
     statusBarStyle: "default",

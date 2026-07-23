@@ -46,13 +46,31 @@ export default function Header({ id }: HeaderProps) {
   return (
     <div className="w-full pt-8 flex flex-col gap-4">
       <div className="flex flex-row items-center justify-between w-full">
-        <div className="flex flex-col gap-1">
-          <h2 className="xl:text-2xl lg:text-xl/[110%] text-lg/[110%] font-medium text-[#3A2418]">
-            {data?.name ?? "Folder"}
-          </h2>
-          <span className="xl:text-base text-sm font-medium text-foreground">
-            {data?.description}
-          </span>
+        <div className="flex flex-col gap-4 items-start">
+          <div className="flex flex-col gap-1">
+            <h2 className="xl:text-2xl lg:text-xl/[110%] text-lg/[110%] font-medium text-[#3A2418]">
+              {data?.name ?? "Folder"}
+            </h2>
+            <span className="xl:text-base text-sm font-medium text-foreground">
+              {data?.description}
+            </span>
+          </div>
+          <CustomDrawer
+            label="Upload files"
+            trigger={
+              <CustomButton
+                variant="default"
+                className="rounded-full flex text-sm flex-row md:hidden items-center gap-2 xl:px-8 px-6 py-3"
+              >
+                <PlusIcon />
+                <span>Add Files</span>
+              </CustomButton>
+            }
+          >
+            {(close) => (
+              <AddFileForm folderId={data?._id ?? ""} onSuccess={close} />
+            )}
+          </CustomDrawer>
         </div>
         <div className="flex flex-row gap-4">
           <CustomDrawer
@@ -60,7 +78,7 @@ export default function Header({ id }: HeaderProps) {
             trigger={
               <CustomButton
                 variant="default"
-                className="rounded-full flex text-sm flex-row items-center gap-2 xl:px-8 px-5 py-3"
+                className="rounded-full flex text-sm flex-row max-md:hidden items-center gap-2 xl:px-8 px-5 py-3"
               >
                 <PlusIcon />
                 <span>Add Files</span>

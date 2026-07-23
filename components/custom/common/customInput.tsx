@@ -26,7 +26,7 @@ const CustomInput = React.forwardRef<
 
   return (
     <div className="flex flex-col gap-2 font-inter w-full">
-      <label className="text-foreground font-regular text-sm/[120%]">
+      <label className="text-foreground font-regular text-sm/[120%] max-md:text-xs">
         {label}
       </label>
       <div
@@ -40,14 +40,14 @@ const CustomInput = React.forwardRef<
               (inputProps as React.TextareaHTMLAttributes<HTMLTextAreaElement>)
                 .rows ?? 3
             }
-            className={`outline-none bg-transparent resize-none text-base text-foreground placeholder:text-sm placeholder:text-foundation-gray-4 focus:ring-0 w-full ${className}`}
+            className={`outline-none bg-transparent resize-none text-base text-foreground placeholder:text-sm max-md:text-xs placeholder:text-foundation-gray-4 focus:ring-0 w-full ${className}`}
           />
         ) : (
           <input
             {...(inputProps as React.InputHTMLAttributes<HTMLInputElement>)}
             type={resolvedType}
             ref={ref as React.Ref<HTMLInputElement>}
-            className={`outline-none bg-transparent text-base text-foreground placeholder:text-sm placeholder:text-foundation-gray-4 focus:ring-0 w-full ${className}`}
+            className={`outline-none bg-transparent text-base text-foreground max-md:text-sm placeholder:text-sm placeholder:text-foundation-gray-4 focus:ring-0 w-full ${className}`}
           />
         )}
 

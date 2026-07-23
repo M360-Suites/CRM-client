@@ -91,14 +91,14 @@ export default function Body() {
     connectedChannels.some((c) => c.id === "gmail" && c.connected);
 
   return (
-    <div className="grid lg:grid-cols-4 gap-5 max-lg:w-full">
+    <div className="grid lg:grid-cols-4 max-md:grid-cols-1 gap-5 max-lg:w-full w-full">
       {/* Sidebar tabs */}
-      <div className="flex lg:flex-col gap-1 max-lg:w-full px-2.5 lg:py-5 py-2 sticky top-20 col-span-1 max-lg:bg-white lg:self-start border border-[#E8E8E8] lg:rounded-[12px] rounded-full">
+      <div className="flex lg:flex-col gap-1 max-lg:w-full px-2.5 max-md:px-1 lg:py-3 py-1 sticky top-20 col-span-1 max-lg:bg-white lg:self-start border border-[#E8E8E8] lg:rounded-[12px] rounded-full">
         {InboxTabs.map((tab) => (
           <button
             key={tab.name}
             onClick={() => setSelectedTab(tab.name)}
-            className={`flex items-center lg:gap-4 gap-3 lg:p-3 max-lg:py-2 max-lg:px-3 lg:rounded-[10px] rounded-full cursor-pointer ${
+            className={`flex items-center lg:gap-4 gap-2 lg:p-3 max-lg:py-2 max-lg:px-3 lg:rounded-[10px] rounded-full cursor-pointer ${
               selectedTab === tab.name
                 ? "bg-[#FFD9C0] hover:bg-[#FFD9C8]"
                 : "hover:bg-gray-50"
@@ -111,18 +111,18 @@ export default function Body() {
       </div>
 
       {/* Content */}
-      <div className="w-full col-span-3 border border-[#E8E8E8] rounded-[12px] p-5 flex flex-col gap-6">
+      <div className="w-full col-span-3 border border-[#E8E8E8] rounded-[12px] p-5 max-md:p-2 flex flex-col gap-6">
         {/* All tab */}
         {selectedTab === "All" && (
           <div className="w-full">
             <h3 className="text-sm font-medium">All Channels</h3>
 
             {connectedChannels.length > 0 ? (
-              <ul className="mt-4 flex flex-col gap-3">
+              <ul className="mt-4 flex flex-col gap-3 w-full">
                 {connectedChannels.map((c) => (
                   <li
                     key={c.id}
-                    className="flex items-center justify-between p-3 border rounded-md"
+                    className="flex items-center justify-between p-3 max-md:p-2 border rounded-md"
                   >
                     <div className="flex items-center gap-3">
                       <div className="w-10 h-10 rounded bg-[#F6F6F6] flex items-center justify-center text-sm font-medium">

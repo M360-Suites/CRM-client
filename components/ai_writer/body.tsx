@@ -308,11 +308,11 @@ export default function Body() {
                     `${selectedContact.first_name} ${selectedContact.last_name}`,
                   )}
                 </div>
-                <span>
+                <span className="max-md:hidden">
                   {selectedContact.first_name + " " + selectedContact.last_name}
                 </span>
               </div>
-              <span>{`<${selectedContact.email}>`}</span>
+              <span>{`<${selectedContact.email.toLowerCase()}>`}</span>
               <button
                 type="button"
                 className="p-2 cursor-pointer"

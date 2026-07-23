@@ -161,7 +161,7 @@ export function CustomDateTimePicker({
         <CalendarIcon size={20} color="#777777" />
       </button>
 
-      {error && <p className="text-foundation-error-6 text-sm">{error}</p>}
+      {error && <p className="text-foundation-error-6 text-xs">{error}</p>}
 
       {open && (
         <div className="absolute top-full mt-1 z-50 bg-background border border-border rounded-[10px] shadow-sm overflow-hidden w-fit max-md:w-full">

@@ -42,19 +42,21 @@ export default function ShowMail() {
     );
 
   return (
-    <div>
-      <div className="flex flex-col gap-2">
+    <div className="w-full">
+      <div className="flex flex-col gap-2 w-full">
         {data?.data?.map((mail) => (
           <div
             key={mail._id}
-            className="flex flex-col gap-0.5 border-b border-b-[#E8E8E8] pb-2"
+            className="flex flex-col gap-0.5 border-b border-b-[#E8E8E8] pb-2 max-md:pb-1"
           >
-            <div className="flex items-center gap-2 px-4 py-1">
+            <div className="flex items-center gap-2 px-4 max-md:px-2 py-1">
               <Mail size={18} />
               <span className="font-medium text-sm">{mail.from_name}</span>
             </div>
-            <div className="px-4">
-              <span className="text-sm font-medium">{mail.subject}</span>
+            <div className="px-4 max-md:px-2 flex flex-col gap-2">
+              <span className="text-sm font-medium truncate">
+                {mail.subject}
+              </span>
               <p className="text-xs text-muted-foreground">
                 {decodeHtml(mail.snippet)}
               </p>

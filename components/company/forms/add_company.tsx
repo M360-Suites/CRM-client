@@ -116,7 +116,7 @@ export default function AddCompanyForm({
           placeholder="https://www.example.com"
           error={errors.website?.message}
           type="text"
-          {...register("website", { required: true })}
+          {...register("website")}
         />
         {errors.website && (
           <span className="text-xs text-foundation-error-6 absolute right-0 -bottom-5">
@@ -144,7 +144,7 @@ export default function AddCompanyForm({
           placeholder="Enter email address"
           error={errors.email?.message}
           type="email"
-          {...register("email", { required: true })}
+          {...register("email")}
         />
         {errors.email && (
           <span className="text-xs text-foundation-error-6 absolute right-0 -bottom-5">

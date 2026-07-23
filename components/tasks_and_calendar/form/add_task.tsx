@@ -34,14 +34,21 @@ export default function AddTaskForm({ onSuccess, task }: AddTaskFormProps) {
           priority: task.priority,
           status: task.status,
           description: task.description ?? "",
-          due_at: task.due_at,
+          due_at: task.due_at ?? "",
           duration_minutes: task.duration_minutes?.toString() ?? "",
           location: task.location ?? "",
           meeting_url: task.meeting_url ?? "",
           deal_id: task.deal_id?._id ?? "",
         }
       : {
+          title: "",
           status: "pending",
+          description: "",
+          due_at: "",
+          duration_minutes: "",
+          location: "",
+          meeting_url: "",
+          deal_id: "",
         },
   });
 

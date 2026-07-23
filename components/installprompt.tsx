@@ -34,8 +34,8 @@ export default function InstallPrompt() {
   if (!showInstall || dismissed) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 font-inter right-0 z-100 bg-[#F5B7A3] p-3 shadow-lg">
-      <div className="flex items-center justify-between gap-4 max-w-7xl mx-auto">
+    <div className="fixed bottom-0 left-0 font-inter right-0 z-100 ">
+      <div className="flex flex-col p-5 rounded-2xl bg-[#F5B7A3] items-center justify-between gap-4 max-w-sm mx-auto">
         <div className="flex-1 min-w-0 bg-white">
           <p className="text-sm font-medium text-foreground font-inter truncate">
             Install CRM360 for a better experience
@@ -50,7 +50,7 @@ export default function InstallPrompt() {
           </CustomButton>
           <button
             onClick={handleDismiss}
-            className="p-1 text-white/80 hover:text-white transition-colors"
+            className="p-1 text-black/80 hover:text-black transition-colors"
             aria-label="Dismiss install prompt"
           >
             <X className="w-5 h-5" />

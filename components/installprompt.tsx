@@ -34,10 +34,10 @@ export default function InstallPrompt() {
   if (!showInstall || dismissed) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-[100] bg-primary p-3 shadow-lg">
-      <div className="flex items-center justify-between gap-4 max-w-screen-xl mx-auto">
-        <div className="flex-1 min-w-0">
-          <p className="text-sm font-medium text-white truncate">
+    <div className="fixed bottom-0 left-0 font-inter right-0 z-100 bg-[#F5B7A3] p-3 shadow-lg">
+      <div className="flex items-center justify-between gap-4 max-w-7xl mx-auto">
+        <div className="flex-1 min-w-0 bg-white">
+          <p className="text-sm font-medium text-foreground font-inter truncate">
             Install CRM360 for a better experience
           </p>
         </div>

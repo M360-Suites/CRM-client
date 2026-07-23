@@ -34,14 +34,14 @@ export default function InstallPrompt() {
   if (!showInstall || dismissed) return null;
 
   return (
-    <div className="fixed bottom-10 left-0 font-inter right-0 z-100 ">
-      <div className="flex flex-col p-5 rounded-2xl bg-[#F5B7A3] items-center justify-between gap-4 max-w-sm mx-auto">
+    <div className="fixed bottom-10 left-0 font-inter right-0 z-100 px-5">
+      <div className="flex flex-col p-4 rounded-2xl bg-[#F5B7A3]/80 border border-border items-center justify-between gap-4 w-sm max-md:w-full mx-auto">
         <button
           onClick={handleDismiss}
           className="p-1 text-black/80 hover:text-black self-end transition-colors"
           aria-label="Dismiss install prompt"
         >
-          <X className="w-5 h-5" />
+          <X className="w-6 h-6" />
         </button>
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-foreground font-inter truncate">
@@ -50,7 +50,7 @@ export default function InstallPrompt() {
         </div>
         <div className="flex items-center gap-3 shrink-0">
           <CustomButton
-            className="font-inter text-sm px-4 py-2"
+            className="font-inter text-sm px-8 w-full py-3"
             onClick={handleInstall}
           >
             Install

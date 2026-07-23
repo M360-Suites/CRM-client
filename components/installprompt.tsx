@@ -35,7 +35,7 @@ export default function InstallPrompt() {
 
   return (
     <div className="fixed bottom-10 left-0 font-inter right-0 z-100 px-5">
-      <div className="flex flex-col p-4 rounded-2xl bg-[#F5B7A3]/80 border border-border items-center justify-between gap-4 w-sm max-md:w-full mx-auto">
+      <div className="flex flex-col p-4 rounded-2xl bg-[#FFF3E6] border border-border items-center justify-between gap-4 w-sm max-md:w-full mx-auto">
         <button
           onClick={handleDismiss}
           className="p-1 text-black/80 hover:text-black self-end transition-colors"

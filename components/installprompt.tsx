@@ -2,36 +2,49 @@
 
 import { useEffect, useState } from "react";
 import { CustomButton } from "@/components/custom/common/customButton";
-import { X } from "lucide-react"; // or use any close icon you have
+import { useUserStore } from "@/stores/user/user_store";
+import { X } from "lucide-react";
 
 export default function InstallPrompt() {
+  // Read state and setter directly from your persisted Zustand store
+  const { showInstall, setShowInstall } = useUserStore();
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [showInstall, setShowInstall] = useState(false);
-  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e);
-      setShowInstall(true);
+
+      // CRITICAL FIX: Only show the banner if the user hasn't permanently closed it
+      if (showInstall) {
+        setShowInstall(true);
+      }
     };
+
     window.addEventListener("beforeinstallprompt", handler);
     return () => window.removeEventListener("beforeinstallprompt", handler);
-  }, []);
+  }, [showInstall, setShowInstall]); // Added dependencies to keep the listener context updated
 
   const handleInstall = async () => {
     if (!deferredPrompt) return;
+
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-    setShowInstall(false);
+
+    // Save 'false' to localStorage if they successfully install
+    if (outcome === "accepted") {
+      setShowInstall(false);
+    }
+    setDeferredPrompt(null);
   };
 
   const handleDismiss = () => {
-    setDismissed(true);
+    // Save 'false' to localStorage so it never triggers again on this browser
     setShowInstall(false);
   };
 
-  if (!showInstall || dismissed) return null;
+  // Fixed duplicate !showInstall check
+  if (!showInstall || !deferredPrompt) return null;
 
   return (
     <div className="fixed bottom-10 left-0 font-inter right-0 z-100 px-5">
@@ -43,11 +56,13 @@ export default function InstallPrompt() {
         >
           <X className="w-6 h-6" />
         </button>
+
         <div className="flex-1 min-w-0">
           <p className="text-sm font-medium text-foreground font-inter truncate">
             Install CRM360 for a better experience
           </p>
         </div>
+
         <div className="flex items-center gap-3 shrink-0">
           <CustomButton
             className="font-inter text-sm px-8 w-full py-3"

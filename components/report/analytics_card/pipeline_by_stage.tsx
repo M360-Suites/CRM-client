@@ -1,4 +1,5 @@
 "use client";
+import { useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
@@ -21,8 +22,23 @@ const chartConfig = {
 const truncate = (value: string, max = 8) =>
   value.length > max ? `${value.slice(0, max)}…` : value;
 
+function useIsSmallScreen(breakpoint = 640) {
+  const [isSmall, setIsSmall] = useState(false);
+
+  useEffect(() => {
+    const mql = window.matchMedia(`(max-width: ${breakpoint}px)`);
+    const update = () => setIsSmall(mql.matches);
+    update();
+    mql.addEventListener("change", update);
+    return () => mql.removeEventListener("change", update);
+  }, [breakpoint]);
+
+  return isSmall;
+}
+
 export default function PipelineByStage() {
   const { data: chartData } = useAnalyticsPipelineStage();
+  const isSmallScreen = useIsSmallScreen();
 
   return (
     <ChartContainer
@@ -32,17 +48,22 @@ export default function PipelineByStage() {
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
           data={chartData}
-          margin={{ top: 6, right: 8, left: 0, bottom: 6 }}
+          margin={{ top: 6, right: 8, left: 0, bottom: isSmallScreen ? 20 : 6 }}
         >
           <CartesianGrid vertical={false} />
           <XAxis
             dataKey="name"
             tickLine={false}
-            tickMargin={10}
+            tickMargin={isSmallScreen ? 8 : 10}
             axisLine={false}
             interval={0}
             tick={{ fontSize: 11 }}
-            tickFormatter={(value) => truncate(String(value))}
+            tickFormatter={(value) =>
+              truncate(String(value), isSmallScreen ? 10 : 8)
+            }
+            angle={isSmallScreen ? -35 : 0}
+            textAnchor={isSmallScreen ? "end" : "middle"}
+            height={isSmallScreen ? 50 : 30}
           />
           <YAxis
             width={40}

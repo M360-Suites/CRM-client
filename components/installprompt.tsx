@@ -5,45 +5,44 @@ import { CustomButton } from "@/components/custom/common/customButton";
 import { useUserStore } from "@/stores/user/user_store";
 import { X } from "lucide-react";
 
+const INSTALL_DISMISSED_KEY = "crm360_install_dismissed";
+
 export default function InstallPrompt() {
-  // Read state and setter directly from your persisted Zustand store
   const { showInstall, setShowInstall } = useUserStore();
   const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
 
   useEffect(() => {
+    // if user already dismissed it before, never show again
+    if (localStorage.getItem(INSTALL_DISMISSED_KEY) === "true") {
+      setShowInstall(false);
+      return;
+    }
+
     const handler = (e: Event) => {
       e.preventDefault();
       setDeferredPrompt(e);
-
-      // CRITICAL FIX: Only show the banner if the user hasn't permanently closed it
-      if (showInstall) {
-        setShowInstall(true);
-      }
+      setShowInstall(true);
     };
-
     window.addEventListener("beforeinstallprompt", handler);
     return () => window.removeEventListener("beforeinstallprompt", handler);
-  }, [showInstall, setShowInstall]); // Added dependencies to keep the listener context updated
+  }, [setShowInstall]);
 
   const handleInstall = async () => {
     if (!deferredPrompt) return;
-
     deferredPrompt.prompt();
     const { outcome } = await deferredPrompt.userChoice;
-
-    // Save 'false' to localStorage if they successfully install
     if (outcome === "accepted") {
       setShowInstall(false);
+      localStorage.setItem(INSTALL_DISMISSED_KEY, "true");
     }
     setDeferredPrompt(null);
   };
 
   const handleDismiss = () => {
-    // Save 'false' to localStorage so it never triggers again on this browser
     setShowInstall(false);
+    localStorage.setItem(INSTALL_DISMISSED_KEY, "true");
   };
 
-  // Fixed duplicate !showInstall check
   if (!showInstall || !deferredPrompt) return null;
 
   return (

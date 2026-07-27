@@ -148,7 +148,7 @@ export default function Body() {
                             .map((assignedUser, index) => (
                               <span
                                 key={assignedUser.id}
-                                className={`inline-flex h-6 w-6 items-center justify-center font-semibold rounded-full bg-[#E2725B] border border-[#3A2418] p-1.5 text-[10px] text-white ${index > 0 ? "-ml-2 top-4" : ""}`}
+                                className={`inline-flex h-6 w-6 py-2 items-center justify-center font-semibold rounded-full bg-[#E2725B] border border-[#3A2418] p-1.5 text-[10px] text-white ${index > 0 ? "-ml-2 top-4" : ""}`}
                                 style={{
                                   zIndex: assignedUsers.length - index,
                                 }}

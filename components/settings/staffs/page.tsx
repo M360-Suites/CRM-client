@@ -70,7 +70,7 @@ export default function Staffs() {
           </div>
         ) : (
           <div className="w-full overflow-x-auto rounded-[12px]">
-            <table className="w-full min-w-[600px]">
+            <table className="w-full min-w-150">
               <thead>
                 <tr className="bg-[#F5B7A3]/50">
                   <th className="text-left px-6 max-md:px-3 py-3 text-xs md:text-sm font-medium text-foreground">
@@ -93,7 +93,7 @@ export default function Staffs() {
                     <td className="px-6 max-md:px-3 py-4 text-xs md:text-sm font-normal text-foreground">
                       {staff.display_name}
                     </td>
-                    <td className="px-6 max-md:px-3 py-4 truncate max-w-[200px] text-xs md:text-sm font-normal text-foreground">
+                    <td className="px-6 max-md:px-3 py-4 truncate max-w-50 text-xs md:text-sm font-normal text-foreground">
                       {staff.email}
                     </td>
                     <td className="px-6 max-md:px-3 py-4 text-xs md:text-sm font-normal text-foreground">

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Profile from "./profile/page";
 import RolesAccess from "./roles/page";
 import Staffs from "./staffs/page";
@@ -25,7 +25,7 @@ export default function Body() {
     if (!searchParams.get("tab")) {
       router.replace(`${pathname}?tab=profile`);
     }
-  }, []);
+  }, [pathname, searchParams, router]);
 
   const handleTabChange = (value: string) => {
     router.push(`${pathname}?tab=${value}`);

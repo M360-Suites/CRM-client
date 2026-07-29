@@ -61,7 +61,7 @@ export default function RolesAccess() {
       <div>
         {isLoading ? (
           <div className="overflow-x-auto border border-[#E8E8E8] rounded-[12px]">
-            <table className="w-full min-w-[600px]">
+            <table className="w-full min-w-150">
               <thead className="bg-[#F5B7A3]">
                 <tr>
                   <th className="text-left px-6 py-3  lg:text-sm text-xs font-medium text-foreground">

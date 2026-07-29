@@ -5,17 +5,19 @@ export interface File {
   date: string;
 }
 
+export interface DocumentOwner {
+  _id: string;
+  email: string;
+  display_name: string;
+}
+
 export interface Folder {
   _id: string;
   name: string;
   description: string;
   parent_id: string | null;
-  owner_id: string;
-  last_modified_by: {
-    _id: string;
-    email: string;
-    display_name: string;
-  };
+  owner_id: DocumentOwner;
+  last_modified_by: DocumentOwner;
   organization_id: string;
   created_at: string;
   updated_at: string;
@@ -39,12 +41,8 @@ export interface FolderById {
   name: string;
   description: string;
   parent_id: string | null;
-  owner_id: string;
-  last_modified_by: {
-    _id: string;
-    email: string;
-    display_name: string;
-  };
+  owner_id: DocumentOwner;
+  last_modified_by: DocumentOwner;
   organization_id: string;
   created_at: string;
   updated_at: string;

@@ -52,8 +52,9 @@ export default function Body() {
     search,
   });
   const { mutate: deleteContact, isPending: isLoading } = useDeleteContact();
+  const isFiltering = search.trim() !== "" || activeTab !== ContactTabs.ALL;
 
-  console.log("contacts:", contacts);
+  // console.log("contacts:", contacts);
   return (
     <div className="w-full flex-col flex gap-8">
       <div className="flex max-md:flex-col max-md:gap-3 max-md:items-start items-center justify-between w-full">
@@ -98,7 +99,7 @@ export default function Body() {
         )}
 
         {/* Error state */}
-        {!isPending && contacts?.data.length === 0 && (
+        {!isPending && !isFiltering && contacts?.data.length === 0 && (
           <div className="flex flex-col items-center gap-4 py-20 border border-[#E8E8E8] rounded-[12px]">
             <span className="text-base font-normal text-foreground">
               No companies yet
@@ -211,7 +212,7 @@ export default function Body() {
         )}
 
         {/* Filtered empty state */}
-        {!isPending && !isError && contacts?.data.length === 0 && (
+        {/*{!isPending && !isError && contacts?.data.length === 0 && (
           <div className="flex flex-col items-center gap-4 py-20 border border-[#E8E8E8] rounded-[12px]">
             <span className="text-base font-normal text-foreground">
               {activeTab === "All"
@@ -238,9 +239,22 @@ export default function Body() {
                   />
                 )}
               </CustomDrawer>
-            )}
-          </div>
-        )}
+            )}*/}
+        {/*</div>*/}
+        {/*)}*/}
+
+        {!isPending &&
+          !isError &&
+          isFiltering &&
+          contacts?.data.length === 0 && (
+            <div className="flex flex-col items-center gap-4 py-20 border border-[#E8E8E8] rounded-[12px]">
+              <span className="text-base font-normal text-foreground">
+                {activeTab === ContactTabs.ALL
+                  ? "No contacts match your search"
+                  : `No ${activeTab.toLowerCase()} contacts found`}
+              </span>
+            </div>
+          )}
       </div>
     </div>
   );

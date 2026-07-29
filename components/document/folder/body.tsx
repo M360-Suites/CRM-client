@@ -4,24 +4,16 @@ import { CustomButton } from "@/components/custom/common/customButton";
 import { useGetFolderById } from "@/hooks/document/get_folder_by_id";
 import FileItem from "../fileItem";
 import { useState } from "react";
-import { Document } from "@/types/document";
 import { CustomDrawer } from "@/components/custom/common/drawer";
+import { Document } from "@/types/document";
 import EditFileForm from "../form/edit_file_form";
-
-interface BodyProps {
-  onDownload?: (file: File) => void;
-  onDelete?: (file: File) => void;
-}
 
 export default function Body({ id }: { id: string }) {
   const { data: folderData, isLoading: isFolderLoading } = useGetFolderById(id);
   const [editingFile, setEditingFile] = useState<Document | null>(null);
 
   // normalize: folderData may be ApiResponse wrapper or raw folder
-  const documents =
-    (folderData as any)?.data?.documents ??
-    (folderData as any)?.documents ??
-    [];
+  const documents = folderData?.documents;
 
   const hasDocs = Array.isArray(documents) && documents.length > 0;
 
@@ -64,7 +56,7 @@ export default function Body({ id }: { id: string }) {
       ) : (
         <div className="flex border flex-col w-full rounded-t-[10px]">
           <div className="flex flex-col rounded-b-[8px]">
-            {documents.map((file: any) => (
+            {documents.map((file: Document) => (
               <FileItem
                 key={file._id}
                 file={file}

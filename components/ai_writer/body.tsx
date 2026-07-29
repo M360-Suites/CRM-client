@@ -6,7 +6,7 @@ import { CustomSelect } from "../custom/common/customSelect";
 import CustomInput from "../custom/common/customInput";
 import { Sparkles, XIcon, Loader, Send } from "lucide-react";
 import { getInitials } from "@/lib/utils";
-import { useGetContacts } from "@/hooks/contact/get_contacts";
+import { useGetAllContacts } from "@/hooks/contact/get_all_contacts";
 import { useGetDeals } from "@/hooks/pipeline/get_deals";
 import useSendGmail from "@/hooks/gmail/send_gmail";
 import useGenerateDraft from "@/hooks/user/generate";
@@ -49,7 +49,7 @@ const isValidEmail = (value: string) =>
 export default function Body() {
   const { mutate: generateMail, data: mail, isPending } = useGenerateDraft();
   const { mutate: sendMail, isPending: isSending } = useSendGmail();
-  const { data: contacts } = useGetContacts({});
+  const { data: contacts } = useGetAllContacts();
   const { data: deals } = useGetDeals();
 
   const [attachments, setAttachments] = useState<File[]>([]);
@@ -64,11 +64,7 @@ export default function Body() {
     },
   });
 
-  const {
-    handleSubmit: handleSendSubmit,
-    setValue: setSendValue,
-    watch: watchSend,
-  } = useForm<SendFormValues>({
+  const { setValue: setSendValue, watch: watchSend } = useForm<SendFormValues>({
     defaultValues: {
       to: "",
       subject: "",
@@ -79,18 +75,18 @@ export default function Body() {
   useEffect(() => {
     if (mail?.data?.subject) setSendValue("subject", mail.data.subject);
     if (mail?.data?.body) setSendValue("body", mail.data.body);
-  }, [mail]);
+  }, [mail, setSendValue]);
 
   const selectedTone = watch("tone");
   const selectedLength = watch("length");
   const selectedContactId = watch("contactId");
   const selectedContact =
-    contacts?.data.find((c) => c._id === selectedContactId) ?? null;
+    contacts?.find((c) => c._id === selectedContactId) ?? null;
 
   const handleRemoveContact = () => setValue("contactId", "");
 
   const contactData =
-    contacts?.data?.map((c) => ({
+    contacts?.map((c) => ({
       name: `${c.first_name} ${c.last_name}`,
       value: c._id,
     })) ?? [];

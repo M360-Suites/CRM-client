@@ -43,7 +43,7 @@ export default function PipelineByStage() {
   return (
     <ChartContainer
       config={chartConfig}
-      className="w-full pt-6 min-h-[260px] max-h-[400px]"
+      className="w-full pt-6 min-h-65 max-h-100"
     >
       <ResponsiveContainer width="100%" height="100%">
         <BarChart

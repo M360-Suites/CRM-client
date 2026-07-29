@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
-import { GetContacts } from "@/services/contact/get_all_contact";
-import { Contact, ContactResponse } from "@/types/contact";
+import { GetContacts } from "@/services/contact/get_contacts";
+import { ContactResponse } from "@/types/contact";
 
 interface UseGetContactsProps {
   temperature?: string;
@@ -19,6 +19,6 @@ export const useGetContacts = (props: UseGetContactsProps) => {
       props?.search,
     ],
     queryFn: () => GetContacts(props),
-    refetchInterval: 1 * 60 * 1000,
+    refetchInterval: 5 * 60 * 1000,
   });
 };

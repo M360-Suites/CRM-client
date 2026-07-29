@@ -3,16 +3,20 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 
 export default function useAssignDeal() {
-	const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
 
-	return useMutation({
-		mutationFn: assignDeal,
-		onSuccess: (data) => {
-			toast.success(data.message || "Deal assigned successfully");
-			queryClient.invalidateQueries({ queryKey: ["pipeline"] });
-		},
-		onError: () => {
-			toast.error("Failed to assign deal");
-		},
-	});
+  return useMutation({
+    mutationFn: assignDeal,
+    onSuccess: (data) => {
+      if (data.status) {
+        toast.success(data.message || "Deal assigned successfully");
+        queryClient.invalidateQueries({ queryKey: ["pipeline"] });
+      } else {
+        toast.error(data.message || "Failed to assign deal");
+      }
+    },
+    onError: () => {
+      toast.error("Failed to assign deal");
+    },
+  });
 }

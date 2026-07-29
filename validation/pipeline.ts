@@ -8,18 +8,7 @@ export const addDealSchema = z.object({
     .positive("Deal value must be greater than 0"),
   source: z.string().min(1, "Source is required"),
   industry: z.string().min(1, "Industry is required"),
-  stage: z.enum(
-    [
-      "leads",
-      "qualified",
-      "proposals",
-      "negotiations",
-      "won",
-      "lost",
-      "closed",
-    ],
-    { message: "Invalid stage" },
-  ),
+  stage_id: z.string().min(1, "Stage is required"),
 });
 
 export type AddDealRequestData = z.input<typeof addDealSchema>;

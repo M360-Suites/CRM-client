@@ -2,7 +2,7 @@
 
 import { Droppable } from "./droppable";
 import { Draggable } from "@/components/pipeline/draggable";
-import { Check, Loader, Trash2, UserRound, UserRoundPlus } from "lucide-react";
+import { Check, Loader, Trash2, UserRoundPlus } from "lucide-react";
 import { useGetPipelineBoard } from "@/hooks/pipeline/get_pipeline_board";
 import { DraggableLayout } from "./draggableLayout";
 import { CustomPopover } from "@/components/custom/common/customPopover";
@@ -24,7 +24,6 @@ export default function Body() {
     isPending: isDeleting,
     variables: deleteVariables,
   } = useDeleteAssigned();
-  console.log("pipeline:", pipelineData);
 
   if (isPending) return <PipelineSkeleton />;
 

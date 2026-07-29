@@ -5,7 +5,6 @@ import { Download, UploadIcon, PlusIcon } from "lucide-react";
 import { CustomDrawer } from "@/components/custom/common/drawer";
 import AddCompanyForm from "./forms/add_company";
 import ImportCompanies from "./import";
-import { useCompanyStore } from "@/stores/company/company_store";
 import { useGetCompanies } from "@/hooks/company/get_companies";
 import { downloadFile } from "@/lib/handler";
 

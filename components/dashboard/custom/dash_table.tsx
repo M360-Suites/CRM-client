@@ -11,8 +11,22 @@ import AddContactForm from "@/components/contacts/forms/add_contact";
 import { toUTC } from "@/lib/utils";
 import Link from "next/link";
 
+const DashRowSkeleton = () => (
+  <div className="grid grid-cols-3 xl:gap-10 py-4 px-4 border-b border-[#E8E8E8] animate-pulse">
+    <div className="flex items-center space-x-4 col-span-2">
+      <div className="h-9 w-9 rounded-full bg-gray-200" />
+      <div className="h-3.5 w-28 bg-gray-200 rounded-full" />
+    </div>
+    <div className="flex justify-between items-center gap-4">
+      <div className="h-3.5 w-20 bg-gray-200 rounded-full" />
+      <div className="h-4 w-4 bg-gray-200 rounded-full" />
+    </div>
+  </div>
+);
+
 export default function DashTable() {
-  const { data: dashboard } = useDashboard();
+  const { data: dashboard, isPending, isError } = useDashboard();
+
   return (
     <div className="lg:p-6 p-4 border border-[#E8E8E8] rounded-[12px]">
       <div className="border border-[#E8E8E8] bg-[#FAFFFF] rounded-[12px]">
@@ -28,8 +42,19 @@ export default function DashTable() {
           </Link>
         </div>
         <div className="">
-          {dashboard?.recent_contacts &&
-          dashboard.recent_contacts.length > 0 ? (
+          {isPending ? (
+            Array.from({ length: 4 }).map((_, i) => <DashRowSkeleton key={i} />)
+          ) : isError ? (
+            <div className="py-8 px-6 flex flex-col items-center justify-center gap-3 text-center">
+              <span className="text-sm font-medium text-foreground">
+                Something went wrong
+              </span>
+              <p className="text-xs text-muted-foreground max-w-xs">
+                We couldn&apos;t load your recent contacts. Please try again.
+              </p>
+            </div>
+          ) : dashboard?.recent_contacts &&
+            dashboard.recent_contacts.length > 0 ? (
             dashboard.recent_contacts.map((data) => (
               <div
                 key={data.id}

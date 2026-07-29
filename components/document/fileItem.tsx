@@ -1,6 +1,17 @@
-import { Download, Trash2, FileText, Loader, Pencil } from "lucide-react";
+import {
+  Download,
+  Trash2,
+  FileText,
+  Loader,
+  Pencil,
+  MoreVertical,
+  Eye,
+} from "lucide-react";
 import { Document } from "@/types/document";
 import { useDeleteFile } from "@/hooks/document/delete_file";
+import { CustomPopover } from "../custom/common/customPopover";
+import DocumentPreview from "./documentPreview";
+import { CustomDrawer } from "../custom/common/drawer";
 
 interface FileItemProps {
   file: Document;
@@ -8,7 +19,7 @@ interface FileItemProps {
 }
 
 export default function FileItem({ file, onEdit }: FileItemProps) {
-  const { mutate: deleteFile, isPending } = useDeleteFile();
+  const { mutate: deleteFile, isPending: isDeleting } = useDeleteFile();
 
   const handleDownload = async () => {
     const response = await fetch(file.cloudinary_url);
@@ -37,30 +48,53 @@ export default function FileItem({ file, onEdit }: FileItemProps) {
         </div>
       </div>
 
-      {/* Actions */}
-      <div className="flex items-center gap-6 max-md:gap-2 max-md:col-span-1 justify-end w-full">
-        <button
-          className="text-foreground/40 hover:text-foreground/70 transition-colors cursor-pointer"
-          onClick={onEdit}
+      <div className="py-0.5 flex flex-col items-end justify-center">
+        <CustomPopover
+          trigger={<MoreVertical size={17} className="text-foreground/80" />}
         >
-          <Pencil size={17} color="#4A4A4A" />
-        </button>
-        <button
-          className="text-foreground/40 hover:text-foreground/70 transition-colors cursor-pointer"
-          onClick={handleDownload}
-        >
-          <Download size={17} color="#4A4A4A" />
-        </button>
-        <button
-          className="text-[#FB3748] transition-colors cursor-pointer"
-          onClick={() => deleteFile(file._id)}
-        >
-          {isPending ? (
-            <Loader size={17} className="animate-spin" color="#FB3748" />
-          ) : (
-            <Trash2 size={17} color="#FB3748" />
-          )}
-        </button>
+          <div className="flex flex-col w-36 max-md:w-32 pt-2">
+            <CustomDrawer
+              trigger={
+                <button className="flex items-center gap-2.5 px-2.5 py-2 text-foreground hover:text-foreground/70 transition-colors cursor-pointer">
+                  <Eye size={16} color="#4A4A4A" />
+                  Preview
+                </button>
+              }
+              label={file.original_name}
+            >
+              {(close) => (
+                <DocumentPreview document={file} onSuccess={() => close()} />
+              )}
+            </CustomDrawer>
+
+            <button
+              className="flex items-center gap-2.5 px-2.5 py-2 text-foreground hover:text-foreground/70 transition-colors cursor-pointer"
+              onClick={onEdit}
+            >
+              <Pencil size={16} color="#4A4A4A" />
+              Rename
+            </button>
+            <button
+              className="flex items-center gap-2.5 px-2.5 py-2 text-foreground hover:text-foreground/70 transition-colors cursor-pointer"
+              onClick={handleDownload}
+            >
+              <Download size={17} color="#4A4A4A" />
+              Download
+            </button>
+            <button
+              className="flex items-center gap-2.5 px-2.5 py-2 text-[#FB3748] transition-colors cursor-pointer"
+              onClick={() => deleteFile(file._id)}
+              disabled={isDeleting}
+            >
+              {isDeleting ? (
+                <Loader size={17} className="animate-spin" color="#FB3748" />
+              ) : (
+                <Trash2 size={17} color="#FB3748" />
+              )}
+              {isDeleting ? "Deleting..." : "Delete"}
+            </button>
+          </div>
+        </CustomPopover>
       </div>
     </div>
   );

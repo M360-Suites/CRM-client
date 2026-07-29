@@ -2,7 +2,7 @@ import { CustomButton } from "@/components/custom/common/customButton";
 import { useGmailAuth } from "@/hooks/gmail/gmail_auth";
 import { Mail, Send, Tags, Loader } from "lucide-react";
 import { useGmailStore } from "@/stores/gmail/gmail_store";
-import { useGmailStatus } from "@/hooks/gmail/gmail_connect_status";
+// import { useGmailStatus } from "@/hooks/gmail/gmail_connect_status";
 import { useSearchParams } from "next/navigation";
 import { FcGoogle } from "react-icons/fc";
 import { useEffect } from "react";
@@ -26,7 +26,7 @@ export default function MailAuthorisation() {
   const searchParams = useSearchParams();
   const { mutate, isPending } = useGmailAuth();
   const { setConnectedChannels } = useGmailStore();
-  const { isPending: isStatusPending, data } = useGmailStatus();
+  // const { isPending: isStatusPending, data } = useGmailStatus();
   const channel = searchParams?.get("channel");
   const status = searchParams?.get("connected");
 

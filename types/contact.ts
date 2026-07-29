@@ -30,3 +30,7 @@ export interface ContactResponse {
   total: number;
   total_pages: number;
 }
+
+export interface AllContacts {
+  data: Contact[];
+}

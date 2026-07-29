@@ -1,5 +1,4 @@
 "use client";
-
 import { useForm, SubmitHandler } from "react-hook-form";
 import FileUpload from "../fileUpload";
 import { CustomButton } from "@/components/custom/common/customButton";
@@ -8,7 +7,6 @@ import { useAddFiles } from "@/hooks/document/add_file";
 interface AddFileFormValues {
   files: File[];
 }
-
 interface AddFileFormProps {
   onSuccess?: () => void;
   folderId: string;
@@ -16,19 +14,17 @@ interface AddFileFormProps {
 
 export default function AddFileForm({ onSuccess, folderId }: AddFileFormProps) {
   const { mutate: addFiles, isPending } = useAddFiles();
-  const { handleSubmit, setValue, watch } = useForm<AddFileFormValues>({
-    defaultValues: { files: [] },
-  });
-
+  const { handleSubmit, setValue, watch, getValues } =
+    useForm<AddFileFormValues>({
+      defaultValues: { files: [] },
+    });
   const files = watch("files");
 
   const onSubmit: SubmitHandler<AddFileFormValues> = (data) => {
     if (data.files.length === 0) return;
     addFiles(
       { files: data.files, folderId },
-      {
-        onSuccess: () => onSuccess?.(),
-      },
+      { onSuccess: () => onSuccess?.() },
     );
   };
 
@@ -40,13 +36,16 @@ export default function AddFileForm({ onSuccess, folderId }: AddFileFormProps) {
       <div className="relative w-full">
         <FileUpload
           onUpload={async (incoming) => {
-            // merge incoming files with existing ones
-            setValue("files", [...files, ...incoming]);
+            // read the CURRENT value, not a stale watched snapshot —
+            // this matters when multiple files upload in sequence
+            const current = getValues("files");
+            setValue("files", [...current, ...incoming]);
           }}
           onRemove={(removed) => {
+            const current = getValues("files");
             setValue(
               "files",
-              files.filter((f) => f.name !== removed.name),
+              current.filter((f) => f !== removed), // see note below on identity vs name
             );
           }}
         />

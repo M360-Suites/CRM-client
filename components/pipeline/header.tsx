@@ -32,6 +32,7 @@ export default function Header() {
           >
             {(close) => (
               <AddDealForm
+                editMode={false}
                 onSuccess={() => {
                   close();
                 }}

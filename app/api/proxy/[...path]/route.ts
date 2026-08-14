@@ -168,7 +168,7 @@ async function proxyHandler(req: NextRequest, path: string[]) {
             ...requestInit,
             signal: AbortSignal.timeout(15000),
             // @ts-expect-error - dispatcher is a Node/undici-specific fetch option, not in the standard lib.dom types
-            dispatcher: http1Agent,
+            // dispatcher: http1Agent,
           });
         } catch (error) {
           lastError = error;
@@ -221,7 +221,7 @@ async function proxyHandler(req: NextRequest, path: string[]) {
       kind === "timeout"
         ? "This is taking longer than expected. Please try again in a moment."
         : kind === "network"
-          ? "We're having trouble connecting right now. Please check your internet connection and try again."
+          ? `Server connection failed. Code: ${code}. URL: ${targetUrl}` // <--- Expose the error temporarily
           : "Something went wrong on our end. Please try again, and contact support if it keeps happening.";
 
     return NextResponse.json(

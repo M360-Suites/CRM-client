@@ -167,8 +167,6 @@ async function proxyHandler(req: NextRequest, path: string[]) {
           return await fetch(targetUrl, {
             ...requestInit,
             signal: AbortSignal.timeout(15000),
-            // @ts-expect-error - dispatcher is a Node/undici-specific fetch option, not in the standard lib.dom types
-            // dispatcher: http1Agent,
           });
         } catch (error) {
           lastError = error;

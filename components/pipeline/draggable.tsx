@@ -1,5 +1,5 @@
 import { useDraggable } from "@dnd-kit/react";
-import { MoreVertical, Eye, Loader, Trash2 } from "lucide-react";
+import { MoreVertical, Pencil, Loader, Trash2 } from "lucide-react";
 import { CustomPopover } from "../custom/common/customPopover";
 import { CustomDrawer } from "../custom/common/drawer";
 import { useDeleteDeal } from "@/hooks/pipeline/delete_deal";
@@ -18,12 +18,12 @@ export function Draggable({ lead }: { lead: Deal }) {
     <div
       ref={ref}
       style={{ transition: isDragging ? "none" : undefined }}
-      className={`bg-[#FFF3E6] border rounded-[10px] p-3 flex flex-col gap-2 cursor-grab active:cursor-grabbing w-full ${
+      className={`bg-[#FFF3E6] border rounded-[10px] p-3 flex flex-col gap-1.5 cursor-grab active:cursor-grabbing w-full ${
         isDragging ? "hidden" : "opacity-100"
       }`}
     >
       <div className="flex items-start justify-between w-full">
-        <span className="text-sm font-medium text-foreground">
+        <span className="text-sm font-medium text-foreground max-w-[85%] truncate">
           {lead.title}
         </span>
         <CustomPopover
@@ -37,8 +37,8 @@ export function Draggable({ lead }: { lead: Deal }) {
           <div className="flex flex-col w-24 max-md:w-22 pt-2">
             <CustomDrawer
               trigger={
-                <button className="flex items-center gap-2.5 px-1.5 py-2 text-foreground  transition-colors cursor-pointer text-sm hover:bg-gray-50">
-                  <Eye size={14} color="#4A4A4A" />
+                <button className="flex items-center gap-2.5 px-1.5 py-2 text-foreground transition-colors cursor-pointer text-sm hover:bg-gray-100 rounded-md">
+                  <Pencil size={14} color="#4A4A4A" />
                   Edit
                 </button>
               }
@@ -56,7 +56,7 @@ export function Draggable({ lead }: { lead: Deal }) {
             </CustomDrawer>
 
             <button
-              className="flex items-center gap-2.5 px-1.5 py-2 text-[#FB3748] transition-colors cursor-pointer"
+              className="flex items-center gap-2.5 px-1.5 py-2 text-[#FB3748] hover:bg-gray-100 rounded-md transition-colors cursor-pointer"
               onClick={() => deleteDeal(lead.id)}
               disabled={isDeleting}
             >

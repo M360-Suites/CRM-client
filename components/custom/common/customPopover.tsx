@@ -7,6 +7,8 @@ import {
 interface CustomPopoverProps {
   trigger: React.ReactNode;
   title?: string;
+  className?: string;
+  popoverClassname?: string;
   description?: string;
   children?: React.ReactNode;
   align?: "start" | "center" | "end";
@@ -18,15 +20,20 @@ export function CustomPopover({
   description,
   children,
   align = "end",
+  className,
+  popoverClassname,
 }: CustomPopoverProps) {
   return (
     <Popover>
       <PopoverTrigger asChild>{trigger}</PopoverTrigger>
-      <PopoverContent align={align} className="w-fit p-0 font-inter">
+      <PopoverContent
+        align={align}
+        className={`w-fit h-full p-0 font-inter ${popoverClassname}`}
+      >
         {(title || description) && (
           <div className="px-4 py-3 border-b">
             {title && (
-              <span className="text-sm font-medium text-foreground">
+              <span className="text-xs font-medium text-foreground">
                 {title}
               </span>
             )}
@@ -35,7 +42,7 @@ export function CustomPopover({
             )}
           </div>
         )}
-        {children && <div className="px-2 pb-2 ">{children}</div>}
+        {children && <div className={`px-2 pb-2 ${className}`}>{children}</div>}
       </PopoverContent>
     </Popover>
   );

@@ -6,10 +6,19 @@ import { useUserStore } from "@/stores/user/user_store";
 import { X } from "lucide-react";
 
 const INSTALL_DISMISSED_KEY = "crm360_install_dismissed";
+interface BeforeInstallPromptEvent extends Event {
+  readonly platforms: string[];
+  readonly userChoice: Promise<{
+    outcome: "accepted" | "dismissed";
+    platform: string;
+  }>;
+  prompt(): Promise<void>;
+}
 
 export default function InstallPrompt() {
   const { showInstall, setShowInstall } = useUserStore();
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [deferredPrompt, setDeferredPrompt] =
+    useState<BeforeInstallPromptEvent | null>(null);
 
   useEffect(() => {
     // if user already dismissed it before, never show again
@@ -20,7 +29,7 @@ export default function InstallPrompt() {
 
     const handler = (e: Event) => {
       e.preventDefault();
-      setDeferredPrompt(e);
+      setDeferredPrompt(e as BeforeInstallPromptEvent);
       setShowInstall(true);
     };
     window.addEventListener("beforeinstallprompt", handler);

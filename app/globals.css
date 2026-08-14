@@ -136,6 +136,10 @@ body {
     zoom: 1 !important;
 }
 
+html {
+    scrollbar-gutter: stable;
+}
+
 [data-dnd-kit-draggable] {
     transition: none !important;
 }

@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { NextRequest, NextResponse } from "next/server";
+import { Agent } from "undici";
 
 const API_BASE = process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_BASE_URL;
 
@@ -15,6 +16,7 @@ const HOP_BY_HOP_HEADERS = [
   "host",
   "content-length",
 ];
+const http1Agent = new Agent({ allowH2: false });
 
 function buildForwardHeaders(req: NextRequest) {
   const headers = new Headers(req.headers);
@@ -154,19 +156,35 @@ async function proxyHandler(req: NextRequest, path: string[]) {
       cache: "no-store",
     };
 
+    const MAX_RETRIES = 3;
+    const RETRY_DELAY_MS = 1000;
+
     const fetchWithRetry = async () => {
-      try {
-        return await fetch(targetUrl, {
-          ...requestInit,
-          signal: AbortSignal.timeout(15000),
-        });
-      } catch (error) {
-        console.warn("Proxy fetch failed, retrying once:", error);
-        return fetch(targetUrl, {
-          ...requestInit,
-          signal: AbortSignal.timeout(15000),
-        });
+      let lastError: unknown;
+
+      for (let attempt = 0; attempt < MAX_RETRIES; attempt++) {
+        try {
+          return await fetch(targetUrl, {
+            ...requestInit,
+            signal: AbortSignal.timeout(15000),
+            // @ts-expect-error - dispatcher is a Node/undici-specific fetch option, not in the standard lib.dom types
+            dispatcher: http1Agent,
+          });
+        } catch (error) {
+          lastError = error;
+          console.warn(
+            `Proxy fetch attempt ${attempt + 1}/${MAX_RETRIES} failed:`,
+            error,
+          );
+          if (attempt < MAX_RETRIES - 1) {
+            await new Promise((r) =>
+              setTimeout(r, RETRY_DELAY_MS * (attempt + 1)),
+            );
+          }
+        }
       }
+
+      throw lastError;
     };
 
     const response = await fetchWithRetry();

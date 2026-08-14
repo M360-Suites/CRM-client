@@ -12,7 +12,7 @@ type CustomInputProps = {
   | React.TextareaHTMLAttributes<HTMLTextAreaElement>
 );
 
-const CustomInput = React.forwardRef<
+const CommentInput = React.forwardRef<
   HTMLInputElement | HTMLTextAreaElement,
   CustomInputProps
 >(({ label, error, type, className = "", textArea, ...inputProps }, ref) => {
@@ -25,12 +25,12 @@ const CustomInput = React.forwardRef<
   const resolvedType = type === "password" && isPasswordVisible ? "text" : type;
 
   return (
-    <div className="flex flex-col gap-2 font-inter w-full">
+    <div className="flex flex-col gap-2 font-inter w-full max-w-full">
       <label className="text-foreground font-regular text-sm/[120%] max-md:text-xs">
         {label}
       </label>
       <div
-        className={`rounded-[10px] border flex flex-row justify-between items-center ${error ? "border-foundation-error-6" : "border-border"} bg-[#FFF3E6] px-4 py-4.5`}
+        className={`rounded-[10px] border flex flex-row flex-1 justify-between items-center ${error ? "border-foundation-error-6" : "border-border"} bg-[#FFF3E6] px-2 py-2`}
       >
         {textArea ? (
           <textarea
@@ -40,18 +40,18 @@ const CustomInput = React.forwardRef<
               (inputProps as React.TextareaHTMLAttributes<HTMLTextAreaElement>)
                 .rows ?? 3
             }
-            className={`outline-none bg-transparent resize-none text-base text-foreground placeholder:text-sm max-md:text-xs placeholder:text-foundation-gray-4 focus:ring-0 w-full ${className}`}
+            className={`outline-none bg-transparent field-sizing-content resize-none text-sm text-foreground placeholder:text-xs max-md:text-xs placeholder:text-foundation-gray-4 focus:ring-0 w-full ${className}`}
           />
         ) : (
           <input
             {...(inputProps as React.InputHTMLAttributes<HTMLInputElement>)}
             type={resolvedType}
             ref={ref as React.Ref<HTMLInputElement>}
-            className={`outline-none bg-transparent text-base text-foreground max-md:text-sm placeholder:text-sm placeholder:text-foundation-gray-4 focus:ring-0 w-full ${className}`}
+            className={`outline-none bg-transparent field-sizing-content text-sm text-foreground max-md:text-xs placeholder:text-sm placeholder:text-foundation-gray-4 focus:ring-0 w-full ${className}`}
           />
         )}
 
-        {!textArea &&
+        {/*{!textArea &&
           type === "password" &&
           (isPasswordVisible ? (
             <EyeIcon
@@ -67,12 +67,12 @@ const CustomInput = React.forwardRef<
               size="20px"
               onClick={handlePasswordVisibilityToggle}
             />
-          ))}
+          ))}*/}
       </div>
     </div>
   );
 });
 
-CustomInput.displayName = "CustomInput";
+CommentInput.displayName = "CustomInput";
 
-export default CustomInput;
+export default CommentInput;

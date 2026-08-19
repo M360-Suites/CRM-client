@@ -21,11 +21,19 @@ import CommentInput from "../custom/common/comment_input";
 import { CommentDisplay } from "./comments/comment_display";
 import { getInitials } from "@/lib/utils";
 import useAddComment from "@/hooks/pipeline/comment/send_comment";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useState } from "react";
 
 export default function Body() {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
+  const queryStageId = searchParams.get("stageId");
   const [comment, setComment] = useState("");
-  const [stageId, setStageId] = useState("");
+  const [stageId, setStageId] = useState(queryStageId || "");
+  const [openModalId, setOpenModalId] = useState<string | null>(
+    queryStageId || null,
+  );
   const { data: pipelineData, isPending } = useGetPipelineBoard();
   const { mutate: addCommentByStage, isPending: addingComment } =
     useAddComment();
@@ -43,6 +51,19 @@ export default function Body() {
 
   const handleCommentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setComment(e.target.value);
+  };
+
+  const handleModalChange = (isOpen: boolean, currentStageId: string) => {
+    if (isOpen) {
+      setStageId(currentStageId);
+      setOpenModalId(currentStageId);
+    } else {
+      setOpenModalId(null);
+      // Optional: Remove ?stageId from the URL so it doesn't reopen on refresh
+      if (queryStageId) {
+        router.replace(pathname, { scroll: false });
+      }
+    }
   };
 
   console.log("StageId and Comment:", stageId, comment);
@@ -164,6 +185,10 @@ export default function Body() {
                         </div>
                       </CustomPopover>
                       <CommentModal
+                        open={openModalId === stage.id}
+                        onOpenChange={(isOpen) =>
+                          handleModalChange(isOpen, stage.id)
+                        }
                         trigger={
                           <MessageSquareText
                             onClick={() => setStageId(stage.id)}
@@ -182,12 +207,15 @@ export default function Body() {
                             onChange={handleCommentChange}
                           />
                           <CustomButton
+                            disabled={!comment || addingComment}
                             className="self-end p-2"
                             onClick={() => {
-                              addCommentByStage({
-                                stageId: stageId,
-                                content: comment,
-                              });
+                              if (comment !== "") {
+                                addCommentByStage({
+                                  stageId: stageId,
+                                  content: comment,
+                                });
+                              }
                               setComment("");
                             }}
                           >

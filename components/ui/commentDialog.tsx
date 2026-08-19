@@ -86,31 +86,31 @@ function DialogContent({
 function DialogHeader({
   className,
   label,
+  showCloseButton = true,
   ...props
 }: React.ComponentProps<"div"> & {
   label?: string;
+  showCloseButton?: boolean;
 }) {
   return (
     <div
       data-slot="dialog-header"
       className={cn(
-        "flex flex-row justify-between items-center border-b border-b-[#F4F4F5] font-inter py-2 px-4 w-full",
+        "flex flex-row justify-between items-center border-b border-b-[#F4F4F5] font-inter py-2.5 px-4 w-full",
         className,
       )}
       {...props}
     >
       {label && <DialogTitle>{label}</DialogTitle>}
-      <DialogPrimitive.Close data-slot="dialog-close" asChild>
-        <Button
-          variant="ghost"
-          className="hover:bg-transparent pointer-none:"
-          size="icon-lg"
-          onClick={() => {}}
-        >
-          <XIcon color="#8C8C90" />
-          {/*<span className="sr-only">Close</span>*/}
-        </Button>
-      </DialogPrimitive.Close>
+      {showCloseButton && (
+        <DialogPrimitive.Close data-slot="dialog-close" asChild>
+          <Button variant="transparent" className="cursor-pointer">
+            {/* You MUST include the XIcon here inside the Button */}
+            <XIcon color="#8C8C90" className="h-6 w-6" />
+            <span className="sr-only">Close</span>
+          </Button>
+        </DialogPrimitive.Close>
+      )}
     </div>
   );
 }

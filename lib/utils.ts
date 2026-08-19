@@ -177,3 +177,49 @@ export const handleRoleDisplay = (role: string) => {
       return role;
   }
 };
+
+export function formatRelativeDateTime(dateInput: string | Date): string {
+  const date = new Date(dateInput);
+  const now = new Date();
+
+  // Normalize to midnight to ensure accurate "day" comparisons
+  const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+  const yesterday = new Date(today);
+  yesterday.setDate(yesterday.getDate() - 1);
+
+  const targetDate = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+  );
+
+  // Format the time portion (e.g., "2:40 pm")
+  const timeFormatter = new Intl.DateTimeFormat("en-US", {
+    hour: "numeric",
+    minute: "numeric",
+    hour12: true,
+  });
+
+  // Intl usually adds a space before AM/PM. Remove it and lowercase to match "2:20pm"
+  const timeString = timeFormatter.format(date).replace(" ", "").toLowerCase();
+
+  // Compare midnights to determine the relative day
+  if (targetDate.getTime() === today.getTime()) {
+    return `Today at ${timeString}`;
+  }
+
+  if (targetDate.getTime() === yesterday.getTime()) {
+    return `Yesterday at ${timeString}`;
+  }
+
+  // Fallback for older dates (e.g., "Aug 14 at 2:40pm" or "Aug 14, 2025 at 2:40pm")
+  const dateFormatter = new Intl.DateTimeFormat("en-US", {
+    month: "short",
+    day: "numeric",
+    // Only show the year if it's not the current year
+    year:
+      targetDate.getFullYear() === today.getFullYear() ? undefined : "numeric",
+  });
+
+  return `${dateFormatter.format(date)} at ${timeString}`;
+}

@@ -13,14 +13,20 @@ interface CustomModalProps {
   onOpenChange?: (open: boolean) => void;
 }
 
-export function CommentModal({ label, trigger, children }: CustomModalProps) {
+export function CommentModal({
+  label,
+  trigger,
+  children,
+  open,
+  onOpenChange,
+}: CustomModalProps) {
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={onOpenChange}>
       {/* Made Dialog controlled */}
       <DialogTrigger asChild>{trigger}</DialogTrigger>
-      <DialogContent>
-        <DialogHeader label={label} />
-        <div className="p-2">{children}</div>
+      <DialogContent className="lg:min-w-md lg:min-h-80 flex flex-col gap-0">
+        <DialogHeader label={label} className="h-fit" />
+        <div className="p-2 h-fit">{children}</div>
       </DialogContent>
     </Dialog>
   );

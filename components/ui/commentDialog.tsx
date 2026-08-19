@@ -94,7 +94,7 @@ function DialogHeader({
     <div
       data-slot="dialog-header"
       className={cn(
-        "flex flex-row justify-between items-center border-b border-b-[#F4F4F5] font-inter py-2 px-4 w-full ",
+        "flex flex-row justify-between items-center border-b border-b-[#F4F4F5] font-inter py-2 px-4 w-full",
         className,
       )}
       {...props}
@@ -103,12 +103,12 @@ function DialogHeader({
       <DialogPrimitive.Close data-slot="dialog-close" asChild>
         <Button
           variant="ghost"
-          className="hover:bg-transparent cursor-pointer"
+          className="hover:bg-transparent pointer-none:"
           size="icon-lg"
           onClick={() => {}}
         >
           <XIcon color="#8C8C90" />
-          <span className="sr-only">Close</span>
+          {/*<span className="sr-only">Close</span>*/}
         </Button>
       </DialogPrimitive.Close>
     </div>
@@ -150,7 +150,7 @@ function DialogTitle({
     <DialogPrimitive.Title
       data-slot="dialog-title"
       className={cn(
-        "font-heading text-base leading-none font-medium",
+        "font-heading  xl:text-sm text-xs leading-none font-medium",
         className,
       )}
       {...props}

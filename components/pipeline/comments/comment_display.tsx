@@ -1,12 +1,11 @@
 import { useGetCommentsByStage } from "@/hooks/pipeline/comment/get_comments";
-import { Loader } from "lucide-react";
+import { Loader, MoreVertical } from "lucide-react";
 
 export const CommentDisplay = ({ stageId }: { stageId: string }) => {
   const { data: comments, isPending: isFetchingComments } =
     useGetCommentsByStage(stageId);
-  console.log("comments on display:", comments?.data);
   return (
-    <div className="max-h-75 overflow-y-auto w-full pt-2 pb-10">
+    <div className="max-h-75 overflow-y-auto w-full pt-2 pb-10 px-4">
       <div className="h-full">
         {isFetchingComments && (
           <div className="flex items-center justify-center flex-col gap-2">
@@ -28,9 +27,15 @@ export const CommentDisplay = ({ stageId }: { stageId: string }) => {
                 >
                   {comment.is_owner && (
                     <div className=" bg-[#FFF3E6] w-44 rounded-tr-lg rounded-br-lg rounded-tl-lg p-1.5 flex flex-col gap-1">
-                      <h6 className="font-semibold text-foreground/90 text-[10px]">
-                        {comment.sender.display_name}
-                      </h6>
+                      <span className="flex flex-row justify-between">
+                        <h6 className="font-medium text-foreground text-xs">
+                          {comment.sender.display_name}
+                        </h6>
+                        <MoreVertical
+                          size={15}
+                          className="text-foreground/80 hover:text-foreground"
+                        />
+                      </span>
                       <p className="text-foreground text-xs">
                         {comment.content}
                       </p>
@@ -38,9 +43,15 @@ export const CommentDisplay = ({ stageId }: { stageId: string }) => {
                   )}
                   {!comment.is_owner && (
                     <div className="text-left bg-gray-100 p-1.5 rounded-tr-lg rounded-bl-lg rounded-tl-lg text-xs w-44">
-                      <h6 className="font-semibold text-foreground/85 text-[10px]">
-                        {comment.sender.display_name}
-                      </h6>
+                      <span className="flex flex-row justify-between">
+                        <h6 className="font-medium text-foreground text-xs">
+                          {comment.sender.display_name}
+                        </h6>
+                        <MoreVertical
+                          size={14}
+                          className="text-foreground/80 hover:text-foreground"
+                        />
+                      </span>
                       <p className="text-foreground text-xs">
                         {comment.content}
                       </p>

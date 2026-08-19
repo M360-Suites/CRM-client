@@ -29,11 +29,15 @@ export function proxy(request: NextRequest) {
   const isProtectedRoute = PROTECTED_PATHS.some((path) =>
     pathname.startsWith(path),
   );
+  const isLoginRoute = pathname.startsWith("/login");
+  const hasValidToken = isTokenValid(accessToken, tokenExpiry);
+
+  if (isLoginRoute && hasValidToken && isVerified) {
+    return NextResponse.redirect(new URL("/dashboard", request.url));
+  }
 
   // If token is expired or missing on a protected route
   if (isProtectedRoute) {
-    const hasValidToken = isTokenValid(accessToken, tokenExpiry);
-
     // Not authenticated or token expired -> require login
     if (!hasValidToken) {
       const loginUrl = new URL(`/login`, request.url);
@@ -125,6 +129,7 @@ export function proxy(request: NextRequest) {
 
 export const config = {
   matcher: [
+    "/login",
     "/dashboard/:path*",
     "/contacts/:path*",
     "/companies/:path*",

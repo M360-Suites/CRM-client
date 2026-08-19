@@ -3,7 +3,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { Agent } from "undici";
 
 const API_BASE = process.env.API_BASE_URL ?? process.env.NEXT_PUBLIC_BASE_URL;
-
 const HOP_BY_HOP_HEADERS = [
   "connection",
   "keep-alive",
@@ -16,6 +15,7 @@ const HOP_BY_HOP_HEADERS = [
   "host",
   "content-length",
 ];
+const isDev = process.env.NODE_ENV === "development";
 const http1Agent = new Agent({ allowH2: false });
 
 function buildForwardHeaders(req: NextRequest) {
@@ -167,6 +167,7 @@ async function proxyHandler(req: NextRequest, path: string[]) {
           return await fetch(targetUrl, {
             ...requestInit,
             signal: AbortSignal.timeout(15000),
+            ...(isDev && { dispatcher: http1Agent }),
           });
         } catch (error) {
           lastError = error;

@@ -53,18 +53,18 @@ export default function CompanyDetailsSheet({
   ];
 
   const stats = [
-    { label: "Contacts", value: 0 },
+    { label: "Contacts", value: selectedCompany?.stats.contact_count || 0 },
     {
       label: "Deals",
-      value: `$${0}`,
+      value: `$${selectedCompany?.stats.deal_count || 0}`,
     },
     {
       label: "Pipeline value",
-      value: `$${0}`,
+      value: `$${selectedCompany?.stats.pipeline_value || 0}`,
     },
     {
       label: "Won revenue",
-      value: `$${0}`,
+      value: `$${selectedCompany?.stats.won_revenue || 0}`,
     },
   ];
 

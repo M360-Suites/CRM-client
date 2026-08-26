@@ -9,20 +9,16 @@ interface CustomPopoverProps {
   title?: string;
   className?: string;
   popoverClassname?: string;
-  description?: string;
+  action?: React.ReactNode;
   children?: React.ReactNode;
-  headerClassName?: string;
-  headerTextClassName?: string;
   align?: "start" | "center" | "end";
 }
 
 export function CustomPopover({
   trigger,
   title,
-  description,
+  action,
   children,
-  headerClassName,
-  headerTextClassName,
   align = "end",
   className,
   popoverClassname,
@@ -34,17 +30,19 @@ export function CustomPopover({
         align={align}
         className={`w-fit h-full p-0 font-inter ${popoverClassname}`}
       >
-        {(title || description) && (
-          <div className={`px-4 py-3 border-b ${headerClassName}`}>
+        {(title || action) && (
+          <div
+            className={`px-4 py-3 border-b border-foreground/10 flex flex-row items-center justify-between `}
+          >
             {title && (
-              <span
-                className={`font-medium ${headerTextClassName} text-foreground`}
-              >
+              <span className={`font-medium text-sm text-foreground`}>
                 {title}
               </span>
             )}
-            {description && (
-              <p className="text-xs text-foreground/50 mt-0.5">{description}</p>
+            {action && (
+              <div className="text-xs text-foreground/50 mt-0.5 hover:cursor-pointer hover:text-foreground/90">
+                {action}
+              </div>
             )}
           </div>
         )}

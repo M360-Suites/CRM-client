@@ -223,3 +223,61 @@ export function formatRelativeDateTime(dateInput: string | Date): string {
 
   return `${dateFormatter.format(date)} at ${timeString}`;
 }
+
+export const handleHoursTime = (time: string) => {
+  if (!time) return "";
+
+  const date = /^\d+$/.test(time) ? new Date(Number(time)) : new Date(time);
+
+  if (Number.isNaN(date.getTime())) return time;
+
+  const now = new Date();
+
+  // Start of today
+  const startOfToday = new Date(
+    now.getFullYear(),
+    now.getMonth(),
+    now.getDate(),
+  );
+
+  // Start of the date
+  const startOfDate = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+  );
+
+  const diffMs = now.getTime() - date.getTime();
+  const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+
+  // Today
+  if (startOfDate.getTime() === startOfToday.getTime()) {
+    if (diffHours < 1) {
+      const diffMinutes = Math.floor(diffMs / (1000 * 60));
+
+      if (diffMinutes < 1) {
+        return "Just now";
+      }
+
+      return `${diffMinutes} ${diffMinutes === 1 ? "minute" : "minutes"} ago`;
+    }
+
+    return `${diffHours} ${diffHours === 1 ? "hour" : "hours"} ago`;
+  }
+
+  // Previous days
+  const diffDays = Math.floor(
+    (startOfToday.getTime() - startOfDate.getTime()) / (1000 * 60 * 60 * 24),
+  );
+
+  if (diffDays > 0 && diffDays <= 7) {
+    return `${diffDays} ${diffDays === 1 ? "day" : "days"} ago`;
+  }
+
+  // Older than 7 days
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  });
+};

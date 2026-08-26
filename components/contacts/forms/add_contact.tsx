@@ -150,7 +150,7 @@ export default function AddContactForm({ onSuccess }: AddContactFormProps) {
           render={({ field }) => (
             <CustomSelect
               {...field}
-              label="Company"
+              label="Company (optional)"
               value={field.value}
               onChange={(v) => field.onChange(v)}
               placeholder="Select company"

@@ -26,7 +26,7 @@ const CustomInput = React.forwardRef<
 
   return (
     <div className="flex flex-col gap-2 font-inter w-full">
-      <label className="text-foreground font-regular text-sm/[120%] max-md:text-xs">
+      <label className="text-foreground font-regular text-sm/[110%] max-md:text-xs">
         {label}
       </label>
       <div

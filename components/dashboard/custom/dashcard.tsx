@@ -98,7 +98,7 @@ export default function DashCard() {
     <div className="flex flex-col gap-6 pt-8">
       <div className="flex flex-col gap-0.5">
         <h2 className="md:text-2xl text-xl font-medium text-foreground capitalize">
-          {handleGreeting()}, {firstname}
+          {handleGreeting()}, {firstname}👋
         </h2>
         <span className="lg:text-base text-sm font-normal">
           Here&apos;s how your pipeline looks today.

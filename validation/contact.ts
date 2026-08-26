@@ -12,7 +12,7 @@ export const addContactSchema = z.object({
   email: z.email("Invalid email address"),
   phone: z
     .string("Invalid phone number")
-    .min(10, "Phone number must be at least 10 digits"),
+    .min(10, "Phone number must be 11 digits"),
   role: z
     .string()
     .min(3, "Role is required")

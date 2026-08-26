@@ -54,7 +54,6 @@ export default function Body() {
   const { mutate: deleteContact, isPending: isLoading } = useDeleteContact();
   const isFiltering = search.trim() !== "" || activeTab !== ContactTabs.ALL;
 
-  // console.log("contacts:", contacts);
   return (
     <div className="w-full flex-col flex gap-8">
       <div className="flex max-md:flex-col max-md:gap-3 max-md:items-start items-center justify-between w-full">
@@ -210,38 +209,6 @@ export default function Body() {
             </div>
           </div>
         )}
-
-        {/* Filtered empty state */}
-        {/*{!isPending && !isError && contacts?.data.length === 0 && (
-          <div className="flex flex-col items-center gap-4 py-20 border border-[#E8E8E8] rounded-[12px]">
-            <span className="text-base font-normal text-foreground">
-              {activeTab === "All"
-                ? "No contacts yet"
-                : `No ${activeTab.toLowerCase()} contacts found`}
-            </span>
-            {activeTab === "All" && (
-              <CustomDrawer
-                label="Add Contacts"
-                trigger={
-                  <CustomButton
-                    variant="default"
-                    className="rounded-full flex flex-row items-center gap-2 px-5 py-2.5"
-                  >
-                    <span>Add your first contact</span>
-                  </CustomButton>
-                }
-              >
-                {(close) => (
-                  <AddContactForm
-                    onSuccess={() => {
-                      close();
-                    }}
-                  />
-                )}
-              </CustomDrawer>
-            )}*/}
-        {/*</div>*/}
-        {/*)}*/}
 
         {!isPending &&
           !isError &&

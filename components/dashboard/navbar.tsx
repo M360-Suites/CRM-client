@@ -64,7 +64,7 @@ export default function Navbar() {
             trigger={
               <button className="p-2.5 border rounded-full md:block relative cursor-pointer">
                 <Bell color="#3A2418" className="w-4 h-4" />
-                {(notifications?.unread_count ?? 0) && (
+                {(notifications?.unread_count ?? 0) > 0 && (
                   <div className="absolute top-0 -right-2 bg-[#F5B7A3] flex justify-center items-center rounded-full px-1.5 py-0.5">
                     <span className="text-xs text-foreground font-medium">
                       {notifications?.unread_count}

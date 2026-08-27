@@ -1,23 +1,68 @@
 "use client";
 
+import { useState } from "react";
 import PipelineByStage from "./analytics_card/pipeline_by_stage";
 import PipelineByLead from "./analytics_card/pipeline_by_lead";
 import { useAnalyticsLeadSource } from "@/hooks/analytics/analytics_lead_source";
 import { useAnalyticsPipelineStage } from "@/hooks/analytics/analytics_pipeline_stage";
+import { CustomSelect } from "@/components/custom/common/custom_analytics_select";
+import { useUserStore } from "@/stores/user/user_store";
+
+interface AnalyticsSummaryProps {
+  timeframe?: "daily" | "weekly" | "monthly" | undefined;
+}
 
 export default function Body() {
+  const {
+    pipelineStateTimeframe,
+    setPipelineStateTimeframe,
+    leadSourceTimeframe,
+    setLeadSourceTimeframe,
+  } = useUserStore();
+
   const { data: leadSourceData, isLoading: isLeadSourceLoading } =
-    useAnalyticsLeadSource();
+    useAnalyticsLeadSource({ timeframe: leadSourceTimeframe });
   const { data: pipelineStageData, isLoading: isPipelineStageLoading } =
-    useAnalyticsPipelineStage();
+    useAnalyticsPipelineStage({ timeframe: pipelineStateTimeframe });
+
+  const handlePipelineStateframeChange = (
+    timeframe: AnalyticsSummaryProps["timeframe"],
+  ) => {
+    setPipelineStateTimeframe(timeframe);
+  };
+
+  const handleLeadSourceTimeframeChange = (
+    timeframe: AnalyticsSummaryProps["timeframe"],
+  ) => {
+    setLeadSourceTimeframe(timeframe);
+  };
 
   return (
     <div className="flex flex-col gap-8 w-full h-full">
       <div className="grid xl:grid-cols-2 grid-cols-1 gap-6 w-full">
         <div className="p-4 border border-[#E8E8E8] rounded-[8px] flex flex-col gap-2">
-          <h2 className="text-base font-medium text-foreground">
-            Pipeline by stage
-          </h2>
+          <div className="w-full flex items-center   flex-row justify-between">
+            <h2 className="md:text-base text-sm font-medium text-foreground">
+              Pipeline by stage
+            </h2>
+            <div>
+              <CustomSelect
+                selectable={[
+                  { value: " ", name: "---" },
+                  { value: "daily", name: "Daily" },
+                  { value: "weekly", name: "Weekly" },
+                  { value: "monthly", name: "Monthly" },
+                ]}
+                placeholder="pick time frame"
+                value={pipelineStateTimeframe}
+                onChange={(timeframe) =>
+                  handlePipelineStateframeChange(
+                    timeframe as AnalyticsSummaryProps["timeframe"],
+                  )
+                }
+              />
+            </div>
+          </div>
           <div className="flex justify-center items-center h-full">
             {isPipelineStageLoading ? (
               <div className="w-full h-64 animate-pulse bg-[#E8E8E8]/50 rounded-[8px]" />
@@ -31,9 +76,28 @@ export default function Body() {
           </div>
         </div>
         <div className="p-4 border border-[#E8E8E8] rounded-[8px] flex flex-col gap-2">
-          <h2 className="text-base font-medium text-foreground">
-            Lead sources
-          </h2>
+          <div className="w-full flex items-center flex-row justify-between">
+            <h2 className="md:text-base text-sm font-medium text-foreground">
+              Lead sources
+            </h2>
+            <div>
+              <CustomSelect
+                selectable={[
+                  { value: " ", name: "---" },
+                  { value: "daily", name: "Daily" },
+                  { value: "weekly", name: "Weekly" },
+                  { value: "monthly", name: "Monthly" },
+                ]}
+                placeholder="pick time frame"
+                value={leadSourceTimeframe}
+                onChange={(timeframe) =>
+                  handleLeadSourceTimeframeChange(
+                    timeframe as AnalyticsSummaryProps["timeframe"],
+                  )
+                }
+              />
+            </div>
+          </div>
           <div className="flex justify-center items-center h-full">
             {isLeadSourceLoading ? (
               <div className="w-full h-64 animate-pulse bg-[#E8E8E8]/50 rounded-[8px]" />

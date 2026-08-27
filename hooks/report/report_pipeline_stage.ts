@@ -5,7 +5,7 @@ import { PipelineStageData } from "@/types/report";
 
 export const useAnalyticsPipelineStage = () => {
   return useQuery<PipelineStageData>({
-    queryKey: ["report"],
+    queryKey: ["report", "pipeline-stage"],
     queryFn: getAnalyticsPipeline,
     refetchInterval: 10 * 60 * 1000,
   });

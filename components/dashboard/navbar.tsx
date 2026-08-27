@@ -58,7 +58,9 @@ export default function Navbar() {
               >
                 {isMarkingAllAsRead
                   ? "Marking all as read..."
-                  : "Mark all as read"}
+                  : (notifications?.unread_count ?? 0) > 0
+                    ? "Mark all as read"
+                    : null}
               </button>
             }
             trigger={

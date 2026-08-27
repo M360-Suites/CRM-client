@@ -1,8 +1,8 @@
 "use client";
+
 import { PieChart, Pie, Tooltip, ResponsiveContainer } from "recharts";
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
-import { useAnalyticsLeadSource } from "@/hooks/analytics/analytics_lead_source";
-import { useUserStore } from "@/stores/user/user_store";
+import { useAnalyticsLeadSource } from "@/hooks/report/report_lead_source";
 
 const COLORS = ["#E2725B", "#FFD9C0", "#F5B7A3", "#E8A898", "#D4614A"];
 
@@ -14,10 +14,7 @@ const chartConfig = {
 } satisfies ChartConfig;
 
 export default function PipelineByLead() {
-  const { leadSourceTimeframe } = useUserStore();
-  const { data: chartData } = useAnalyticsLeadSource({
-    timeframe: leadSourceTimeframe,
-  });
+  const { data: chartData } = useAnalyticsLeadSource();
 
   const dataWithColors =
     chartData?.map((item, i) => ({
@@ -27,30 +24,33 @@ export default function PipelineByLead() {
 
   return (
     <div className="w-full min-w-0">
-      <div className="w-full h-75 sm:h-87.5">
-        <ChartContainer config={chartConfig} className="w-full h-full">
-          <ResponsiveContainer width="100%" height="100%">
-            <PieChart>
-              <Pie
-                data={dataWithColors}
-                dataKey="value"
-                nameKey="name"
-                cx="50%"
-                cy="50%"
-                outerRadius="70%"
-                paddingAngle={4}
-              />
+      {/* Chart */}
+      <ChartContainer
+        config={chartConfig}
+        className="w-full h-[280px] sm:h-[320px] lg:h-[350px]"
+      >
+        <ResponsiveContainer width="100%" height="100%">
+          <PieChart>
+            <Pie
+              data={dataWithColors}
+              dataKey="value"
+              nameKey="name"
+              cx="50%"
+              cy="50%"
+              outerRadius="70%"
+              paddingAngle={4}
+            />
 
-              <Tooltip
-                formatter={(value) =>
-                  value != null ? Number(value).toLocaleString() : ""
-                }
-              />
-            </PieChart>
-          </ResponsiveContainer>
-        </ChartContainer>
-      </div>
+            <Tooltip
+              formatter={(value) =>
+                value != null ? Number(value).toLocaleString() : ""
+              }
+            />
+          </PieChart>
+        </ResponsiveContainer>
+      </ChartContainer>
 
+      {/* Legend */}
       <div className="flex flex-wrap gap-x-4 gap-y-2 justify-center mt-2 px-2 min-w-0">
         {dataWithColors.map((item) => (
           <div key={item.name} className="flex items-center gap-2 min-w-0">

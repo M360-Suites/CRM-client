@@ -1,8 +1,8 @@
 "use client";
 
-import PipelineByStage from "./analytics_card/pipeline_by_stage";
-import PipelineByLead from "./analytics_card/pipeline_by_lead";
-import PipelineByLeadTemp from "./analytics_card/pipeline_lead_by_temp";
+import PipelineByStage from "./report_card/pipeline_by_stage";
+import PipelineByLead from "./report_card/pipeline_by_lead";
+import PipelineByLeadTemp from "./report_card/pipeline_lead_by_temp";
 
 import { useAnalyticsLeadSource } from "@/hooks/report/report_lead_source";
 import { useReportLeadTemp } from "@/hooks/report/report_by_leadtemp";

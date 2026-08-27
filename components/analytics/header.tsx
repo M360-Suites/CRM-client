@@ -3,13 +3,18 @@ import {
   Users,
   TrendingUp,
   DollarSign,
-  Building2,
   CircleCheck,
   CircleCheckBigIcon,
   Clock,
 } from "lucide-react";
 import { iconCardBg, iconColor, formatNaira } from "@/lib/utils";
 import { useAnalyticsSummary } from "@/hooks/analytics/analytics_summary";
+import { CustomSelect } from "../custom/common/custom_analytics_select";
+import { useState } from "react";
+
+interface AnalyticsSummaryProps {
+  timeframe?: "daily" | "weekly" | "monthly" | undefined;
+}
 
 const CardSkeleton = () => (
   <div className="p-4 border border-[#E8E8E8] rounded-[8px] flex flex-col gap-2 animate-pulse">
@@ -26,7 +31,9 @@ const CardSkeleton = () => (
 );
 
 export default function Header() {
-  const { data: summaryData, isPending } = useAnalyticsSummary();
+  const [timeframe, setTimeframe] =
+    useState<AnalyticsSummaryProps["timeframe"]>();
+  const { data: summaryData, isPending } = useAnalyticsSummary({ timeframe });
   const analyticsCardData = [
     {
       title: "Won Revenue",
@@ -69,15 +76,40 @@ export default function Header() {
       icon: CircleCheck,
     },
   ];
+
+  const handleTimeframeChange = (
+    timeframe: AnalyticsSummaryProps["timeframe"],
+  ) => {
+    setTimeframe(timeframe);
+  };
   return (
     <div className="w-full pt-8 flex flex-col gap-10">
-      <div className="flex flex-col gap-1 w-full">
-        <h2 className="xl:text-2xl text-xl/[110%] font-medium text-[#3A2418]">
-          Analytics Board
-        </h2>
-        <span className="xl:text-base text-sm font-medium text-foreground">
-          Performance, conversion and team productivity at a glance
-        </span>
+      <div className="w-full flex sm:items-center items-start gap-2 sm:flex-row flex-col justify-between">
+        <div className="flex flex-col gap-1 w-full">
+          <h2 className="xl:text-2xl text-xl/[110%] font-medium text-[#3A2418]">
+            Analytics Board
+          </h2>
+          <span className="xl:text-base text-sm font-medium text-foreground">
+            Performance, conversion and team productivity at a glance
+          </span>
+        </div>
+        <div>
+          <CustomSelect
+            selectable={[
+              { value: " ", name: "---" },
+              { value: "daily", name: "Daily" },
+              { value: "weekly", name: "Weekly" },
+              { value: "monthly", name: "Monthly" },
+            ]}
+            placeholder="Select timeframe"
+            value={timeframe}
+            onChange={(timeframe) =>
+              handleTimeframeChange(
+                timeframe as AnalyticsSummaryProps["timeframe"],
+              )
+            }
+          />
+        </div>
       </div>
       <div className="grid xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-2 gap-5">
         {isPending

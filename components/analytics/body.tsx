@@ -40,7 +40,7 @@ export default function Body() {
   return (
     <div className="flex flex-col gap-8 w-full h-full">
       <div className="grid xl:grid-cols-2 grid-cols-1 gap-6 w-full">
-        <div className="p-4 border border-[#E8E8E8] rounded-[8px] flex flex-col gap-2">
+        <div className="p-4 border border-[#E8E8E8] rounded-[8px]  bg-white flex flex-col gap-2">
           <div className="w-full flex items-center   flex-row justify-between">
             <h2 className="md:text-base text-sm font-medium text-foreground">
               Pipeline by stage
@@ -75,7 +75,7 @@ export default function Body() {
             )}
           </div>
         </div>
-        <div className="p-4 border border-[#E8E8E8] rounded-[8px] flex flex-col gap-2">
+        <div className="p-4 border border-[#E8E8E8] rounded-[8px] bg-white flex flex-col gap-2">
           <div className="w-full flex items-center flex-row justify-between">
             <h2 className="md:text-base text-sm font-medium text-foreground">
               Lead sources
@@ -109,7 +109,7 @@ export default function Body() {
           </div>
         </div>
       </div>
-      <div className="p-4 w-full min-h-80 border border-[#E8E8E8] rounded-[8px] flex flex-col gap-2">
+      <div className="p-4 w-full min-h-80 border border-[#E8E8E8] bg-white rounded-[8px] flex flex-col gap-2">
         <h2 className="text-base font-medium text-foreground">
           Team Productivity
         </h2>

@@ -136,9 +136,9 @@ body {
     zoom: 1 !important;
 }
 
-html {
+/*html {
     scrollbar-gutter: stable;
-}
+}*/
 
 [data-dnd-kit-draggable] {
     transition: none !important;
@@ -175,7 +175,7 @@ html {
         border: none;
     }
     & .rbc-agenda-view table.rbc-agenda-table thead > tr > th {
-        background-color: #f5b7a3;
+        background-color: #4a0f0a;
         font-size: 0.75rem;
         font-weight: 600;
         padding: 8px 12px;
@@ -198,13 +198,13 @@ html {
 
     /* Day names header row */
     & .rbc-header {
-        background-color: #f5b7a3;
+        background-color: #4a0f0a;
         padding: 8px 4px;
         font-size: 0.75rem;
         font-weight: 600;
         border-bottom: 1px solid #f3d9c4;
         border-right: 1px solid #f3d9c4;
-        color: #3a2418;
+        color: white;
     }
     & .rbc-header + .rbc-header {
         border-left: none;
@@ -226,6 +226,8 @@ html {
         background-color: #fff3e6;
     }
 
+    /*#4a0f0a*/
+
     /* Off-range (days outside current month) */
     & .rbc-off-range-bg {
         background-color: #fafafa;
@@ -243,7 +245,7 @@ html {
         color: #3a2418;
     }
     & .rbc-date-cell.rbc-now .rbc-button-link {
-        background-color: #e2725b;
+        background-color: #4a0f0a;
         color: #fff;
         border-radius: 50%;
         width: 22px;

@@ -10,7 +10,7 @@ export default function TaskCard({ task }: { task: Task }) {
   const { date, month, time } = parseDateWithTime(task.due_at);
 
   return (
-    <div className="w-full px-4 py-4 rounded-[8px] border border-border bg-white flex items-center justify-between hover:bg-[#FFFAF7] transition-colors">
+    <div className="w-full px-4 py-4 rounded-[8px] shadow-[0px_1px_2px_0px_rgba(60,64,67,0.3),0px_2px_6px_2px_rgba(60,64,67,0.0)] bg-white flex items-center justify-between transition-colors">
       {/* Date + title */}
       <div className="flex items-center gap-4 min-w-0">
         <div className="flex items-center gap-1.5 shrink-0">

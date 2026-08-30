@@ -29,7 +29,7 @@ import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { CustomButton } from "../custom/common/customButton";
 import { useLogout } from "@/hooks/auth/logout";
-import CRMLOGO from "@/public/assets/company/logo.png";
+import CRMLOGO from "@/public/assets/crm360-logo.png";
 
 const sideLinks = [
   {
@@ -119,7 +119,7 @@ export function AppSidebar() {
           alt="crm_logo"
           width={800}
           height={800}
-          className="lg:hidden h-11 w-auto object-contain"
+          className="lg:hidden h-11 border w-auto object-contain"
         />
       </SidebarHeader>
       <SidebarContent className="flex justify-start items-center">
@@ -127,7 +127,7 @@ export function AppSidebar() {
           {sideLinks.map((link, index) => (
             <SidebarMenuButton
               key={index}
-              className={` hover:bg-[#FAF1EB] [&_svg]:size-5 ${activeLink === link.url && "bg-[#FFE4D1] hover:bg-[#FFE4D1] [&_svg]:size-3"}`}
+              className={` hover:bg-[#6b1a12] [&_svg]:size-5 ${activeLink === link.url && "bg-[#FEFCE8] hover:bg-[#FEFCE8] [&_svg]:size-3"}`}
               onClick={() => {
                 setActiveLink(link.url);
                 router.push(`${link.url}`);
@@ -148,12 +148,12 @@ export function AppSidebar() {
                 </svg>
               ) : (
                 <link.icon
-                  className="h-5 w-5"
-                  color={activeLink === link.url ? "#3A2418" : "#4a4a4a"}
+                  className="h-5 w-5 hover:text-foreground"
+                  color={activeLink === link.url ? "#3A2418" : "#fff"}
                 />
               )}
               <span
-                className={`${activeLink === link.url ? "text-[#C95C47] text-sm font-medium" : "text-foreground text-sm"}`}
+                className={`${activeLink === link.url ? "text-[#C95C47] text-sm font-medium" : "text-white text-sm"}`}
               >
                 {link.name}
               </span>
@@ -165,7 +165,7 @@ export function AppSidebar() {
           {otherSides.map((link, index) => (
             <SidebarMenuButton
               key={index}
-              className={` hover:bg-[#FAF1EB] [&_svg]:size-5 ${activeLink === link.url && "bg-[#FFE4D1] hover:bg-[#FFE4D1] [&_svg]:size-3"}`}
+              className={` hover:bg-[#6b1a12] [&_svg]:size-5 ${activeLink === link.url && "bg-[#FEFCE8] hover:bg-[#FEFCE8] [&_svg]:size-3"}`}
               onClick={() => {
                 setActiveLink(link.url);
                 router.push(`${link.url}`);
@@ -187,11 +187,11 @@ export function AppSidebar() {
               ) : (
                 <link.icon
                   className="h-5 w-5"
-                  color={activeLink === link.url ? "#3A2418" : "#4a4a4a"}
+                  color={activeLink === link.url ? "#3A2418" : "#fff"}
                 />
               )}
               <span
-                className={`${activeLink === link.url ? "text-[#C95C47] text-sm font-medium" : "text-foreground text-sm"}`}
+                className={`${activeLink === link.url ? "text-[#C95C47] text-sm font-medium" : "text-white text-sm"}`}
               >
                 {link.name}
               </span>
@@ -207,8 +207,8 @@ export function AppSidebar() {
           }}
           className="px-5 py-4 flex items-center border-none justify-start flex-row gap-4"
         >
-          <LogOut className="h-6 w-6" color={"#3A2418"} />
-          <span className="text-base font-medium text-[#3A2418]">
+          <LogOut className="h-6 w-6" color={"#fff"} />
+          <span className="text-base font-medium text-white">
             {isPending ? "Logging out..." : "Log out"}
           </span>
         </CustomButton>

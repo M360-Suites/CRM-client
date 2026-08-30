@@ -4,7 +4,7 @@ import { iconCardBg, iconColor, formatNaira } from "@/lib/utils";
 import { useReportSummary } from "@/hooks/report/report_summary";
 
 const CardSkeleton = () => (
-  <div className="p-4 border border-[#E8E8E8] rounded-[8px] flex flex-col gap-2 animate-pulse">
+  <div className="p-4 border border-[#E8E8E8] rounded-[8px] bg-white flex flex-col gap-2 animate-pulse">
     <div className="flex flex-row items-center gap-3 py-2">
       <div className="rounded-full p-2 bg-gray-200 w-9 h-9" />
       <div className="h-4 w-32 bg-gray-200 rounded" />
@@ -66,7 +66,7 @@ export default function Header() {
           : reportCardData.map((item) => (
               <div
                 key={item.title}
-                className="p-4 border border-[#E8E8E8] rounded-[8px] flex flex-col gap-2"
+                className="p-4 border border-[#E8E8E8] bg-white rounded-[8px] flex flex-col gap-2"
               >
                 <div className="flex flex-col gap-3 py-2">
                   <div className="flex flex-row items-center gap-2">

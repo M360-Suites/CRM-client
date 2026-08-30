@@ -32,13 +32,12 @@ export default function Header() {
         </div>
 
         <div className="flex flex-row gap-4 max-md:justify-between max-md:w-full items-center">
-          <div className="flex flex-row items-center gap-2 border border-[#F3D9C4] rounded-full py-2 md:px-2.5 px-1.5">
+          <div className="flex flex-row items-center gap-2  rounded-full py-2 md:px-1.75 bg-white shadow-[0px_1px_2px_0px_rgba(60,64,67,0.3),0px_2px_6px_2px_rgba(60,64,67,0.0)] px-1.5">
             {tabs.map((tab) => (
               <CustomButton
                 key={tab.value}
-                variant={tab.value === activeTab ? "default" : "outline"}
+                variant={tab.value === activeTab ? "default" : "transparent"}
                 onClick={() => {
-                  console.log("clicking tab:", tab.value);
                   setActiveTab(tab.value);
                 }}
                 className="rounded-full flex text-sm font-medium flex-row items-center gap-1.5 xl:px-4 xl:py-2 px-2.5 py-1.5 border-none"

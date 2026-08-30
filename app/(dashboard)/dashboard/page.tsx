@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 
 const Page = () => {
   return (
-    <div className="w-full flex flex-col gap-6 pb-8">
+    <div className="w-full flex flex-col gap-6 pb-3">
       <DashCard />
       <DashTable />
     </div>

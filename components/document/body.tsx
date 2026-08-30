@@ -61,7 +61,7 @@ export default function Body() {
         </div>
       ) : (
         <div className="flex border flex-col w-full rounded-t-[10px]">
-          <div className="grid grid-cols-6 lg:px-5 px-3 md:py-6 py-4 gap-2 rounded-t-[10px] border-b border-b-[#F3D9C4]  bg-[#FFF6EC]">
+          <div className="grid grid-cols-6 lg:px-5 px-3 md:py-4 py-4 gap-2 rounded-t-[10px] border-b border-b-[#F3D9C4]  bg-[#FFF6EC]">
             {["Name", "Desc", "Items", "Modified", "Action"].map((header) => (
               <span
                 key={header}

@@ -4,12 +4,12 @@ import { PieChart, Pie, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
 import { useReportLeadTemp } from "@/hooks/report/report_by_leadtemp";
 
-const COLORS = ["#E2725B", "#FFD9C0", "#F5B7A3", "#E8A898", "#D4614A"];
+const COLORS = ["#4a0f0a", "#5C2622", "#6E3E3A", "#805753", "#D4614A"];
 
 const chartConfig = {
   desktop: {
     label: "Desktop",
-    color: "#E2725B",
+    color: "#4a0f0a",
   },
 } satisfies ChartConfig;
 

@@ -98,14 +98,20 @@ export default function Body() {
           <button
             key={tab.name}
             onClick={() => setSelectedTab(tab.name)}
-            className={`flex items-center lg:gap-4 gap-2 lg:p-3 max-lg:py-2 max-lg:px-3 lg:rounded-[10px] rounded-full cursor-pointer ${
+            className={`flex items-center lg:gap-4 group gap-2 lg:p-3 max-lg:py-2 max-lg:px-3 lg:rounded-[10px] rounded-full cursor-pointer ${
               selectedTab === tab.name
-                ? "bg-[#FFD9C0] hover:bg-[#FFD9C8]"
-                : "hover:bg-gray-50"
+                ? "bg-[#4a0f0a] hover:bg-[#4a0f0a]"
+                : "hover:bg-[#4a0f0a]/95"
             }`}
           >
-            <tab.icon className="h-5 w-5" />
-            <span className="text-sm font-medium">{tab.name}</span>
+            <tab.icon
+              className={`h-5 w-5 ${selectedTab === tab.name ? "text-white" : "text-foreground group-hover:text-white"} `}
+            />
+            <span
+              className={`text-sm font-medium ${selectedTab === tab.name ? "text-white" : "text-foreground  group-hover:text-white"}`}
+            >
+              {tab.name}
+            </span>
           </button>
         ))}
       </div>

@@ -168,7 +168,7 @@ export default function Body() {
       {/* Generate form */}
       <form
         onSubmit={handleSubmit(onGenerate)}
-        className="flex flex-col lg:gap-8 gap-4 sm:w-full border border-[#E8E8E8] rounded-[12px] xl:p-5 px-2 py-2.5"
+        className="flex flex-col lg:gap-8 gap-4 sm:w-full bg-white shadow-[0px_1px_2px_0px_rgba(60,64,67,0.3),0px_2px_6px_2px_rgba(60,64,67,0.0)] rounded-[12px] xl:p-5 px-2 py-2.5"
       >
         <div className="flex flex-col gap-4">
           <Controller
@@ -262,15 +262,15 @@ export default function Body() {
       {/* Send form */}
       <form
         // onSubmit={handleSendSubmit(onSend)}
-        className="flex flex-col gap-4 border max-sm:col-span-1 border-[#E8E8E8] rounded-[12px] p-5"
+        className="flex flex-col gap-4 max-sm:col-span-1 shadow-[0px_1px_2px_0px_rgba(60,64,67,0.3),0px_2px_6px_2px_rgba(60,64,67,0.0)] bg-white rounded-[12px] p-5"
       >
         {/* Header */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <span className="text-base text-[#3A2418] font-medium">Draft</span>
-            <span className="bg-[#c6f7dc] max-xl:hidden border border-[#43f897] rounded-full py-1 px-2 text-[10px] text-[#128648] font-semibold">
+            {/*<span className="bg-[#c6f7dc] max-xl:hidden border border-[#43f897] rounded-full py-1 px-2 text-[10px] text-[#128648] font-semibold">
               AI Generated
-            </span>
+            </span>*/}
           </div>
           <div className="flex items-center gap-3">
             {/* Attachment trigger only — list renders below body */}

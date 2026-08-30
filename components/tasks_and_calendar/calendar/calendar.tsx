@@ -112,7 +112,7 @@ function CalendarToolbar({
             className={cn(
               "rounded-full px-3 py-1 text-xs font-medium transition-colors",
               v === view
-                ? "bg-[#E2725B] text-white"
+                ? "bg-[#4a0f0a] text-white"
                 : "text-foreground hover:bg-[#F5B7A3]/30",
             )}
           >

@@ -1,5 +1,5 @@
 import Image from "next/image";
-import CRMLOGO from "@/public/assets/company/logo.png";
+import CRMLOGO from "@/public/assets/crm360-logo.png";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { getInitials } from "@/lib/utils";
 import { Search, Bell, XIcon, CheckCheck } from "lucide-react";
@@ -27,15 +27,15 @@ export default function Navbar() {
   };
 
   return (
-    <div className="fixed  top-0 z-50 xl:px-10 lg:px-8 px-4 w-full md:py-1 py-1.5 flex items-center gap-3 border border-[#e8e8e8] bg-white ">
+    <div className="fixed  top-0 z-50 xl:px-10 lg:px-8 px-4 w-full md:py-1 py-1.5 border-r-0 flex items-center gap-3 border border-[#e8e8e8] bg-white ">
       <SidebarTrigger className="inline lg:hidden" />
       <div className="flex justify-between max-lg:justify-end items-center w-full">
         <Image
           src={CRMLOGO}
           alt="crm_logo"
-          width={800}
-          height={800}
-          className="lg:h-12 md:h-11 h-9.5 w-auto max-lg:hidden"
+          width={900}
+          height={900}
+          className="lg:h-9 h-9.5 w-auto max-lg:hidden"
         />
         {/*<div className="border bg-[#FFF3E6] xl:w-lg lg:w-md max-lg:hidden rounded-[16px] text-[#3A2418] flex flex-row items-center gap-2 py-3 px-3">
           <Search color="#3A2418" size={20} />
@@ -153,14 +153,14 @@ export default function Navbar() {
             // real content
             <div className="flex items-center md:gap-2 gap-1 p-2">
               <div className="flex flex-col justify-center md:gap-1 gap-0.5 items-end">
-                <span className="md:text-base/[120%]  text-sm font-medium capitalize">
+                <span className="md:text-sm/[100%] text-sm font-medium capitalize">
                   {user?.display_name}
                 </span>
-                <span className="sm:text-sm/[120%] text-xs font-normal">
+                <span className="sm:text-sm/[100%] text-xs font-normal">
                   {user?.email}
                 </span>
               </div>
-              <div className="bg-[#F5B7A3] flex justify-center items-center md:h-10 md:w-10 h-9.5 w-9.5 lg:text-base text-sm font-bold text-foreground rounded-full">
+              <div className="bg-[#4a0f0a] flex justify-center items-center md:h-10 md:w-10 h-9.5 w-9.5 lg:text-base text-sm font-bold text-gray-100 rounded-full">
                 {getInitials(user?.display_name || "").toUpperCase()}
               </div>
             </div>

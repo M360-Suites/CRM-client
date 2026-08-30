@@ -25,7 +25,7 @@ export default function FolderItem({
   onDelete,
 }: FolderItemProps) {
   return (
-    <div className="w-full bg-[#FFF3E6]/20 hover:bg-gray-50 hover:cursor-pointer grid grid-cols-6 border-b gap-1 lg:gap-5 md:gap-3 border-b-border last:border-b-0 pl-2 md:pr-8 pr-1 py-2.5 overflow-hidden">
+    <div className="w-full bg-white  hover:cursor-pointer grid grid-cols-6 border-b gap-1 lg:gap-5 md:gap-3 border-b-border last:border-b-0 pl-2 md:pr-8 pr-1 py-1.5 overflow-hidden">
       {/* Icon + Info */}
       <div
         className="flex items-center md:gap-3 gap-1.5 py-0.5 col-span-2"

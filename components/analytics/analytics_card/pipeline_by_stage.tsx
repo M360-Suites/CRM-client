@@ -16,7 +16,7 @@ import { useUserStore } from "@/stores/user/user_store";
 const chartConfig = {
   desktop: {
     label: "Desktop",
-    color: "#E2725B",
+    color: "#4a0f0a",
   },
 } satisfies ChartConfig;
 
@@ -93,12 +93,7 @@ export default function PipelineByStage() {
             }
           />
 
-          <Bar
-            dataKey="value"
-            fill="var(--color-desktop)"
-            radius={4}
-            maxBarSize={60}
-          />
+          <Bar dataKey="value" fill="#4a0f0a" radius={4} maxBarSize={60} />
         </BarChart>
       </ResponsiveContainer>
     </ChartContainer>

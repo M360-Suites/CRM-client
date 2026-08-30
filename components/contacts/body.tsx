@@ -76,7 +76,7 @@ export default function Body() {
                   : "rounded-full px-4"
               } flex flex-row items-center cursor-pointer xl:text-base text-sm font-normal capitalize gap-2 py-2 ${
                 tab.toLowerCase() === activeTab.toLowerCase()
-                  ? "bg-[#E2725B] text-white"
+                  ? "bg-[#4a0f0a] text-white"
                   : "bg-[#FFF3E6] text-[#3A2418]"
               }`}
               onClick={() => setActiveTab(tab)}
@@ -129,7 +129,7 @@ export default function Body() {
                   label="Contact Details"
                   trigger={
                     <div
-                      className="grid grid-cols-5 lg:gap-4 gap-1 max-md:gap-0.5 w-full py-3 max-md:py-2 px-5 max-md:px-1.5 items-center border-b last:border-b-0 cursor-pointer"
+                      className="grid grid-cols-5 lg:gap-4 gap-1 bg-white rounded-t-[12px] max-md:gap-0.5 w-full py-3 max-md:py-2 px-5 max-md:px-1.5 items-center border-b last:border-b-0 cursor-pointer"
                       onClick={() => setSelectedContact(contact)}
                     >
                       <div className="flex col-span-2 items-center gap-4 flex-1">

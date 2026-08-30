@@ -78,7 +78,7 @@ export default function Body() {
           return (
             <div
               key={stage.id}
-              className="flex flex-col border rounded-md flex-1 min-w-0"
+              className="flex flex-col border rounded-md bg-white flex-1 min-w-0"
             >
               <div className="border-b p-4 max-md:p-2 flex flex-col gap-4">
                 <div className="flex flex-col gap-2 w-full">

@@ -19,7 +19,7 @@ export default function Body() {
   return (
     <div className="flex flex-col gap-8 w-full">
       <div className="grid xl:grid-cols-2 grid-cols-1 gap-6 w-full h-full">
-        <div className="p-4 border border-[#E8E8E8] rounded-[8px] flex flex-col gap-2">
+        <div className="p-4 border border-[#E8E8E8] rounded-[8px] bg-white flex flex-col gap-2">
           <h2 className="text-base font-medium text-foreground">
             Pipeline by stage
           </h2>
@@ -33,7 +33,7 @@ export default function Body() {
             )}
           </div>
         </div>
-        <div className="p-4 border border-[#E8E8E8] rounded-[8px] flex flex-col gap-2">
+        <div className="p-4 border border-[#E8E8E8] rounded-[8px] bg-white flex flex-col gap-2">
           <h2 className="text-base font-medium text-foreground">
             Lead sources
           </h2>
@@ -48,7 +48,7 @@ export default function Body() {
           </div>
         </div>
       </div>
-      <div className="p-4 h-full border xl:w-1/2 w-full border-[#E8E8E8] rounded-[8px] flex flex-col gap-2">
+      <div className="p-4 h-full border xl:w-1/2 w-full border-[#E8E8E8] bg-white rounded-[8px] flex flex-col gap-2">
         <h2 className="text-base font-medium text-foreground">
           Lead Temperature
         </h2>

@@ -69,7 +69,7 @@ export default function Staffs() {
             </span>
           </div>
         ) : (
-          <div className="w-full overflow-x-auto rounded-[12px]">
+          <div className="w-full overflow-x-auto rounded-[12px] ">
             <table className="w-full min-w-150">
               <thead>
                 <tr className="bg-[#F5B7A3]/50">
@@ -89,7 +89,10 @@ export default function Staffs() {
               </thead>
               <tbody>
                 {staffs?.data.map((staff) => (
-                  <tr key={staff._id} className="border-t border-[#E8E8E8]">
+                  <tr
+                    key={staff._id}
+                    className="border-t border-[#E8E8E8] bg-white shadow-[0px_1px_2px_0px_rgba(60,64,67,0.3),0px_2px_6px_2px_rgba(60,64,67,0.0)]"
+                  >
                     <td className="px-6 max-md:px-3 py-4 text-xs md:text-sm font-normal text-foreground">
                       {staff.display_name}
                     </td>

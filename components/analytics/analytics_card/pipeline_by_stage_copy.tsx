@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import {
   Bar,
@@ -11,7 +10,8 @@ import {
   Tooltip,
 } from "recharts";
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
-import { useAnalyticsPipelineStage } from "@/hooks/report/report_pipeline_stage";
+import { useAnalyticsPipelineStage } from "@/hooks/analytics/analytics_pipeline_stage";
+import { useUserStore } from "@/stores/user/user_store";
 
 const chartConfig = {
   desktop: {
@@ -20,39 +20,50 @@ const chartConfig = {
   },
 } satisfies ChartConfig;
 
-const truncate = (value: string, max = 8) =>
-  value.length > max ? `${value.slice(0, max)}…` : value;
-
 function useIsSmallScreen(breakpoint = 640) {
   const [isSmall, setIsSmall] = useState(false);
-
   useEffect(() => {
     const mql = window.matchMedia(`(max-width: ${breakpoint}px)`);
-
     const update = () => setIsSmall(mql.matches);
-
     update();
-
     mql.addEventListener("change", update);
-
     return () => mql.removeEventListener("change", update);
   }, [breakpoint]);
-
   return isSmall;
 }
 
+const nairaFormatter = new Intl.NumberFormat("en-NG", {
+  style: "currency",
+  currency: "NGN",
+  notation: "compact",
+  maximumFractionDigits: 1,
+});
+
+const nairaCompactAxis = new Intl.NumberFormat("en-NG", {
+  notation: "compact",
+});
+
 export default function PipelineByStage() {
-  const { data: chartData } = useAnalyticsPipelineStage();
+  const { pipelineStateTimeframe } = useUserStore();
+  const { data: chartData } = useAnalyticsPipelineStage({
+    timeframe: pipelineStateTimeframe,
+  });
   const isSmallScreen = useIsSmallScreen();
 
-  console.log("chartData:", chartData);
-  console.log("isArray:", Array.isArray(chartData));
+  const totalRevenue =
+    chartData?.reduce((sum, stage) => sum + (stage.value ?? 0), 0) ?? 0;
 
   return (
-    <div className="w-full min-w-0 pt-6">
+    <div className="w-full min-w-0">
+      <div className="flex items-baseline justify-end px-1 pb-2">
+        <span className="text-lg font-semibold" style={{ color: "#4a0f0a" }}>
+          {nairaFormatter.format(totalRevenue)}
+        </span>
+      </div>
+
       <ChartContainer
         config={chartConfig}
-        className="w-full h-[300px] sm:h-[340px] lg:h-[380px]"
+        className="w-full h-[280px] sm:h-[340px] lg:h-[290px] pt-6 min-w-0"
       >
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
@@ -65,7 +76,6 @@ export default function PipelineByStage() {
             }}
           >
             <CartesianGrid vertical={false} />
-
             <XAxis
               dataKey="name"
               tickLine={false}
@@ -73,14 +83,10 @@ export default function PipelineByStage() {
               axisLine={false}
               interval={0}
               tick={{ fontSize: 11 }}
-              tickFormatter={(value) =>
-                truncate(String(value), isSmallScreen ? 10 : 8)
-              }
               angle={isSmallScreen ? -35 : 0}
               textAnchor={isSmallScreen ? "end" : "middle"}
               height={isSmallScreen ? 50 : 30}
             />
-
             <YAxis
               width={40}
               tickLine={false}
@@ -89,27 +95,18 @@ export default function PipelineByStage() {
               tick={{ fontSize: 11 }}
               tickFormatter={(value) =>
                 typeof value === "number"
-                  ? Intl.NumberFormat("en", {
-                      notation: "compact",
-                    }).format(value)
+                  ? nairaCompactAxis.format(value)
                   : String(value)
               }
               allowDecimals={false}
             />
-
             <Tooltip
               cursor={{ fill: "rgba(226, 114, 91, 0.08)" }}
               formatter={(value) =>
-                value != null ? Number(value).toLocaleString() : ""
+                value != null ? nairaFormatter.format(Number(value)) : ""
               }
             />
-
-            <Bar
-              dataKey="value"
-              fill="var(--color-desktop)"
-              radius={4}
-              maxBarSize={60}
-            />
+            <Bar dataKey="value" fill="#4a0f0a" radius={4} maxBarSize={60} />
           </BarChart>
         </ResponsiveContainer>
       </ChartContainer>

@@ -4,7 +4,7 @@ import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
 import { useAnalyticsLeadSource } from "@/hooks/analytics/analytics_lead_source";
 import { useUserStore } from "@/stores/user/user_store";
 
-const COLORS = ["#E2725B", "#FFD9C0", "#F5B7A3", "#E8A898", "#D4614A"];
+const COLORS = ["#4a0f0a", "#5C2622", "#6E3E3A", "#805753", "#D4614A"];
 
 const chartConfig = {
   desktop: {

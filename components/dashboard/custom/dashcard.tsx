@@ -96,8 +96,8 @@ export default function DashCard() {
 
   return (
     <div className="flex flex-col gap-6 pt-8">
-      <div className="flex flex-col gap-0.5">
-        <h2 className="md:text-2xl text-xl font-medium text-foreground capitalize">
+      <div className="flex flex-col gap-1">
+        <h2 className="md:text-lg/[110%] text-base/[100%] font-medium text-foreground capitalize">
           {handleGreeting()}, {firstname}👋
         </h2>
         <span className="lg:text-base text-sm font-normal">
@@ -113,23 +113,23 @@ export default function DashCard() {
           : DashData.map((item) => (
               <div
                 key={item.title}
-                className="xl:p-4 lg:p-3 p-2 border border-[#E8E8E8] overflow-hidden rounded-[8px] flex flex-col gap-2"
+                className="xl:px-4 xl:py-2.5 px-2 py-1 border border-[#E8E8E8] bg-white overflow-hidden rounded-xl hover:shadow-sm flex flex-col gap-2"
               >
                 <div className="w-full flex flex-col gap-3">
-                  <div className="flex flex-row items-center gap-3 xl:py-4 py-2">
+                  <div className="flex flex-row items-center gap-3 xl:py-2 py-2">
                     <div
                       className={`rounded-full p-2 ${iconCardBg(item.title)}`}
                     >
                       <item.icon
-                        className="xl:size-4.5 size-4"
+                        className="xl:size-4 size-3.5"
                         color={iconColor(item.title)}
                       />
                     </div>
-                    <span className="lg:text-base sm:text-sm font-medium text-foreground">
+                    <span className="lg:text-sm text-xs font-medium text-foreground">
                       {item.title}
                     </span>
                   </div>
-                  <div className="xl:text-3xl text-2xl text-foreground">
+                  <div className="xl:text-2xl text-xl font-medium text-foreground">
                     {item.value}
                   </div>
                 </div>
@@ -143,8 +143,8 @@ export default function DashCard() {
                   <span
                     className={
                       item.percentage >= 0
-                        ? "text-green-600 font-medium"
-                        : "text-red-500 font-medium"
+                        ? "text-green-600 font-medium text-sm"
+                        : "text-red-500 font-medium text-sm"
                     }
                   >
                     {item.percentage >= 0 ? "+" : ""}
@@ -155,7 +155,7 @@ export default function DashCard() {
               </div>
             ))}
       </div>
-      <div className="lg:py-6 lg:px-5 py-4 px-3 border border-[#E8E8E8] rounded-lg flex flex-col gap-4">
+      {/*<div className="lg:py-4 lg:px-5 py-2 px-3 border border-[#E8E8E8] rounded-lg flex flex-col gap-4">
         <div className="flex w-full justify-between items-center">
           <span>Pipeline Preview</span>
           <Link
@@ -197,7 +197,7 @@ export default function DashCard() {
             {formatNaira(dashboardData?.pipeline_total.value || 0)}
           </span>
         </div>
-      </div>
+      </div>*/}
     </div>
   );
 }

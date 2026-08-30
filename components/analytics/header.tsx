@@ -17,7 +17,7 @@ interface AnalyticsSummaryProps {
 }
 
 const CardSkeleton = () => (
-  <div className="p-4 border border-[#E8E8E8] rounded-[8px] flex flex-col gap-2 animate-pulse">
+  <div className="p-4 border border-[#E8E8E8] bg-white rounded-xl flex flex-col gap-2 animate-pulse">
     <div className="flex flex-row items-center gap-3 py-2">
       <div className="rounded-full p-2 bg-gray-200 w-9 h-9" />
       <div className="h-4 w-32 bg-gray-200 rounded" />
@@ -111,7 +111,7 @@ export default function Header() {
           />
         </div>
       </div>
-      <div className="grid xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-2 gap-5">
+      <div className="grid xl:grid-cols-5 lg:grid-cols-3 sm:grid-cols-2 gap-4">
         {isPending
           ? Array.from({ length: analyticsCardData.length }).map((_, i) => (
               <CardSkeleton key={i} />
@@ -119,7 +119,7 @@ export default function Header() {
           : analyticsCardData.map((item) => (
               <div
                 key={item.title}
-                className="p-4 border border-[#E8E8E8] rounded-[8px] flex flex-col gap-2"
+                className="p-4 border border-[#E8E8E8] rounded-xl bg-white flex flex-col gap-2"
               >
                 <div className="flex flex-col gap-3 py-1">
                   <div className="flex flex-row items-center gap-2">
@@ -137,7 +137,9 @@ export default function Header() {
                       )}
                     </span>
                   </div>
-                  <div className="text-2xl text-foreground">{item.value}</div>
+                  <div className="lg:text-xl text-lg text-foreground">
+                    {item.value}
+                  </div>
                 </div>
               </div>
             ))}

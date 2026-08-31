@@ -4,12 +4,27 @@ import { PieChart, Pie, Tooltip, ResponsiveContainer } from "recharts";
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
 import { useAnalyticsLeadSource } from "@/hooks/report/report_lead_source";
 
-const COLORS = ["#4a0f0a", "#5C2622", "#6E3E3A", "#805753", "#D4614A"];
+const COLORS = [
+  "#D97706", // Orange
+  "#2563EB", // Blue
+  "#7C3AED", // Purple
+  "#DB2777", // Pink
+  "#0D9488", // Teal
+  "#DC2626", // Red
+  "#0891B2", // Cyan
+];
+
+const SOURCE_COLORS: Record<string, string> = {
+  Courage: "#D97706", // Orange
+  LinkedIn: "#2563EB", // Blue
+};
+
+const FALLBACK_COLOR = "#6B7280";
 
 const chartConfig = {
   desktop: {
-    label: "Desktop",
-    color: "#4a0f0a",
+    label: "Lead Source",
+    color: "#D97706",
   },
 } satisfies ChartConfig;
 
@@ -19,7 +34,7 @@ export default function PipelineByLead() {
   const dataWithColors =
     chartData?.map((item, i) => ({
       ...item,
-      fill: COLORS[i % COLORS.length],
+      fill: SOURCE_COLORS[item.name] ?? COLORS[i % COLORS.length],
     })) ?? [];
 
   return (
@@ -56,7 +71,9 @@ export default function PipelineByLead() {
           <div key={item.name} className="flex items-center gap-2 min-w-0">
             <span
               className="inline-block w-3 h-3 shrink-0 rounded-sm"
-              style={{ background: item.fill }}
+              style={{
+                backgroundColor: item.fill || FALLBACK_COLOR,
+              }}
             />
 
             <span className="text-xs sm:text-sm whitespace-nowrap">

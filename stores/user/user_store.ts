@@ -37,11 +37,11 @@ export const useUserStore = create<UserState>()(
       setShowInstall: (show) => {
         set({ showInstall: show });
       },
-      pipelineStateTimeframe: "monthly",
+      pipelineStateTimeframe: undefined,
       setPipelineStateTimeframe: (timeframe) => {
         set({ pipelineStateTimeframe: timeframe });
       },
-      leadSourceTimeframe: "monthly",
+      leadSourceTimeframe: undefined,
       setLeadSourceTimeframe: (timeframe) => {
         set({ leadSourceTimeframe: timeframe });
       },

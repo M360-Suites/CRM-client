@@ -1,9 +1,11 @@
 "use client";
+
 import { useEffect, useState } from "react";
 import {
   Bar,
   BarChart,
   CartesianGrid,
+  Cell,
   XAxis,
   YAxis,
   ResponsiveContainer,
@@ -15,19 +17,32 @@ import { useUserStore } from "@/stores/user/user_store";
 
 const chartConfig = {
   desktop: {
-    label: "Desktop",
+    label: "Pipeline",
     color: "#4a0f0a",
   },
 } satisfies ChartConfig;
+
+const STAGE_COLORS: Record<string, string> = {
+  Lead: "#D97706",
+  Contact: "#2563EB",
+  Qualified: "#7C3AED",
+  Proposal: "#DB2777",
+  Negotiation: "#0891B2",
+  Won: "#065F46",
+};
 
 function useIsSmallScreen(breakpoint = 640) {
   const [isSmall, setIsSmall] = useState(false);
 
   useEffect(() => {
     const mql = window.matchMedia(`(max-width: ${breakpoint}px)`);
+
     const update = () => setIsSmall(mql.matches);
+
     update();
+
     mql.addEventListener("change", update);
+
     return () => mql.removeEventListener("change", update);
   }, [breakpoint]);
 
@@ -36,9 +51,11 @@ function useIsSmallScreen(breakpoint = 640) {
 
 export default function PipelineByStage() {
   const { pipelineStateTimeframe } = useUserStore();
+
   const { data: chartData } = useAnalyticsPipelineStage({
     timeframe: pipelineStateTimeframe,
   });
+
   const isSmallScreen = useIsSmallScreen();
 
   return (
@@ -48,7 +65,7 @@ export default function PipelineByStage() {
     >
       <ResponsiveContainer width="100%" height="100%">
         <BarChart
-          data={chartData}
+          data={chartData ?? []}
           margin={{
             top: 6,
             right: 8,
@@ -93,7 +110,14 @@ export default function PipelineByStage() {
             }
           />
 
-          <Bar dataKey="value" fill="#4a0f0a" radius={4} maxBarSize={60} />
+          <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={60}>
+            {(chartData ?? []).map((entry) => (
+              <Cell
+                key={entry.name}
+                fill={STAGE_COLORS[entry.name] ?? "#6B7280"}
+              />
+            ))}
+          </Bar>
         </BarChart>
       </ResponsiveContainer>
     </ChartContainer>

@@ -5,6 +5,7 @@ import {
   Bar,
   BarChart,
   CartesianGrid,
+  Cell,
   XAxis,
   YAxis,
   ResponsiveContainer,
@@ -15,10 +16,21 @@ import { useAnalyticsPipelineStage } from "@/hooks/report/report_pipeline_stage"
 
 const chartConfig = {
   desktop: {
-    label: "Desktop",
+    label: "Pipeline",
     color: "#4a0f0a",
   },
 } satisfies ChartConfig;
+
+const STAGE_COLORS: Record<string, string> = {
+  Lead: "#D97706", // Orange
+  Contact: "#2563EB", // Blue
+  Qualified: "#7C3AED", // Purple
+  Proposal: "#DB2777", // Pink
+  Negotiation: "#0891B2", // Cyan
+  Won: "#065F46", // Emerald
+};
+
+const FALLBACK_COLOR = "#6B7280";
 
 const truncate = (value: string, max = 8) =>
   value.length > max ? `${value.slice(0, max)}…` : value;
@@ -56,7 +68,7 @@ export default function PipelineByStage() {
       >
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
-            data={chartData}
+            data={chartData ?? []}
             margin={{
               top: 6,
               right: 8,
@@ -104,12 +116,14 @@ export default function PipelineByStage() {
               }
             />
 
-            <Bar
-              dataKey="value"
-              fill="var(--color-desktop)"
-              radius={4}
-              maxBarSize={60}
-            />
+            <Bar dataKey="value" radius={[4, 4, 0, 0]} maxBarSize={60}>
+              {(chartData ?? []).map((entry) => (
+                <Cell
+                  key={entry.name}
+                  fill={STAGE_COLORS[entry.name] ?? FALLBACK_COLOR}
+                />
+              ))}
+            </Bar>
           </BarChart>
         </ResponsiveContainer>
       </ChartContainer>

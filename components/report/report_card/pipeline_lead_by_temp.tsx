@@ -4,12 +4,28 @@ import { PieChart, Pie, Tooltip, ResponsiveContainer, Legend } from "recharts";
 import { ChartContainer, type ChartConfig } from "@/components/ui/chart";
 import { useReportLeadTemp } from "@/hooks/report/report_by_leadtemp";
 
-const COLORS = ["#4a0f0a", "#5C2622", "#6E3E3A", "#805753", "#D4614A"];
+const COLORS = [
+  "#D97706", // Orange
+  "#F59E0B", // Amber
+  "#2563EB", // Blue
+  "#7C3AED", // Purple
+  "#0D9488", // Teal
+  "#DB2777", // Pink
+  "#DC2626", // Red
+];
+
+const TEMPERATURE_COLORS: Record<string, string> = {
+  Hot: "#D97706",
+  Warm: "#F59E0B",
+  Cold: "#2563EB",
+};
+
+const FALLBACK_COLOR = "#6B7280";
 
 const chartConfig = {
   desktop: {
-    label: "Desktop",
-    color: "#4a0f0a",
+    label: "Lead Temperature",
+    color: "#D97706",
   },
 } satisfies ChartConfig;
 
@@ -19,7 +35,7 @@ export default function PipelineByLeadTemp() {
   const dataWithColors =
     chartData?.map((item, i) => ({
       ...item,
-      fill: COLORS[i % COLORS.length],
+      fill: TEMPERATURE_COLORS[item.name] ?? COLORS[i % COLORS.length],
     })) ?? [];
 
   const total = dataWithColors.reduce(
@@ -38,7 +54,14 @@ export default function PipelineByLeadTemp() {
         minWidth={0}
         minHeight={0}
       >
-        <PieChart margin={{ top: 10, right: 10, bottom: 50, left: 10 }}>
+        <PieChart
+          margin={{
+            top: 10,
+            right: 10,
+            bottom: 50,
+            left: 10,
+          }}
+        >
           <Pie
             data={dataWithColors}
             dataKey="value"
@@ -83,7 +106,9 @@ export default function PipelineByLeadTemp() {
                   >
                     <span
                       className="h-3 w-3 shrink-0 rounded-sm"
-                      style={{ background: item.fill }}
+                      style={{
+                        backgroundColor: item.fill || FALLBACK_COLOR,
+                      }}
                     />
 
                     <span className="truncate text-xs sm:text-sm">

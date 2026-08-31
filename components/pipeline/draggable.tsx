@@ -18,19 +18,19 @@ export function Draggable({ lead }: { lead: Deal }) {
     <div
       ref={ref}
       style={{ transition: isDragging ? "none" : undefined }}
-      className={`bg-[#4a0f0a] border rounded-[10px] p-3 flex flex-col gap-1.5 cursor-grab active:cursor-grabbing w-full ${
+      className={`bg-white border rounded-[10px] p-3 flex flex-col gap-1.5 cursor-grab active:cursor-grabbing w-full ${
         isDragging ? "hidden" : "opacity-100"
       }`}
     >
       <div className="flex items-start justify-between w-full">
-        <span className="text-sm font-medium text-white max-w-[85%] truncate">
+        <span className="text-sm font-medium text-black max-w-[85%] truncate">
           {lead.title}
         </span>
         <CustomPopover
           trigger={
             <MoreVertical
               size={16}
-              className="text-white/80 hover:cursor-pointer"
+              className="text-black/80 hover:cursor-pointer"
             />
           }
         >
@@ -71,10 +71,10 @@ export function Draggable({ lead }: { lead: Deal }) {
         </CustomPopover>
       </div>
       {lead.industry && (
-        <span className="text-xs text-white/50">{lead.industry}</span>
+        <span className="text-xs text-black/50">{lead.industry}</span>
       )}
       {lead.value !== undefined && (
-        <span className="text-xs font-medium text-white">
+        <span className="text-xs font-medium text-black">
           ₦{lead.value.toLocaleString()}
         </span>
       )}

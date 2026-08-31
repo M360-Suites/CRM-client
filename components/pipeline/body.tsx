@@ -115,7 +115,7 @@ export default function Body() {
                                   })
                                 }
                                 key={member.id}
-                                className="px-2 py-1 w-full flex  justify-start cursor-pointer hover:bg-[#FFF3E6]/80 rounded-md  text-sm text-foreground font-norma cursor-pointerl"
+                                className="px-2 py-1 w-full flex justify-start cursor-pointer hover:bg-[#FFF3E6]/80 rounded-md  text-sm text-foreground font-norma cursor-pointerl"
                               >
                                 <div className="flex w-full items-center justify-between gap-2">
                                   <div className="flex min-w-0 flex-col items-start text-left">
@@ -208,7 +208,7 @@ export default function Body() {
                           />
                           <CustomButton
                             disabled={!comment || addingComment}
-                            className="self-end p-2"
+                            className="self-end px-3 py-2"
                             onClick={() => {
                               if (comment !== "") {
                                 addCommentByStage({
@@ -236,7 +236,7 @@ export default function Body() {
                             .map((assignedUser, index) => (
                               <span
                                 key={assignedUser.id}
-                                className={`inline-flex h-6 w-6 py-2 items-center justify-center font-semibold rounded-full bg-[#E2725B] border border-[#3A2418] p-1.5 text-[10px] text-white ${index > 0 ? "-ml-2 top-4" : ""}`}
+                                className={`inline-flex h-6 w-6 py-2 items-center justify-center font-semibold rounded-full bg-[#4a0f0a] border border-[#3A2418] p-1.5 text-[10px] text-white ${index > 0 ? "-ml-2 top-4" : ""}`}
                                 style={{
                                   zIndex: assignedUsers.length - index,
                                 }}

@@ -20,7 +20,7 @@ export default function Detail({
   return (
     <div className="p-4 flex flex-col gap-10">
       <div className="flex flex-row items-start gap-4 flex-1">
-        <div className="bg-[#D8F3F1] h-10 w-10 rounded-full flex items-center justify-center text-base font-medium text-[#2F9E94]">
+        <div className="bg-[#4a0f0a] h-10 w-10 rounded-full flex items-center justify-center text-base font-medium text-white">
           {getInitials(
             selectedContact?.first_name + " " + selectedContact?.last_name ||
               "",
@@ -72,7 +72,7 @@ export default function Detail({
       </div>
       <div className="flex flex-row items-center gap-4 w-full">
         <CustomButton
-          variant={"ghost"}
+          variant={"outline"}
           onClick={onDelete}
           className="py-4 px-5 flex-1 text-base"
         >

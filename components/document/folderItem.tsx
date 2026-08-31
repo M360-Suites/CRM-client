@@ -41,20 +41,20 @@ export default function FolderItem({
           >
             <path
               d="M9.5 2.5H17.5C18.05 2.5 18.5 2.95 18.5 3.5V13.5C18.5 14.05 18.05 14.5 17.5 14.5H1.5C0.95 14.5 0.5 14.05 0.5 13.5V2.5H9.5Z"
-              fill="#F5B7A3"
-              stroke="#E2725B"
+              fill="#4a0f0a"
+              stroke="#4a0f0a"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
             <path
               d="M9.5 2.5H0.5V1.5C0.5 0.95 0.95 0.5 1.5 0.5H7.5L9.5 2.5Z"
-              stroke="#E2725B"
+              stroke="#4a0f0a"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
           </svg>
         </div>
-        <span className="text-xs max-md:text-[10px] font-medium text-foreground truncate">
+        <span className="text-xs max-md:text-[10px] font-medium text-black truncate">
           {folder.name}
         </span>
       </div>
@@ -65,7 +65,7 @@ export default function FolderItem({
       </div>
       <div className=" flex items-center gap-2 py-0.5">
         <FileText size={16} className="text-foreground max-md:hidden" />
-        <span className="md:text-xs text-[10px] text-center text-foreground">
+        <span className="md:text-xs text-[10px] text-center text-black">
           {folder.document_count}{" "}
           {folder.document_count <= 1 ? "item" : "items"}
         </span>

@@ -32,7 +32,7 @@ export default function Header() {
         </div>
 
         <div className="flex flex-row gap-4 max-md:justify-between max-md:w-full items-center">
-          <div className="flex flex-row items-center gap-2  rounded-full py-2 md:px-1.75 bg-white shadow-[0px_1px_2px_0px_rgba(60,64,67,0.3),0px_2px_6px_2px_rgba(60,64,67,0.0)] px-1.5">
+          <div className="flex flex-row items-center gap-2  rounded-full py-2 md:px-1.75 bg-white shadow-[0px_6px_24px_0px_rgba(0,0,0,0.02),0px_0px_0px_1px_rgba(0,0,0,0.06)] px-1.5">
             {tabs.map((tab) => (
               <CustomButton
                 key={tab.value}

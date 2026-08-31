@@ -10,7 +10,7 @@ export default function TaskCard({ task }: { task: Task }) {
   const { date, month, time } = parseDateWithTime(task.due_at);
 
   return (
-    <div className="w-full px-4 py-4 rounded-[8px] shadow-[0px_1px_2px_0px_rgba(60,64,67,0.3),0px_2px_6px_2px_rgba(60,64,67,0.0)] bg-white flex items-center justify-between transition-colors">
+    <div className="w-full px-4 py-4 rounded-[8px] shadow-[0px_6px_24px_0px_rgba(0,0,0,0.02),0px_0px_0px_1px_rgba(0,0,0,0.08)] bg-white flex items-center justify-between transition-colors">
       {/* Date + title */}
       <div className="flex items-center gap-4 min-w-0">
         <div className="flex items-center gap-1.5 shrink-0">
@@ -33,11 +33,11 @@ export default function TaskCard({ task }: { task: Task }) {
 
       {/* Actions */}
       <div className="flex items-center gap-2 shrink-0 ml-3">
-        <EyeIcon className="size-5 text-[#E2725B] cursor-pointer" />
+        <EyeIcon className="size-5 text-[#4a0f0a] cursor-pointer" />
         <CustomDrawer
           label="Edit Task"
           trigger={
-            <PencilIcon className="size-5 text-[#E2725B] cursor-pointer" />
+            <PencilIcon className="size-5 text-[#4a0f0a] cursor-pointer" />
           }
         >
           {(close) => <AddTaskForm task={task} onSuccess={close} />}

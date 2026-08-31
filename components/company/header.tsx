@@ -44,7 +44,7 @@ export default function Header() {
                 {companies?.total} companies
               </span>
             </div>
-            <span className="text-[#E2725B] xl:text-sm max-md:hidden w-fit max-md:text-[8px] text-[10px] bg-[#FFF3E6] border border-border rounded-full py-1 px-3">
+            <span className="text-white xl:text-sm max-md:hidden w-fit max-md:text-[8px] text-[10px] bg-[#4a0f0a] border border-border rounded-full py-1 px-3">
               Sales rep
             </span>
           </div>

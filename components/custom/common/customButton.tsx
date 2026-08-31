@@ -16,7 +16,7 @@ const buttonVariants = cva(
         secondary:
           "border-t-0 border-l-0 border-r-2 border-b-2 bg-foundation-success-6 border-b-foundation-secondary-6 font-medium border-r-foundation-secondary-6 text-foundation-secondary-2 aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50",
         outline:
-          "hover:bg-muted bg-white border border-[#E8E8E8] hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
+          "hover:bg-muted bg-white border border-[#4a0f0a] hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:hover:bg-muted/50",
         destructive:
           "bg-destructive/10 text-destructive hover:bg-destructive/20 focus-visible:border-destructive/40 focus-visible:ring-destructive/20 dark:bg-destructive/20 dark:hover:bg-destructive/30 dark:focus-visible:ring-destructive/40",
         link: "text-primary underline-offset-4 hover:underline",

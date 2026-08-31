@@ -144,16 +144,16 @@ export function AppSidebar() {
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
                 >
-                  <circle cx="4" cy="4" r="4" fill="#C95C47" />
+                  <circle cx="4" cy="4" r="4" fill="#4a0f0a" />
                 </svg>
               ) : (
                 <link.icon
                   className="h-5 w-5 hover:text-foreground"
-                  color={activeLink === link.url ? "#3A2418" : "#fff"}
+                  color={activeLink === link.url ? "#4a0f0a" : "#fff"}
                 />
               )}
               <span
-                className={`${activeLink === link.url ? "text-[#C95C47] text-sm font-medium" : "text-white text-sm"}`}
+                className={`${activeLink === link.url ? "text-[#4a0f0a] text-sm font-medium" : "text-white text-sm"}`}
               >
                 {link.name}
               </span>

@@ -205,7 +205,7 @@ export default function Body() {
                   type="button"
                   key={item.value}
                   className={`lg:px-6 px-3 max-lg:text-sm ${item.value !== selectedTone && "text-foreground"}`}
-                  variant={item.value === selectedTone ? "default" : "ghost"}
+                  variant={item.value === selectedTone ? "default" : "outline"}
                   onClick={() => setValue("tone", item.value)}
                 >
                   {item.name}
@@ -221,7 +221,9 @@ export default function Body() {
                   type="button"
                   key={item.value}
                   className={`max-lg:text-sm flex-1 ${item.value !== selectedLength && "text-foreground"}`}
-                  variant={item.value === selectedLength ? "default" : "ghost"}
+                  variant={
+                    item.value === selectedLength ? "default" : "outline"
+                  }
                   onClick={() => setValue("length", item.value)}
                 >
                   {item.name}
@@ -279,14 +281,14 @@ export default function Body() {
               type="button"
               disabled={!canSend}
               onClick={onSend}
-              className="flex items-center bg-[#FFD9C0] px-3 py-1.5 rounded-full gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center bg-[#4a0f0a] px-3 py-1.5 rounded-full gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSending ? (
-                <Loader size={16} color="#4a4a4a" className="animate-spin" />
+                <Loader size={16} color="#fff" className="animate-spin" />
               ) : (
-                <Send size={16} color="#4a4a4a" />
+                <Send size={16} color="#fff" />
               )}
-              <span className="text-sm text-[#4A4A4A] font-medium">
+              <span className="text-sm text-white font-medium">
                 {isSending ? "Sending" : "Send"}
               </span>
             </button>
@@ -299,7 +301,7 @@ export default function Body() {
           {selectedContact ? (
             <div className="border rounded-full p-1 text-sm text-[#4A4A4A] font-medium flex items-center gap-2">
               <div className="flex items-center gap-2">
-                <div className="rounded-full text-[#FF9E55] bg-[#FFE7D5] w-9 h-9 flex items-center justify-center text-xs font-medium">
+                <div className="rounded-full text-white bg-[#4a0f0a] w-9 h-9 flex items-center justify-center text-xs font-medium">
                   {getInitials(
                     `${selectedContact.first_name} ${selectedContact.last_name}`,
                   )}
@@ -314,7 +316,7 @@ export default function Body() {
                 className="p-2 cursor-pointer"
                 onClick={handleRemoveContact}
               >
-                <XIcon size={16} color="#F5B7A3" />
+                <XIcon size={16} color="#4a0f0a" />
               </button>
             </div>
           ) : (

@@ -40,7 +40,7 @@ export function CustomSelect({
         <SelectTrigger
           className={`w-full rounded-[10px] border flex flex-row justify-between items-center ${
             error ? "border-foundation-error-6" : "border-border"
-          } bg-[#FFF3E6] px-3 py-4.5`}
+          } bg-[#FFF3E6]/30 px-3 py-4.5`}
         >
           <SelectValue placeholder={placeholder} />
         </SelectTrigger>

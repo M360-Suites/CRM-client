@@ -45,11 +45,11 @@ export default function Body({ id }: { id: string }) {
   return (
     <div className="w-full flex flex-col">
       {!hasDocs ? (
-        <div className="flex flex-col items-center gap-4 py-20 border border-[#E8E8E8] rounded-[12px]">
+        <div className="flex flex-col items-center gap-4 py-20 border border-[#4a0f0a] rounded-[12px]">
           <span className="text-base font-normal text-foreground">
             No files yet
           </span>
-          <CustomButton className="px-4 py-2 rounded-full bg-[#F5B7A3]">
+          <CustomButton className="px-4 py-2 rounded-full bg-[#4a0f0a]/80">
             <span className="text-sm ">upload your first file</span>
           </CustomButton>
         </div>

@@ -46,7 +46,7 @@ export function CustomDrawer({
           <DrawerTitle>{label}</DrawerTitle>
           <DrawerClose asChild>
             <button aria-label="Close">
-              <XIcon className="cursor-pointer" color="#E2725B" />
+              <XIcon className="cursor-pointer" color="#4a0f0a" />
             </button>
           </DrawerClose>
         </DrawerHeader>

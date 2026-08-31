@@ -29,23 +29,21 @@ export const CommentDisplay = ({ stageId }: { stageId: string }) => {
                   className={`w-full flex  ${comment.is_owner ? "justify-end" : "justify-start"}`}
                 >
                   {comment.is_owner && (
-                    <div className=" bg-[#FFF3E6] w-44 rounded-tr-lg rounded-br-lg rounded-tl-lg p-1.5 flex flex-col gap-1">
+                    <div className=" bg-[#4a0f0a] w-44 rounded-tr-lg rounded-br-lg rounded-tl-lg p-1.5 flex flex-col gap-1">
                       <div className="flex flex-col gap-1">
                         <span className="flex flex-row justify-between">
-                          <h6 className="font-medium text-foreground text-xs">
+                          <h6 className="font-medium text-white text-xs">
                             {comment.sender.display_name}
                           </h6>
                           <MoreVertical
                             size={14}
-                            className="text-foreground/80 hover:text-foreground"
+                            className="text-white/80 hover:text-white"
                           />
                         </span>
-                        <p className="text-foreground text-xs">
-                          {comment.content}
-                        </p>
+                        <p className="text-white text-xs">{comment.content}</p>
                       </div>
                       <div className="w-full">
-                        <h6 className="text-foreground/80 text-[9px] text-right w-full">
+                        <h6 className="text-white/80 text-[9px] text-right w-full">
                           {formatRelativeDateTime(comment.created_at)}
                         </h6>
                       </div>

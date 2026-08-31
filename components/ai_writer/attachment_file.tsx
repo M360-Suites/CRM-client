@@ -94,7 +94,7 @@ export default function AttachmentUpload({
           onClick={() => inputRef.current?.click()}
           className="flex items-center gap-1.5 text-sm text-[#4A4A4A] font-medium"
         >
-          <Paperclip size={16} color="#F5B7A3" />
+          <Paperclip size={16} color="#4a0f0a" />
           <span>Attachment</span>
         </button>
         {error && <span className="text-xs text-red-500">{error}</span>}
@@ -109,10 +109,10 @@ export default function AttachmentUpload({
         {files.map((file) => (
           <div
             key={file.name}
-            className="flex items-center justify-between bg-[#FFF6EC] rounded-[8px] px-3 py-2"
+            className="flex items-center justify-between bg-[#4a0f0a] rounded-[8px] px-3 py-2"
           >
             <div className="flex items-center gap-2 min-w-0">
-              <FileText size={14} color="#C95C47" className="shrink-0" />
+              <FileText size={14} color="#4a0f0a" className="shrink-0" />
               <div className="flex flex-col min-w-0">
                 <span className="text-xs font-medium text-[#3A2418] truncate">
                   {file.name}

@@ -57,13 +57,13 @@ export default function Body() {
   return (
     <div className="w-full flex-col flex gap-8">
       <div className="flex max-md:flex-col max-md:gap-3 max-md:items-start items-center justify-between w-full">
-        <div className="border bg-[#FFF3E6] xl:w-lg md:w-sm w-full rounded-full text-[#3A2418] flex flex-row items-center gap-2 py-3 px-3">
+        <div className="border bg-[#ECE7E6] xl:w-lg md:w-sm w-full rounded-full text-[#3A2418] flex flex-row items-center gap-2 py-3 px-3">
           <Search color="#3A2418" size={20} />
           <input
             type="text"
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by name,email,company..."
-            className="flex-1 placeholder:text-sm h-full outline-0 focus-visible:ring-0"
+            className="flex-1  placeholder:text-sm h-full outline-0 focus-visible:ring-0"
           />
         </div>
         <div className="flex flex-row items-center gap-2 py-2">
@@ -77,7 +77,7 @@ export default function Body() {
               } flex flex-row items-center cursor-pointer xl:text-base text-sm font-normal capitalize gap-2 py-2 ${
                 tab.toLowerCase() === activeTab.toLowerCase()
                   ? "bg-[#4a0f0a] text-white"
-                  : "bg-[#FFF3E6] text-[#3A2418]"
+                  : "bg-[#ECE7E6] text-[#3A2418]"
               }`}
               onClick={() => setActiveTab(tab)}
             >
@@ -122,7 +122,7 @@ export default function Body() {
         {/* Contacts list */}
         {!isPending && !isError && contacts && contacts.data.length > 0 && (
           <div className="w-full">
-            <div className="border border-[#F3D9C4] rounded-t-[12px]">
+            <div className="border border-[#4a0f0a] rounded-t-[12px]">
               {contacts.data.map((contact, index) => (
                 <CustomDrawer
                   key={index}
@@ -133,7 +133,7 @@ export default function Body() {
                       onClick={() => setSelectedContact(contact)}
                     >
                       <div className="flex col-span-2 items-center gap-4 flex-1">
-                        <div className="bg-[#D8F3F1] h-10 w-10 max-md:h-8 px-2 max-md:w-8 rounded-full flex items-center justify-center md:text-base text-sm font-medium text-[#2F9E94]">
+                        <div className="bg-[#4a0f0a] h-10 w-10 max-md:h-8 px-2 max-md:w-8 rounded-full flex items-center justify-center md:text-base text-sm font-medium text-white">
                           {getInitials(
                             [contact.first_name, contact.last_name]
                               .filter(Boolean)

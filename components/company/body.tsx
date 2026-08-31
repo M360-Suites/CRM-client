@@ -10,7 +10,7 @@ import { useState } from "react";
 import CompanyCard from "./card";
 
 const CompanySkeleton = () => (
-  <div className="w-full bg-white border border-[#F3D9C4] rounded-[8px] p-4 animate-pulse">
+  <div className="w-full bg-white border border-[#ECE7E6] rounded-[8px] p-4 animate-pulse">
     <div className="h-28 bg-gray-200 rounded mb-3" />
     <div className="h-4 bg-gray-200 rounded w-3/4 mb-2" />
     <div className="h-3 bg-gray-200 rounded w-1/2" />

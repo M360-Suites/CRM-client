@@ -10,7 +10,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       <Navbar /> {/* sticky top-0, with <SidebarTrigger /> inside it */}
       <div className="flex flex-1">
         <AppSidebar />
-        <main className="flex-1 min-w-0 py-14 xl:px-8 px-5 bg-[#FAF9F6]">
+        <main className="flex-1 min-w-0 py-14 xl:px-8 px-5 bg-white">
           {children}
         </main>
       </div>

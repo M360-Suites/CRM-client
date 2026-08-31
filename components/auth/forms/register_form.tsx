@@ -133,7 +133,7 @@ export default function RegisterForm() {
         </span>
         <Link
           href="/login"
-          className="text-[#E2725B] text-sm/[20px] font-medium max-sm:text-sm/[120%]"
+          className="text-[#4a0f0a] text-sm/[20px] font-medium max-sm:text-sm/[120%]"
         >
           Sign in
         </Link>

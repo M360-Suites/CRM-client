@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import HalfSide from "@/components/auth/halfside";
-import CRMLOGO from "@/public/assets/company/logo.png";
+import CRMLOGO from "@/public/assets/crm360-logo-transparent.png";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuthStore } from "@/stores/auth/auth_store";
 import { useEffect } from "react";
@@ -63,7 +63,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
             width={800}
             loading="eager"
             height={800}
-            className="h-12 w-auto"
+            className="h-16 w-auto"
           />
         </div>
         <div className="flex-1 w-full sm:px-5 md:px-20 lg:px-8 xl:px-20">

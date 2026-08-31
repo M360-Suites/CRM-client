@@ -125,7 +125,7 @@ export default function DashCard() {
                         color={iconColor(item.title)}
                       />
                     </div>
-                    <span className="lg:text-sm text-xs font-medium text-foreground">
+                    <span className="lg:text-base text-xs font-semibold text-foreground">
                       {item.title}
                     </span>
                   </div>

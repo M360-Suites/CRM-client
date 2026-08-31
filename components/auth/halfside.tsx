@@ -66,7 +66,7 @@ export default function HalfSide() {
 
   return (
     <div
-      className={`lg:w-1/2 max-lg:hidden bg-[#FFF6EC] flex flex-col justify-center xl:py-8 py-4 px-5 xl:px-12 rounded-[16px] gap-15 lg:gap-10 flex-1`}
+      className={`lg:w-1/2 max-lg:hidden bg-[#4a0f0a] flex flex-col justify-center xl:py-8 py-4 px-5 xl:px-12 rounded-[16px] gap-15 lg:gap-10 flex-1`}
     >
       <div
         className={`flex items-center justify-center w-full ${otherHalf.includes(value.type) && "bg-white"} rounded-[16px]`}
@@ -81,10 +81,10 @@ export default function HalfSide() {
       </div>
       {(value.type === "login" || value.type === "register") && (
         <div className="flex flex-col gap-4 items-center justify-center w-full">
-          <h1 className="text-[38px]/[120%] text-foreground tracking-tight font-medium text-center">
+          <h1 className="text-[38px]/[120%] text-white tracking-tight font-medium text-center">
             {value.title}
           </h1>
-          <p className="text-base text-center font-normal text-foreground">
+          <p className="text-base text-center font-normal text-white">
             {value.description}
           </p>
         </div>

@@ -112,12 +112,12 @@ export default function AttachmentUpload({
             className="flex items-center justify-between bg-[#4a0f0a] rounded-[8px] px-3 py-2"
           >
             <div className="flex items-center gap-2 min-w-0">
-              <FileText size={14} color="#4a0f0a" className="shrink-0" />
-              <div className="flex flex-col min-w-0">
-                <span className="text-xs font-medium text-[#3A2418] truncate">
+              <FileText size={18} color="white" className="shrink-0" />
+              <div className="flex flex-col min-w-0 lg:w-70 sm:w-60 w-50">
+                <span className="text-xs font-medium text-white truncate">
                   {file.name}
                 </span>
-                <span className="text-xs text-muted-foreground">
+                <span className="text-xs text-white/80">
                   {formatSize(file.size)}
                 </span>
               </div>
@@ -125,7 +125,7 @@ export default function AttachmentUpload({
             <button
               type="button"
               onClick={() => removeFile(file.name)}
-              className="shrink-0 ml-2 text-muted-foreground hover:text-foreground transition-colors"
+              className="shrink-0 ml-2 text-white/80 hover:text-white transition-colors"
             >
               <X size={14} />
             </button>

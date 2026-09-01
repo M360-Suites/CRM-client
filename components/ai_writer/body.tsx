@@ -168,7 +168,7 @@ export default function Body() {
       {/* Generate form */}
       <form
         onSubmit={handleSubmit(onGenerate)}
-        className="flex flex-col lg:gap-8 gap-4 sm:w-full bg-white shadow-[0px_1px_2px_0px_rgba(60,64,67,0.3),0px_2px_6px_2px_rgba(60,64,67,0.0)] rounded-[12px] xl:p-5 px-2 py-2.5"
+        className="flex flex-col lg:gap-8 gap-4 sm:w-full bg-white shadow-[0px_6px_24px_0px_rgba(0,0,0,0.02),0px_0px_0px_1px_rgba(0,0,0,0.08)] rounded-[12px] xl:p-5 px-2 py-2.5 self-start"
       >
         <div className="flex flex-col gap-4">
           <Controller
@@ -264,7 +264,7 @@ export default function Body() {
       {/* Send form */}
       <form
         // onSubmit={handleSendSubmit(onSend)}
-        className="flex flex-col gap-4 max-sm:col-span-1 shadow-[0px_1px_2px_0px_rgba(60,64,67,0.3),0px_2px_6px_2px_rgba(60,64,67,0.0)] bg-white rounded-[12px] p-5"
+        className="flex flex-col gap-4 max-sm:col-span-1 shadow-[0px_6px_24px_0px_rgba(0,0,0,0.02),0px_0px_0px_1px_rgba(0,0,0,0.08)] bg-white rounded-[12px] lg:px-5 px-2 pt-5 pb-2"
       >
         {/* Header */}
         <div className="flex items-center justify-between">

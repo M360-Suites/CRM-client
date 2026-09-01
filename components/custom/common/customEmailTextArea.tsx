@@ -18,7 +18,7 @@ const kindStyles: Record<EmailAreaType, string> = {
   to: "text-sm font-normal",
 };
 
-const emailTextColor = "text-[#FF9E55]";
+const emailTextColor = "text-[#4a0f0a]";
 
 const CustomEmailArea = React.forwardRef<any, CustomEmailAreaProps>(
   ({ className = "", body, kind = "body", onChange, ...rest }, ref) => {

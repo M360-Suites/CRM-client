@@ -64,11 +64,11 @@ export default function Navbar() {
               </button>
             }
             trigger={
-              <button className="p-2.5 border rounded-full md:block relative cursor-pointer">
+              <button className="p-2 border rounded-full md:block relative cursor-pointer">
                 <Bell color="#3A2418" className="w-4 h-4" />
                 {(notifications?.unread_count ?? 0) > 0 && (
-                  <div className="absolute top-0 -right-2 bg-[#F5B7A3] flex justify-center items-center rounded-full px-1.5 py-0.5">
-                    <span className="text-xs text-foreground font-medium">
+                  <div className="absolute top-0 -right-2 bg-[#4a0f0a] flex justify-center items-center rounded-full px-1.75 py-0.5">
+                    <span className="text-[10px] text-white font-semibold">
                       {notifications?.unread_count}
                     </span>
                   </div>
@@ -76,7 +76,7 @@ export default function Navbar() {
               </button>
             }
           >
-            <div className="w-[300px] max-h-[300px] overflow-y-auto no-scrollbar font-inter">
+            <div className="lg:w-85 h-80 w-75 overflow-y-auto no-scrollbar font-inter">
               {isLoading ? (
                 <div>Loading...</div>
               ) : (
@@ -86,8 +86,11 @@ export default function Navbar() {
                       {notifications.data.map((notification) => (
                         <div
                           key={notification._id}
-                          className="border-b border-foreground/10 last:border-b-0 pb-2 flex flex-col gap-2 hover:bg-gray-50/40 px-1 pt-1"
+                          className="border-b border-foreground/10 last:border-b-0 pb-2 flex flex-col gap-2 hover:bg-gray-50/40 px-1 pt-1 relative"
                         >
+                          {!notification.read && (
+                            <div className="absolute top-2 ring-2 ring-[#4a0f0a]/40 right-2 w-1.25 h-1.25 animate-pulse rounded-lg bg-[#4a0f0a]" />
+                          )}
                           <span className="text-xs text-foreground/95 font-medium">
                             {notification.title}
                           </span>
@@ -100,7 +103,7 @@ export default function Navbar() {
                             </span>
                           </div>
                           <div className="flex flex-col gap-1 pl-2.5">
-                            <span className="text-foreground/90 text-xs p-2.5 bg-[#F5B7A3]/10 border-l-2 border-[#C95C47] rounded-r-md">
+                            <span className="text-foreground/90 text-xs p-2.5 bg-[#F5B7A3]/10 border-l-2 border-[#4a0f0a] rounded-r-md">
                               {notification.metadata.preview}
                             </span>
                             <div className="flex items-center justify-end">

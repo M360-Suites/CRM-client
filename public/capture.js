@@ -1,8 +1,13 @@
 (function () {
-  const script = document.currentScript;
+  const script = document.querySelector('script[src*="capture.js"]');
+  if (!script) {
+    console.error("[lead-capture] couldn't find its own script tag");
+    return;
+  }
+
   const endpoint =
     script.dataset.endpoint ||
-    "https://crm-vertical-saas.onrender.com/api/v1/pipeline/deals";
+    "https://crm-vertical-saas.onrender.com/api/v1/public/leads/inbound";
   const source = script.dataset.source || window.location.hostname;
   const selector = script.dataset.selector || "form";
   const debug = script.dataset.debug === "true";

@@ -10,7 +10,7 @@ import {
 
 type Platform = "html" | "nextjs";
 
-const SCRIPT_SRC = "https://app.crm360online.com/public/capture.js";
+const SCRIPT_SRC = "https://app.crm360online.com/capture.js";
 const ENDPOINT =
   "https://crm-vertical-saas.onrender.com/api/v1/public/leads/inbound";
 

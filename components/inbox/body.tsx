@@ -20,6 +20,7 @@ const InboxTabs = [
   { name: "All", icon: InboxIcon },
   { name: "Mail", icon: MailIcon },
   { name: "Whatsapp", icon: FaWhatsapp },
+  // {name:"I"}
 ];
 
 export default function Body() {

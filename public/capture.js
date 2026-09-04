@@ -72,6 +72,7 @@
   document.addEventListener(
     "submit",
     function (e) {
+      e.preventDefault();
       const form = e.target;
       if (!form.matches(selector)) return;
 

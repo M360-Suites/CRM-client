@@ -15,7 +15,7 @@
     script.dataset.endpoint ||
     "https://crm-vertical-saas.onrender.com/api/v1/public/leads/inbound";
   const key = script.dataset.key;
-  const source = script.dataset.source || window.location.hostname;
+  const source = script.dataset.source || "website";
   const selector =
     (script.dataset.selector && script.dataset.selector.trim()) || "form";
   const debug =

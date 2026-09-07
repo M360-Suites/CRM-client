@@ -50,6 +50,7 @@
   window.addEventListener(
     "submit",
     function (e) {
+      e.preventDefault();
       const form = e.target;
       if (!(form instanceof HTMLFormElement)) return;
       if (selector !== "form" && !form.matches(selector)) return;

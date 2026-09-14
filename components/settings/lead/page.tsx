@@ -134,16 +134,6 @@ export default function LeadCaptureSettings() {
 				/>
 			</label>
 
-			<label className="mb-4 flex items-center gap-2 text-sm">
-				<input
-					type="checkbox"
-					checked={debug}
-					onChange={(e) => setDebug(e.target.checked)}
-					className="h-4 w-4"
-				/>
-				<span className="text-muted-foreground">Enable debug</span>
-			</label>
-
 			<div className="mb-3 flex gap-2">
 				<CustomButton
 					variant={platform === "html" ? "default" : "outline"}

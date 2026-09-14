@@ -40,7 +40,6 @@ function buildNextSnippet(
 
 <Script
   src="${SCRIPT_SRC}"
-  data-endpoint="${ENDPOINT}"
   data-key="${apiKey}"
   data-selector="${selector}"
   data-tags="${tags}"

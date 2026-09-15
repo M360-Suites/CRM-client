@@ -2,217 +2,235 @@
 
 import Image from "next/image";
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarHeader,
-  SidebarMenuButton,
-  useSidebar,
+	Sidebar,
+	SidebarContent,
+	SidebarFooter,
+	SidebarGroup,
+	SidebarHeader,
+	SidebarMenuButton,
+	useSidebar,
 } from "@/components/ui/sidebar";
 import { useDashStore } from "@/stores/dash/dashboard_store";
 import {
-  LayoutGrid,
-  Users,
-  Building2,
-  SquareKanban,
-  CalendarCheck,
-  Inbox,
-  FileText,
-  Mail,
-  Sparkles,
-  ChartColumn,
-  LogOut,
-  Settings,
+	LayoutGrid,
+	Users,
+	Building2,
+	SquareKanban,
+	CalendarCheck,
+	Inbox,
+	FileText,
+	Mail,
+	Sparkles,
+	ChartColumn,
+	LogOut,
+	Settings,
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { CustomButton } from "../custom/common/customButton";
 import { useLogout } from "@/hooks/auth/logout";
-import CRMLOGO from "@/public/assets/crm360-logo.png";
+import CRMLOGO from "@/public/assets/crm-new-logo.png";
 
 const sideLinks = [
-  {
-    name: "Dashboard",
-    icon: LayoutGrid,
-    url: "/dashboard",
-  },
-  {
-    name: "Companies",
-    icon: Building2,
-    url: "/companies",
-  },
-  {
-    name: "Contacts",
-    icon: Users,
-    url: "/contacts",
-  },
+	{
+		name: "Dashboard",
+		icon: LayoutGrid,
+		url: "/dashboard",
+	},
+	{
+		name: "Companies",
+		icon: Building2,
+		url: "/companies",
+	},
+	{
+		name: "Contacts",
+		icon: Users,
+		url: "/contacts",
+	},
 
-  {
-    name: "Pipelines",
-    icon: SquareKanban,
-    url: "/pipeline",
-  },
-  {
-    name: "Task & Calendar",
-    icon: CalendarCheck,
-    url: "/tasks",
-  },
-  {
-    name: "Documents",
-    icon: FileText,
-    url: "/documents",
-  },
-  {
-    name: "Email Inbox",
-    icon: Inbox,
-    url: "/inbox",
-  },
-  {
-    name: "AI Writer",
-    icon: Sparkles,
-    url: "/ai-writer",
-  },
-  {
-    name: "Analytics",
-    icon: ChartColumn,
-    url: "/analytics",
-  },
-  {
-    name: "Report",
-    icon: ChartColumn,
-    url: "/report",
-  },
+	{
+		name: "Pipelines",
+		icon: SquareKanban,
+		url: "/pipeline",
+	},
+	{
+		name: "Task & Calendar",
+		icon: CalendarCheck,
+		url: "/tasks",
+	},
+	{
+		name: "Documents",
+		icon: FileText,
+		url: "/documents",
+	},
+	{
+		name: "Email Inbox",
+		icon: Inbox,
+		url: "/inbox",
+	},
+	{
+		name: "AI Writer",
+		icon: Sparkles,
+		url: "/ai-writer",
+	},
+	{
+		name: "Analytics",
+		icon: ChartColumn,
+		url: "/analytics",
+	},
+	{
+		name: "Report",
+		icon: ChartColumn,
+		url: "/report",
+	},
 ];
 
 const otherSides = [
-  {
-    name: "Settings",
-    icon: Settings,
-    url: "/settings",
-  },
+	{
+		name: "Settings",
+		icon: Settings,
+		url: "/settings",
+	},
 ];
 
 export function AppSidebar() {
-  const { mutate: logoutUser, isPending } = useLogout();
-  const router = useRouter();
-  const { activeLink, setActiveLink } = useDashStore();
-  const currentPath = usePathname();
+	const { mutate: logoutUser, isPending } = useLogout();
+	const router = useRouter();
+	const { activeLink, setActiveLink } = useDashStore();
+	const currentPath = usePathname();
 
-  const { isMobile, setOpenMobile } = useSidebar();
+	const { isMobile, setOpenMobile } = useSidebar();
 
-  useEffect(() => {
-    const allLinks = [...sideLinks, ...otherSides];
-    const matchedLink = allLinks.find((link) =>
-      currentPath?.startsWith(link.url),
-    );
-    if (matchedLink) {
-      setActiveLink(matchedLink.url);
-    }
-  }, [currentPath, setActiveLink]);
+	useEffect(() => {
+		const allLinks = [...sideLinks, ...otherSides];
+		const matchedLink = allLinks.find((link) =>
+			currentPath?.startsWith(link.url),
+		);
+		if (matchedLink) {
+			setActiveLink(matchedLink.url);
+		}
+	}, [currentPath, setActiveLink]);
 
-  return (
-    <Sidebar className="inset-0 h-full overflow-y-auto">
-      <SidebarHeader className="lg:pt-15 pt-5 max-lg:px-7 flex items-start justify-start">
-        <Image
-          src={CRMLOGO}
-          alt="crm_logo"
-          width={800}
-          height={800}
-          className="lg:hidden h-11 border w-auto object-contain"
-        />
-      </SidebarHeader>
-      <SidebarContent className="flex justify-start items-center">
-        <SidebarGroup className="flex items-center gap-2">
-          {sideLinks.map((link, index) => (
-            <SidebarMenuButton
-              key={index}
-              className={` hover:bg-[#6b1a12] [&_svg]:size-5 ${activeLink === link.url && "bg-[#FEFCE8] hover:bg-[#FEFCE8] [&_svg]:size-3"}`}
-              onClick={() => {
-                setActiveLink(link.url);
-                router.push(`${link.url}`);
-                if (isMobile) {
-                  setOpenMobile(false);
-                }
-              }}
-            >
-              {activeLink === link.url ? (
-                <svg
-                  width="4"
-                  height="4"
-                  viewBox="0 0 8 8"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle cx="4" cy="4" r="4" fill="#4a0f0a" />
-                </svg>
-              ) : (
-                <link.icon
-                  className="h-5 w-5 hover:text-foreground"
-                  color={activeLink === link.url ? "#4a0f0a" : "#fff"}
-                />
-              )}
-              <span
-                className={`${activeLink === link.url ? "text-[#4a0f0a] text-sm font-medium" : "text-white text-sm"}`}
-              >
-                {link.name}
-              </span>
-            </SidebarMenuButton>
-          ))}
-        </SidebarGroup>
+	return (
+		<Sidebar className="inset-0 h-full overflow-y-auto">
+			<SidebarHeader className="lg:pt-15 pt-5 max-lg:px-7 flex items-start justify-start">
+				<Image
+					src={CRMLOGO}
+					alt="crm_logo"
+					width={800}
+					height={800}
+					className="lg:hidden h-11 w-auto object-contain"
+				/>
+			</SidebarHeader>
+			<SidebarContent className="flex justify-start items-center">
+				<SidebarGroup className="flex items-center gap-2">
+					{sideLinks.map((link, index) => (
+						<SidebarMenuButton
+							key={index}
+							className={` hover:bg-gray-100 [&_svg]:size-5 ${activeLink === link.url && "bg-[#E6F2FF] hover:bg-[#E6F2FF] [&_svg]:size-3"}`}
+							onClick={() => {
+								setActiveLink(link.url);
+								router.push(`${link.url}`);
+								if (isMobile) {
+									setOpenMobile(false);
+								}
+							}}
+						>
+							{activeLink === link.url ? (
+								<svg
+									width="4"
+									height="4"
+									viewBox="0 0 8 8"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<circle
+										cx="4"
+										cy="4"
+										r="4"
+										fill="#0076D6"
+									/>
+								</svg>
+							) : (
+								<link.icon
+									className="h-5 w-5 hover:text-foreground"
+									color={
+										activeLink === link.url
+											? "#0076D6"
+											: "#0F172A"
+									}
+								/>
+							)}
+							<span
+								className={`${activeLink === link.url ? "text-[#0076D6] text-sm font-medium" : "text-[#0F172A] text-sm"}`}
+							>
+								{link.name}
+							</span>
+						</SidebarMenuButton>
+					))}
+				</SidebarGroup>
 
-        <SidebarGroup className="flex items-center gap-2 border-t">
-          {otherSides.map((link, index) => (
-            <SidebarMenuButton
-              key={index}
-              className={` hover:bg-[#6b1a12] [&_svg]:size-5 ${activeLink === link.url && "bg-[#FEFCE8] hover:bg-[#FEFCE8] [&_svg]:size-3"}`}
-              onClick={() => {
-                setActiveLink(link.url);
-                router.push(`${link.url}`);
-                if (isMobile) {
-                  setOpenMobile(false);
-                }
-              }}
-            >
-              {activeLink === link.url ? (
-                <svg
-                  width="4"
-                  height="4"
-                  viewBox="0 0 8 8"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <circle cx="4" cy="4" r="4" fill="#C95C47" />
-                </svg>
-              ) : (
-                <link.icon
-                  className="h-5 w-5"
-                  color={activeLink === link.url ? "#3A2418" : "#fff"}
-                />
-              )}
-              <span
-                className={`${activeLink === link.url ? "text-[#C95C47] text-sm font-medium" : "text-white text-sm"}`}
-              >
-                {link.name}
-              </span>
-            </SidebarMenuButton>
-          ))}
-        </SidebarGroup>
-      </SidebarContent>
-      <SidebarFooter className="pb-10 px-5 bg-transparent">
-        <CustomButton
-          variant="ghost"
-          onClick={() => {
-            logoutUser();
-          }}
-          className="px-5 py-4 flex items-center border-none justify-start flex-row gap-4"
-        >
-          <LogOut className="h-6 w-6" color={"#fff"} />
-          <span className="text-base font-medium text-white">
-            {isPending ? "Logging out..." : "Log out"}
-          </span>
-        </CustomButton>
-      </SidebarFooter>
-    </Sidebar>
-  );
+				<SidebarGroup className="flex items-center gap-2 border-t border-t-[#E6F2FF] ">
+					{otherSides.map((link, index) => (
+						<SidebarMenuButton
+							key={index}
+							className={` hover:bg-gray-100 [&_svg]:size-5 ${activeLink === link.url && "bg-[#E6F2FF] hover:bg-[#E6F2FF] [&_svg]:size-3"}`}
+							onClick={() => {
+								setActiveLink(link.url);
+								router.push(`${link.url}`);
+								if (isMobile) {
+									setOpenMobile(false);
+								}
+							}}
+						>
+							{activeLink === link.url ? (
+								<svg
+									width="4"
+									height="4"
+									viewBox="0 0 8 8"
+									fill="none"
+									xmlns="http://www.w3.org/2000/svg"
+								>
+									<circle
+										cx="4"
+										cy="4"
+										r="4"
+										fill="#0076D6"
+									/>
+								</svg>
+							) : (
+								<link.icon
+									className="h-5 w-5"
+									color={
+										activeLink === link.url
+											? "#0076D6"
+											: "#0F172A"
+									}
+								/>
+							)}
+							<span
+								className={`${activeLink === link.url ? "text-[#0076D6] text-sm font-medium" : "text-[#0F172A] text-sm"}`}
+							>
+								{link.name}
+							</span>
+						</SidebarMenuButton>
+					))}
+				</SidebarGroup>
+			</SidebarContent>
+			<SidebarFooter className="pb-10 px-5 bg-transparent">
+				<CustomButton
+					variant="transparent"
+					onClick={() => {
+						logoutUser();
+					}}
+					className="px-5 py-4 flex items-center border-none justify-start flex-row gap-4"
+				>
+					<LogOut className="h-6 w-6" color={"#3A2418"} />
+					<span className="text-base font-medium text-[#3A2418]">
+						{isPending ? "Logging out..." : "Log out"}
+					</span>
+				</CustomButton>
+			</SidebarFooter>
+		</Sidebar>
+	);
 }

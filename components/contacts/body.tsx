@@ -62,7 +62,7 @@ export default function Body() {
 	return (
 		<div className="w-full flex-col flex gap-8">
 			<div className="flex max-md:flex-col max-md:gap-3 max-md:items-start items-center justify-between w-full">
-				<div className="border bg-[#ECE7E6] xl:w-lg md:w-sm w-full rounded-full text-[#3A2418] flex flex-row items-center gap-2 py-3 px-3">
+				<div className="border border-[#D9E1E8] xl:w-lg md:w-sm w-full rounded-full text-[#3A2418] bg-[#F2F7FB] flex flex-row items-center gap-2 py-3 px-3">
 					<Search color="#3A2418" size={20} />
 					<input
 						type="text"
@@ -75,14 +75,14 @@ export default function Body() {
 					{categories.map((tab, index) => (
 						<button
 							key={index}
-							className={`border ${
+							className={` ${
 								tab === ContactTabs.ALL
 									? "rounded-full px-5"
 									: "rounded-full px-4"
 							} flex flex-row items-center cursor-pointer xl:text-base text-sm font-normal capitalize gap-2 py-2 ${
 								tab.toLowerCase() === activeTab.toLowerCase()
-									? "bg-[#4a0f0a] text-white"
-									: "bg-[#ECE7E6] text-[#3A2418]"
+									? "bg-[#0091FE] text-white"
+									: "bg-[#F2F7FB] text-[#334155] border border-[#D9E1E8] hover:bg-gray-200 transition-colors"
 							}`}
 							onClick={() => setActiveTab(tab)}
 						>
@@ -95,7 +95,7 @@ export default function Body() {
 			<div className="w-full">
 				{/* Loading state */}
 				{isPending && (
-					<div className="border border-[#F3D9C4] rounded-t-[12px]">
+					<div className="border border-[#D9E1E8] rounded-t-[12px]">
 						{Array.from({ length: 6 }).map((_, i) => (
 							<ContactRowSkeleton key={i} />
 						))}
@@ -104,7 +104,7 @@ export default function Body() {
 
 				{/* Error state */}
 				{!isPending && !isFiltering && contacts?.data.length === 0 && (
-					<div className="flex flex-col items-center gap-4 py-20 border border-[#E8E8E8] rounded-[12px]">
+					<div className="flex flex-col items-center gap-4 py-20 border border-[#D9E1E8] rounded-[12px]">
 						<span className="text-base font-normal text-foreground">
 							No companies yet
 						</span>
@@ -130,20 +130,20 @@ export default function Body() {
 					contacts &&
 					contacts.data.length > 0 && (
 						<div className="w-full">
-							<div className="border border-[#4a0f0a] rounded-t-[12px]">
+							<div className="border border-[#D9E1E8] rounded-t-[12px]">
 								{contacts.data.map((contact, index) => (
 									<CustomDrawer
 										key={index}
 										label="Contact Details"
 										trigger={
 											<div
-												className="grid grid-cols-5 lg:gap-4 gap-1 bg-white rounded-t-[12px] max-md:gap-0.5 w-full py-3 max-md:py-2 px-5 max-md:px-1.5 items-center border-b last:border-b-0 cursor-pointer"
+												className="grid grid-cols-5 lg:gap-4 gap-1 bg-white rounded-t-[12px] max-md:gap-0.5 w-full py-3 max-md:py-2 px-5 max-md:px-1.5 items-center border-b border-b-[#D9E1E8] last:border-b-0 cursor-pointer"
 												onClick={() =>
 													setSelectedContact(contact)
 												}
 											>
 												<div className="flex col-span-2 items-center gap-4 flex-1">
-													<div className="bg-[#4a0f0a] h-10 w-10 max-md:h-8 px-2 max-md:w-8 rounded-full flex items-center justify-center md:text-base text-sm font-medium text-white">
+													<div className="bg-[#D8F3F1] h-10 w-10 max-md:h-8 px-2 max-md:w-8 rounded-full flex items-center justify-center md:text-base text-sm font-medium text-[#2F9E94]">
 														{getInitials(
 															[
 																contact.first_name,
@@ -185,14 +185,14 @@ export default function Body() {
 														className={`px-3 py-1 flex max-md:justify-center rounded-full md:text-sm text-xs self-auto font-medium ${
 															contact.temperature.toLocaleLowerCase() ===
 															ContactTabs.HOT.toLocaleLowerCase()
-																? "bg-[#E6F7F1] text-[#2CA678]"
+																? "bg-[#0091FE] text-white"
 																: contact.temperature ===
 																	  ContactTabs.WARM.toLocaleLowerCase()
-																	? "bg-[#FFF6EC] text-[#E2725B]"
-																	: "bg-gray-100 text-[#E2725B]"
+																	? "bg-[#00B3A6] text-white"
+																	: "bg-[#94A3B8] text-white"
 														}`}
 													>
-														<span className="md:text-sm text-xs font-normal self-center text-foreground">
+														<span className="md:text-sm text-xs font-normal self-center ">
 															{
 																contact.temperature
 															}

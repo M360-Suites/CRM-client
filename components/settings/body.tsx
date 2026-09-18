@@ -12,7 +12,7 @@ const Tabs = [
 	{ name: "Profile", value: "profile", component: Profile },
 	{ name: "Roles & Permissions", value: "roles", component: RolesAccess },
 	{ name: "Staffs", value: "staffs", component: Staffs },
-	{ name: "Leads", value: "leads", component: LeadCaptureSettings },
+	{ name: "Connector", value: "connector", component: LeadCaptureSettings },
 ];
 
 export default function Body() {

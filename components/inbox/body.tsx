@@ -63,10 +63,10 @@ export default function Body() {
         connectedChannels.map((c) =>
           c.id === chId
             ? {
-                ...c,
-                connected: !!statusData.connected,
-                label: c.label ?? (chId === "gmail" ? "Google Gmail" : chId),
-              }
+              ...c,
+              connected: !!statusData.connected,
+              label: c.label ?? (chId === "gmail" ? "Google Gmail" : chId),
+            }
             : c,
         ),
       );
@@ -99,17 +99,16 @@ export default function Body() {
           <button
             key={tab.name}
             onClick={() => setSelectedTab(tab.name)}
-            className={`flex items-center lg:gap-4 group gap-2 lg:p-3 max-lg:py-2 max-lg:px-3 lg:rounded-[10px] rounded-full cursor-pointer ${
-              selectedTab === tab.name
-                ? "bg-[#4a0f0a] hover:bg-[#4a0f0a]"
-                : "hover:bg-[#4a0f0a]/95"
-            }`}
+            className={`flex items-center lg:gap-4 group gap-2 lg:p-3 max-lg:py-2 max-lg:px-3 lg:rounded-[10px] rounded-full cursor-pointer ${selectedTab === tab.name
+              ? "bg-[#00B3A6] hover:bg-[#00B3A6]"
+              : "hover:bg-[#E6F2FF] hover:text-foreground"
+              }`}
           >
             <tab.icon
-              className={`h-5 w-5 ${selectedTab === tab.name ? "text-white" : "text-foreground group-hover:text-white"} `}
+              className={`h-5 w-5 ${selectedTab === tab.name ? "text-white" : "text-foreground group-hover:text-foreground"} `}
             />
             <span
-              className={`text-sm font-medium ${selectedTab === tab.name ? "text-white" : "text-foreground  group-hover:text-white"}`}
+              className={`text-sm font-medium ${selectedTab === tab.name ? "text-white" : "text-foreground  group-hover:text-foreground"}`}
             >
               {tab.name}
             </span>
@@ -140,9 +139,8 @@ export default function Body() {
                       </div>
                     </div>
                     <span
-                      className={`text-sm font-medium ${
-                        c.connected ? "text-green-600" : "text-gray-500"
-                      }`}
+                      className={`text-sm font-medium ${c.connected ? "text-green-600" : "text-gray-500"
+                        }`}
                     >
                       {c.connected ? "Connected" : "Disconnected"}
                     </span>

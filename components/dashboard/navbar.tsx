@@ -82,7 +82,7 @@ export default function Navbar() {
 							) : (
 								<div>
 									{notifications?.data &&
-									notifications.data.length > 0 ? (
+										notifications.data.length > 0 ? (
 										<div className="flex flex-col gap-1">
 											{notifications.data.map(
 												(notification) => (
@@ -118,7 +118,7 @@ export default function Navbar() {
 															</span>
 															<div className="flex items-center justify-end">
 																{notification.read ===
-																true ? (
+																	true ? (
 																	<div className="flex items-center gap-0.5">
 																		<CheckCheck
 																			size={
@@ -140,7 +140,7 @@ export default function Navbar() {
 																		}
 																	>
 																		{isMarkingAsRead &&
-																		notification._id ===
+																			notification._id ===
 																			markingId
 																			? "marking as read..."
 																			: "mark as read"}

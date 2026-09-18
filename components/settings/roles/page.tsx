@@ -62,7 +62,7 @@ export default function RolesAccess() {
         {isLoading ? (
           <div className="overflow-x-auto border border-[#E8E8E8] rounded-[12px]">
             <table className="w-full min-w-150">
-              <thead className="bg-[#F5B7A3]">
+              <thead className="bg-[#E6F2FF]">
                 <tr>
                   <th className="text-left px-6 py-3  lg:text-sm text-xs font-medium text-foreground">
                     Name
@@ -153,7 +153,7 @@ export default function RolesAccess() {
                         </CustomDrawer>
                         <div>
                           {revokeInviteMutation.isPending &&
-                          revokeInviteMutation.variables === staff._id ? (
+                            revokeInviteMutation.variables === staff._id ? (
                             <div className="w-4 h-4 text-red-400 cursor-pointer">
                               <Loader className="animate-spin" />
                             </div>

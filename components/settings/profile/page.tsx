@@ -25,7 +25,7 @@ export default function Profile() {
               aria-hidden
             />
             <div className="flex flex-col w-full border rounded-lg mt-4">
-              <div className="bg-[#fff3e6] rounded-lg flex flex-col gap-3 py-4 w-full px-4">
+              <div className="bg-[#E6F2FF] rounded-lg flex flex-col gap-3 py-4 w-full px-4">
                 {Array.from({ length: 3 }).map((_, index) => (
                   <div
                     key={index}
@@ -41,11 +41,11 @@ export default function Profile() {
         ) : (
           // real content
           <div className="flex flex-col items-start md:gap-4 gap-3 w-full h-full ">
-            <div className="bg-[#4a0f0a] flex justify-center shrink-0 items-center md:h-20 md:w-20 h-15 w-15 lg:text-3xl text-base font-semibold text-white rounded-lg">
+            <div className="bg-[#00B3A6] flex justify-center shrink-0 items-center md:h-20 md:w-20 h-15 w-15 lg:text-3xl text-base font-semibold text-white rounded-lg">
               {getInitials(profile?.display_name).toUpperCase()}
             </div>
             <div className="flex flex-col w-full border rounded-lg">
-              <div className="bg-[#fff3e6] rounded-lg flex flex-col gap-3 max-md:gap-2 py-4 w-full px-4">
+              <div className="bg-[#E6F2FF] rounded-lg flex flex-col gap-3 max-md:gap-2 py-4 w-full px-4">
                 {UserData.map((item, index) => (
                   <div
                     key={index}

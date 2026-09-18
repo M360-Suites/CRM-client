@@ -151,20 +151,20 @@ export default function LeadCaptureSettings() {
 				</CustomButton>
 			</div>
 
-			<div className="relative rounded-lg bg-[#4a0f0a] p-4">
+			<div className="relative rounded-lg bg-[#E6F2FF] p-4">
 				<button
 					onClick={() => handleCopy(snippet)}
 					className="absolute right-3 top-3 rounded-md border border-white/20 px-2 py-1 text-xs text-white/80 hover:border-[#C95C47]"
 				>
 					{copied ? "Copied" : "Copy"}
 				</button>
-				<pre className="whitespace-pre-wrap wrap-break-words font-mono text-xs leading-relaxed text-[#F0D9C8]">
+				<pre className="whitespace-pre-wrap wrap-break-words font-mono text-xs leading-relaxed text-foreground">
 					{snippet}
 				</pre>
 			</div>
 
 			<div className="mt-3 flex items-center justify-between">
-				<p className="text-xs text-muted-foreground">
+				<p className="text-xs text-foreground">
 					{platform === "html"
 						? "Paste this before the closing </body> tag on your site."
 						: "Add this inside your root layout.tsx, next to your other <Script> tags."}

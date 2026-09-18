@@ -281,12 +281,12 @@ export default function Body() {
               type="button"
               disabled={!canSend}
               onClick={onSend}
-              className="flex items-center bg-[#4a0f0a] px-3 py-1.5 rounded-full gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="flex items-center bg-[#00B3A6] px-3 py-1.5 rounded-full gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {isSending ? (
-                <Loader size={16} color="#fff" className="animate-spin" />
+                <Loader size={14} color="#fff" className="animate-spin" />
               ) : (
-                <Send size={16} color="#fff" />
+                <Send size={14} color="#fff" />
               )}
               <span className="text-sm text-white font-medium">
                 {isSending ? "Sending" : "Send"}

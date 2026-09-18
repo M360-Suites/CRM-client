@@ -39,7 +39,7 @@ export default function Staffs() {
         {isLoading ? (
           <div className="overflow-hidden border border-[#E8E8E8] rounded-[12px]">
             <table className="w-full">
-              <thead className="bg-[#F5B7A3]">
+              <thead className="bg-[#E6F2FF]">
                 <tr>
                   <th className="text-left px-6 py-3  lg:text-sm text-xs font-medium text-foreground">
                     Name
@@ -72,7 +72,7 @@ export default function Staffs() {
           <div className="w-full overflow-x-auto rounded-[12px] ">
             <table className="w-full min-w-150">
               <thead>
-                <tr className="bg-[#F5B7A3]/50">
+                <tr className="bg-[#E6F2FF]">
                   <th className="text-left px-6 max-md:px-3 py-3 text-xs md:text-sm font-medium text-foreground">
                     Name
                   </th>
@@ -119,7 +119,7 @@ export default function Staffs() {
                         </CustomDrawer>
                         <div>
                           {deleteStaffMutation.isPending &&
-                          deleteStaffMutation.variables === staff._id ? (
+                            deleteStaffMutation.variables === staff._id ? (
                             <div className="w-4 h-4 text-red-400 cursor-pointer">
                               <Loader className="animate-spin" />
                             </div>

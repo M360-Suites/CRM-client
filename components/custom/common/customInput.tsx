@@ -31,7 +31,7 @@ const CustomInput = React.forwardRef<
 				{label}
 			</label>
 			<div
-				className={`rounded-[10px] border flex flex-row justify-between items-center ${error ? "border-foundation-error-6" : "border-border"} bg-[#F2F7FB] px-4 py-4.5`}
+				className={`rounded-[10px] border border-[#D9E1E8] flex flex-row justify-between items-center ${error ? "border-foundation-error-6" : "border-border"} bg-[#F2F7FB] px-4 py-4.5`}
 			>
 				{textArea ? (
 					<textarea

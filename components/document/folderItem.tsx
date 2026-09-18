@@ -41,14 +41,14 @@ export default function FolderItem({
           >
             <path
               d="M9.5 2.5H17.5C18.05 2.5 18.5 2.95 18.5 3.5V13.5C18.5 14.05 18.05 14.5 17.5 14.5H1.5C0.95 14.5 0.5 14.05 0.5 13.5V2.5H9.5Z"
-              fill="#4a0f0a"
-              stroke="#4a0f0a"
+              fill="#00B3A6"
+              stroke="#00B3A6"
               strokeLinecap="round"
               strokeLinejoin="round"
             />
             <path
               d="M9.5 2.5H0.5V1.5C0.5 0.95 0.95 0.5 1.5 0.5H7.5L9.5 2.5Z"
-              stroke="#4a0f0a"
+              stroke="#00B3A6"
               strokeLinecap="round"
               strokeLinejoin="round"
             />

@@ -25,7 +25,7 @@ export default function Body({ id }: { id: string }) {
           {[1, 2, 3].map((i) => (
             <div
               key={i}
-              className="flex items-center justify-between bg-[#FFF3E6] first:rounded-t-[8px] last:rounded-b-[8px] border-b border-b-border last:border-b-0 pl-4 pr-8 py-3 overflow-hidden"
+              className="flex items-center justify-between bg-slate-100 first:rounded-t-[8px] last:rounded-b-[8px] border-b border-b-border last:border-b-0 pl-4 pr-8 py-3 overflow-hidden"
             >
               <div className="flex items-center gap-4 py-0.5 w-full">
                 <div className="w-9 h-9 rounded-[8px] bg-[#E8E8E8] animate-pulse" />

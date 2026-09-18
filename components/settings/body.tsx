@@ -45,7 +45,7 @@ export default function Body() {
 					<button
 						key={t.value}
 						onClick={() => handleTabChange(t.value)}
-						className={`${activeTab === t.value ? "border-b-3 border-b-[#4a0f0a] rounded-none text-black" : "hover:text-black"} px-10 max-md:px-4 py-3 cursor-pointer`}
+						className={`${activeTab === t.value ? "border-b-3 border-b-[#00B3A6] rounded-none text-black" : "hover:text-black"} px-10 max-md:px-4 py-3 cursor-pointer`}
 					>
 						<h3 className="text-sm max-md:text-xs font-medium">
 							{t.name}

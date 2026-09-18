@@ -2,59 +2,64 @@
 import React, { useCallback, useState } from "react";
 import { XIcon } from "lucide-react";
 import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
+	Drawer,
+	DrawerClose,
+	DrawerContent,
+	DrawerHeader,
+	DrawerTitle,
+	DrawerTrigger,
 } from "@/components/ui/drawer";
 
 interface CustomDrawerProps {
-  trigger: React.ReactNode;
-  label?: string;
-  // children can be static nodes or a render function that receives `close()`
-  children: React.ReactNode | ((close: () => void) => React.ReactNode);
-  defaultOpen?: boolean;
-  onOpenChange?: (open: boolean) => void;
+	trigger: React.ReactNode;
+	label?: string;
+	// children can be static nodes or a render function that receives `close()`
+	children: React.ReactNode | ((close: () => void) => React.ReactNode);
+	defaultOpen?: boolean;
+	onOpenChange?: (open: boolean) => void;
 }
 
 export function CustomDrawer({
-  trigger,
-  label,
-  children,
-  defaultOpen = false,
-  onOpenChange,
+	trigger,
+	label,
+	children,
+	defaultOpen = false,
+	onOpenChange,
 }: CustomDrawerProps) {
-  const [open, setOpen] = useState<boolean>(defaultOpen);
+	const [open, setOpen] = useState<boolean>(defaultOpen);
 
-  const handleOpenChange = useCallback(
-    (next: boolean) => {
-      setOpen(next);
-      onOpenChange?.(next);
-    },
-    [onOpenChange],
-  );
+	const handleOpenChange = useCallback(
+		(next: boolean) => {
+			setOpen(next);
+			onOpenChange?.(next);
+		},
+		[onOpenChange],
+	);
 
-  const close = useCallback(() => handleOpenChange(false), [handleOpenChange]);
+	const close = useCallback(
+		() => handleOpenChange(false),
+		[handleOpenChange],
+	);
 
-  return (
-    <Drawer direction="right" open={open} onOpenChange={handleOpenChange}>
-      <DrawerTrigger asChild>{trigger}</DrawerTrigger>
-      <DrawerContent className="font-inter w-full">
-        <DrawerHeader className="flex items-center flex-row justify-between w-full px-6 py-5 border-b">
-          <DrawerTitle>{label}</DrawerTitle>
-          <DrawerClose asChild>
-            <button aria-label="Close">
-              <XIcon className="cursor-pointer" color="#4a0f0a" />
-            </button>
-          </DrawerClose>
-        </DrawerHeader>
+	return (
+		<Drawer direction="right" open={open} onOpenChange={handleOpenChange}>
+			<DrawerTrigger asChild>{trigger}</DrawerTrigger>
+			<DrawerContent className="font-inter w-full border border-[#D9E1E8] rounded-l-lg">
+				<DrawerHeader className="flex items-center flex-row justify-between w-full px-6 py-5 border-b border-b-[#00B3A6]">
+					<DrawerTitle>{label}</DrawerTitle>
+					<DrawerClose asChild>
+						<button aria-label="Close">
+							<XIcon className="cursor-pointer" color="#4a0f0a" />
+						</button>
+					</DrawerClose>
+				</DrawerHeader>
 
-        <div className="no-scrollbar overflow-y-auto lg:px-4 px-0 py-8">
-          {typeof children === "function" ? children(close) : children}
-        </div>
-      </DrawerContent>
-    </Drawer>
-  );
+				<div className="no-scrollbar overflow-y-auto lg:px-4 px-0 py-8">
+					{typeof children === "function"
+						? children(close)
+						: children}
+				</div>
+			</DrawerContent>
+		</Drawer>
+	);
 }

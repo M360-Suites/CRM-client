@@ -22,12 +22,12 @@ export default function Body() {
     <div className="w-full flex flex-col">
       {isPending ? (
         <div className="flex border flex-col w-full rounded-t-[10px]">
-          <div className="grid grid-cols-6 px-5 py-6 rounded-t-[10px] border-b border-b-[#F3D9C4]  bg-[#4a0f0a]">
+          <div className="grid grid-cols-6 px-5 py-4 rounded-t-[10px] border-b border-border bg-[#E6F2FF]">
             {["Name", "Description", "Items", "Last Modified", "Action"].map(
               (header) => (
                 <span
                   key={header}
-                  className={`text-xs ${header === "Description" ? "col-span-2" : ""} ${header === "Action" ? "text-right" : ""} text-white font-medium`}
+                  className={`text-xs ${header === "Description" ? "col-span-2" : ""} ${header === "Action" ? "text-right" : ""} text-[#4A0F0A] font-medium`}
                 >
                   {header}
                 </span>
@@ -49,7 +49,7 @@ export default function Body() {
             label="Create New Folder"
             trigger={
               <CustomButton
-                variant="default"
+                variant="secondary"
                 className="rounded-full flex text-sm flex-row items-center gap-2 px-8 py-3"
               >
                 <span>Create your first folder</span>
@@ -61,11 +61,11 @@ export default function Body() {
         </div>
       ) : (
         <div className="flex border flex-col w-full rounded-t-[10px]">
-          <div className="grid grid-cols-6 lg:px-5 px-3 md:py-4 py-4 gap-2 rounded-t-[10px] border-b border-b-[#F3D9C4]  bg-[#4a0f0a]">
+          <div className="grid grid-cols-6 lg:px-5 px-3 md:py-4 py-4 gap-2 rounded-t-[10px] border-b border-b-border  bg-[#E6F2FF]">
             {["Name", "Desc", "Items", "Modified", "Action"].map((header) => (
               <span
                 key={header}
-                className={`md:text-xs text-[10px] ${header === "Name" && "col-span-2"} col-span-1 ${header === "Action" && "text-right"} text-white font-medium`}
+                className={`md:text-xs text-[10px] ${header === "Name" && "col-span-2"} col-span-1 ${header === "Action" && "text-right"} text-[#4A0F0A] font-medium`}
               >
                 {header}
               </span>

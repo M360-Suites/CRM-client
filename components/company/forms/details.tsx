@@ -79,8 +79,8 @@ export default function CompanyDetailsSheet({
     <div className="w-full flex flex-col h-full">
       {/* Company identity */}
       <div className="flex items-center gap-3 px-6 pb-5 border-b border-b-gray-300/60">
-        <div className="w-10 h-10 rounded-lg bg-[#F5B7A3] flex items-center justify-center shrink-0">
-          <span className="text-sm font-semibold text-white">
+        <div className="w-10 h-10 rounded-lg bg-[#E6F2FF] flex items-center justify-center shrink-0">
+          <span className="text-sm font-semibold text-foreground">
             {getInitials(selectedCompany?.name || "")}
           </span>
         </div>
@@ -98,15 +98,14 @@ export default function CompanyDetailsSheet({
       <div className="flex flex-col gap-1 px-6 py-4 border-b border-b-gray-300">
         {fields.map(({ icon: Icon, label, value }) => (
           <div key={label} className="flex items-center gap-4 py-2.5">
-            <div className="w-10 h-10 rounded-[10px] bg-[#FFF3E6] flex items-center justify-center shrink-0">
+            <div className="w-10 h-10 rounded-[10px] bg-[#E6F2FF] flex items-center justify-center shrink-0">
               <Icon size={18} className="text-[#E2725B]" />
             </div>
             <div className="flex flex-col">
               <span className="text-xs text-foreground">{label}</span>
               <span
-                className={`text-sm font-medium ${
-                  value ? "text-black" : "text-foreground/30 tracking-widest"
-                }`}
+                className={`text-sm font-medium ${value ? "text-black" : "text-foreground/30 tracking-widest"
+                  }`}
               >
                 {value ?? "--------"}
               </span>

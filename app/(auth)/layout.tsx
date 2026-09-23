@@ -63,7 +63,7 @@ const AuthLayout = ({ children }: { children: React.ReactNode }) => {
 						width={800}
 						loading="eager"
 						height={800}
-						className="h-16 w-auto"
+						className="lg:h-14 h-12  w-auto"
 					/>
 				</div>
 				<div className="flex-1 w-full sm:px-5 md:px-20 lg:px-8 xl:px-20">

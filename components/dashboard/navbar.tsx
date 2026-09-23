@@ -35,7 +35,7 @@ export default function Navbar() {
 					alt="crm_logo"
 					width={900}
 					height={900}
-					className="lg:h-12 h-10 w-auto max-lg:hidden"
+					className="h-10 w-auto max-lg:hidden"
 				/>
 				{/*<div className="border bg-[#FFF3E6] xl:w-lg lg:w-md max-lg:hidden rounded-[16px] text-[#3A2418] flex flex-row items-center gap-2 py-3 px-3">
           <Search color="#3A2418" size={20} />
@@ -67,7 +67,7 @@ export default function Navbar() {
 							<button className="p-2 border border-[#D9E1E8] rounded-full md:block relative cursor-pointer">
 								<Bell color="#3A2418" className="w-4 h-4" />
 								{(notifications?.unread_count ?? 0) > 0 && (
-									<div className="absolute top-0 -right-2 bg-[#0076D6] flex justify-center items-center rounded-full px-1.75 py-0.5">
+									<div className="absolute top-0 -right-2.5 bg-[#0076D6] flex justify-center items-center rounded-full px-1 py-0.5">
 										<span className="text-[10px] text-white font-semibold">
 											{notifications?.unread_count}
 										</span>
@@ -82,7 +82,7 @@ export default function Navbar() {
 							) : (
 								<div>
 									{notifications?.data &&
-										notifications.data.length > 0 ? (
+									notifications.data.length > 0 ? (
 										<div className="flex flex-col gap-1">
 											{notifications.data.map(
 												(notification) => (
@@ -109,16 +109,20 @@ export default function Navbar() {
 															</span>
 														</div>
 														<div className="flex flex-col gap-1 pl-2">
-															<span className="text-foreground/90 text-xs p-2.5 bg-[#0076D6]/5 border-l-3 border-[#D9E1E8] rounded-r-md">
-																{
-																	notification
-																		.metadata
-																		.preview
-																}
-															</span>
+															{notification
+																.metadata
+																.preview && (
+																<span className="text-foreground/90 text-xs p-2.5 bg-[#0076D6]/5 border-l-3 border-[#D9E1E8] rounded-r-md">
+																	{
+																		notification
+																			.metadata
+																			.preview
+																	}
+																</span>
+															)}
 															<div className="flex items-center justify-end">
 																{notification.read ===
-																	true ? (
+																true ? (
 																	<div className="flex items-center gap-0.5">
 																		<CheckCheck
 																			size={
@@ -140,7 +144,7 @@ export default function Navbar() {
 																		}
 																	>
 																		{isMarkingAsRead &&
-																			notification._id ===
+																		notification._id ===
 																			markingId
 																			? "marking as read..."
 																			: "mark as read"}
@@ -173,10 +177,10 @@ export default function Navbar() {
 						// real content
 						<div className="flex items-center md:gap-2 gap-1 p-2">
 							<div className="flex flex-col justify-center md:gap-1 gap-0.5 items-end">
-								<span className="md:text-sm/[100%] text-sm font-medium capitalize">
+								<span className="md:text-[13px]/[100%] text-xs font-medium capitalize">
 									{user?.display_name}
 								</span>
-								<span className="sm:text-sm/[100%] text-xs font-normal">
+								<span className="md:text-[13px]/[100%] text-xs font-normal">
 									{user?.email}
 								</span>
 							</div>

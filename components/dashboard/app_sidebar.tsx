@@ -19,11 +19,12 @@ import {
 	CalendarCheck,
 	Inbox,
 	FileText,
-	Mail,
 	Sparkles,
 	ChartColumn,
 	LogOut,
 	Settings,
+	Gauge,
+	LineChart,
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
@@ -75,13 +76,18 @@ const sideLinks = [
 	},
 	{
 		name: "Analytics",
-		icon: ChartColumn,
+		icon: LineChart,
 		url: "/analytics",
 	},
 	{
 		name: "Report",
 		icon: ChartColumn,
 		url: "/report",
+	},
+	{
+		name: "Revenue Engine",
+		icon: Gauge,
+		url: "/revenue-engine",
 	},
 ];
 

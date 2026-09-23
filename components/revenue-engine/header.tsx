@@ -101,7 +101,7 @@ export function Header({
 				<button
 					type="button"
 					onClick={onRefresh}
-					className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm text-[#374151] transition hover:bg-[#F3F4F6]"
+					className="inline-flex items-center gap-2 rounded-full px-3 py-2 text-sm text-[#374151] transition bg-white hover:bg-[#F3F4F6]"
 				>
 					<RefreshCw
 						className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`}
@@ -121,7 +121,7 @@ export function Header({
 							type="button"
 							onClick={() => setActiveTab(tab.value)}
 							className={[
-								"flex cursor-pointer items-center gap-2 rounded-full px-3.5 py-2 text-sm font-medium transition-all duration-200 border-0 bg-transparent",
+								"flex cursor-pointer items-center gap-2 rounded-full px-3.5 py-2 text-sm font-medium transition-all duration-200 border hover:bg-[fcfcfc] hover:border-[#E6E6E6]",
 								isActive
 									? "shadow-none"
 									: "text-[#5C6470] hover:text-[#1F2937]",

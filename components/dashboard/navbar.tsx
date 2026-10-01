@@ -67,7 +67,7 @@ export default function Navbar() {
 							<button className="p-2 border border-[#D9E1E8] rounded-full md:block relative cursor-pointer">
 								<Bell color="#3A2418" className="w-4 h-4" />
 								{(notifications?.unread_count ?? 0) > 0 && (
-									<div className="absolute top-0 -right-2.5 bg-[#0076D6] flex justify-center items-center rounded-full px-1 py-0.5">
+									<div className="absolute top-0 -right-2.5 bg-[#0076D6] flex justify-center items-center rounded-full px-1.5 py-0.5">
 										<span className="text-[10px] text-white font-semibold">
 											{notifications?.unread_count}
 										</span>

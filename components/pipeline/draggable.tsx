@@ -90,10 +90,13 @@ export function Draggable({ lead }: { lead: Deal }) {
 			{lead.industry && (
 				<span className="text-xs text-black/50">{lead.industry}</span>
 			)}
-			{lead.value !== undefined && (
+
+			{lead.value != null ? (
 				<span className="text-xs font-medium text-black">
 					₦{lead.value.toLocaleString()}
 				</span>
+			) : (
+				<span className="text-xs font-medium text-black">₦0</span>
 			)}
 		</div>
 	);

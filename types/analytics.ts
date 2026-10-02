@@ -20,3 +20,9 @@ export type LeadSourceData = {
 }[];
 
 export type TeamProductivityData = {};
+
+export type AIBreakdownData = {
+  breakdown: string;
+  period: string;
+  generated_at: string;
+};

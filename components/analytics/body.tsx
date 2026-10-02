@@ -3,6 +3,7 @@
 import { useState } from "react";
 import PipelineByStage from "./analytics_card/pipeline_by_stage";
 import PipelineByLead from "./analytics_card/pipeline_by_lead";
+import AIBreakdown from "./analytics_card/ai_breakdown";
 import { useAnalyticsLeadSource } from "@/hooks/analytics/analytics_lead_source";
 import { useAnalyticsPipelineStage } from "@/hooks/analytics/analytics_pipeline_stage";
 import { CustomSelect } from "@/components/custom/common/custom_analytics_select";
@@ -39,6 +40,7 @@ export default function Body() {
 
   return (
     <div className="flex flex-col gap-8 w-full h-full">
+      <AIBreakdown />
       <div className="grid xl:grid-cols-2 grid-cols-1 gap-6 w-full">
         <div className="p-4 border border-[#E8E8E8] rounded-[8px]  bg-white flex flex-col gap-2">
           <div className="w-full flex items-center   flex-row justify-between">

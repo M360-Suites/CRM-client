@@ -5,14 +5,49 @@ import { useContactStore } from "@/stores/contact/contact_store";
 
 const schemaFields = [
   { name: "— Skip —", value: "skip" },
+  { name: "Full Name (split into first/last)", value: "full_name" },
   { name: "First Name", value: "first_name" },
   { name: "Last Name", value: "last_name" },
   { name: "Email", value: "email" },
   { name: "Phone", value: "phone" },
   { name: "Role / Title", value: "role" },
   { name: "Temperature", value: "temperature" },
-  { name: "Company", value: "company" },
+  { name: "Source", value: "source" },
+  { name: "Date", value: "date" },
 ];
+
+// Common header variations clients use, normalized to schema field values
+const headerAliases: Record<string, string> = {
+  name: "full_name",
+  full_name: "full_name",
+  contact_name: "full_name",
+  firstname: "first_name",
+  lastname: "last_name",
+  surname: "last_name",
+  email_address: "email",
+  emailaddress: "email",
+  e_mail: "email",
+  e_mail_address: "email",
+  mail: "email",
+  phone_number: "phone",
+  mobile: "phone",
+  title: "role",
+  role_title: "role",
+  job_title: "role",
+  lead_source: "source",
+  date_added: "date",
+  date_created: "date",
+  created_at: "date",
+  created: "date",
+  created_date: "date",
+};
+
+const guessField = (header: string) => {
+  const normalized = header.trim().toLowerCase().replace(/[\s-]+/g, "_").replace(/[^a-z0-9_]/g, "");
+  if (schemaFields.some((f) => f.value !== "skip" && f.value === normalized))
+    return normalized;
+  return headerAliases[normalized] ?? "skip";
+};
 
 export default function ImportStepTwo() {
   const { setImportSteps, setCompletedSteps, headers, setMapping } =
@@ -20,14 +55,7 @@ export default function ImportStepTwo() {
 
   const [localMapping, setLocalMapping] = useState<Record<string, string>>(() =>
     Object.fromEntries(
-      headers.map((header) => {
-        const match = schemaFields.find(
-          (f) =>
-            f.value !== "skip" &&
-            f.value === header.toLowerCase().replace(/\s+/g, "_"),
-        );
-        return [header, match?.value ?? "skip"];
-      }),
+      headers.map((header) => [header, guessField(header)]),
     ),
   );
 

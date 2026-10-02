@@ -20,7 +20,7 @@ export function Draggable({ lead }: { lead: Deal }) {
 			ref={ref}
 			style={{ transition: isDragging ? "none" : undefined }}
 			className={`bg-[#F2F7FB] border border-[#D9E1E8] rounded-[10px] px-3 py-4 flex flex-col gap-1.5 cursor-grab active:cursor-grabbing w-full ${
-				isDragging ? "hidden" : "opacity-100"
+				isDragging ? "opacity-40" : "opacity-100"
 			}`}
 		>
 			<div className="flex items-start justify-between w-full">

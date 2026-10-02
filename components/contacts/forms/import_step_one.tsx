@@ -82,7 +82,8 @@ export default function ImportStepOne() {
       "phone",
       "role",
       "temperature",
-      "company",
+      "source",
+      "date",
     ];
     const rows = [
       [
@@ -92,7 +93,8 @@ export default function ImportStepOne() {
         "+2348012345678",
         "CEO",
         "hot",
-        "Acme Corp",
+        "Referral",
+        "12/03/2026",
       ],
       [
         "Jane",
@@ -101,7 +103,8 @@ export default function ImportStepOne() {
         "+2348023456789",
         "CTO",
         "warm",
-        "TechBridge",
+        "LinkedIn",
+        "15/03/2026",
       ],
       [
         "Michael",
@@ -110,7 +113,8 @@ export default function ImportStepOne() {
         "+2348034567890",
         "Product Manager",
         "cold",
-        "",
+        "Website",
+        "20/03/2026",
       ],
     ];
 
@@ -173,13 +177,13 @@ export default function ImportStepOne() {
         <span className="text-sm text-foreground">Expected columns:</span>
         <ul className="text-sm text-foreground">
           {[
-            "First Name",
-            "Last Name",
+            "Name (Full Name, or First Name + Last Name)",
             "Email",
             "Phone",
-            "Role",
+            "Role / Title",
             "Temperature (hot/warm/cold)",
-            "Company (optional)",
+            "Source",
+            "Date (DD/MM/YYYY)",
           ].map((col) => (
             <li key={col} className="flex flex-row items-center gap-2 p-2.5">
               <svg

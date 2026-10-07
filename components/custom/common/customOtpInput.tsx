@@ -21,9 +21,9 @@ export function CustomOtpInput({
 			maxLength={5}
 			value={value}
 			onChange={onChange}
-			className="w-full"
+			containerClassName="w-full justify-center"
 		>
-			<InputOTPGroup className="">
+			<InputOTPGroup className="w-auto justify-center">
 				{Array.from({ length: 5 }).map((_, index) => (
 					<InputOTPSlot
 						key={index}

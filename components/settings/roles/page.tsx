@@ -106,9 +106,9 @@ export default function RolesAccess() {
             </CustomDrawer>
           </div>
         ) : (
-          <div className="overflow-hidden border border-[#E8E8E8] rounded-t-[12px]">
-            <table className="w-full">
-              <thead className="bg-[#F5B7A3]/50">
+          <div className="overflow-x-auto border border-[#E8E8E8] rounded-[12px]">
+            <table className="w-full min-w-150">
+              <thead className="bg-[#E6F2FF]">
                 <tr>
                   <th className="text-left px-6 py-3 lg:text-sm text-xs font-medium text-foreground">
                     Name

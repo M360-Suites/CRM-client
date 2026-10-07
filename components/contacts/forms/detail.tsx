@@ -39,7 +39,7 @@ export default function Detail({
 						</span>
 					</div>
 					<div
-						className={`px-3 py-1 flex max-md:justify-center rounded-full md:text-sm text-xs self-auto font-medium ${
+						className={`px-3 py-1 flex max-md:justify-center rounded-full md:text-sm text-xs self-start font-medium ${
 							selectedContact?.temperature?.toLocaleLowerCase() ===
 							ContactTabs.HOT.toLocaleLowerCase()
 								? "bg-[#0091FE] text-white"

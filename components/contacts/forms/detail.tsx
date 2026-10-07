@@ -39,17 +39,17 @@ export default function Detail({
 						</span>
 					</div>
 					<div
-						className={`px-3 py-1 flex max-md:justify-center rounded-full md:text-sm text-xs self-start font-medium ${
+						className={`inline-flex w-fit shrink-0 grow-0 items-center justify-center self-start whitespace-nowrap px-3 py-1 rounded-full md:text-sm text-xs font-medium ${
 							selectedContact?.temperature?.toLocaleLowerCase() ===
 							ContactTabs.HOT.toLocaleLowerCase()
 								? "bg-[#0091FE] text-white"
-								: selectedContact?.temperature ===
+								: selectedContact?.temperature?.toLocaleLowerCase() ===
 									  ContactTabs.WARM.toLocaleLowerCase()
 									? "bg-[#00B3A6] text-white"
 									: "bg-[#94A3B8] text-white"
 						}`}
 					>
-						<span className="md:text-sm text-xs font-normal self-center ">
+						<span className="md:text-sm text-xs font-normal capitalize">
 							{selectedContact?.temperature}
 						</span>
 					</div>

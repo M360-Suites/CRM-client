@@ -11,21 +11,13 @@ export default function ImportStepOne() {
   const [dragOver, setDragOver] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const ACCEPTED_TYPES = [
-    "text/csv",
-    "application/vnd.ms-excel",
-    "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-  ];
   const MAX_SIZE_MB = 5;
 
   const processFile = (file: File) => {
     setError(null);
 
-    if (
-      !ACCEPTED_TYPES.includes(file.type) &&
-      !file.name.match(/\.(csv|xlsx|xls)$/i)
-    ) {
-      setError("Only CSV, XLSX, or XLS files are allowed.");
+    if (!/\.csv$/i.test(file.name)) {
+      setError("Only CSV files are allowed.");
       return;
     }
 
@@ -136,7 +128,7 @@ export default function ImportStepOne() {
       <input
         ref={inputRef}
         type="file"
-        accept=".csv,.xlsx,.xls"
+        accept=".csv,text/csv"
         className="hidden"
         onChange={handleFileInput}
       />
@@ -158,7 +150,7 @@ export default function ImportStepOne() {
           {dragOver ? "Drop your file here" : "Upload your file"}
         </span>
         <span className="text-sm text-foreground">
-          CSV, XLSX, or XLS (first row = headers)
+          CSV only (first row = headers)
         </span>
       </div>
 

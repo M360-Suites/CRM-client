@@ -126,7 +126,7 @@ export default function Body() {
 																	key={
 																		member.id
 																	}
-																	className="px-2 py-0.5 w-full flex justify-start cursor-pointer hover:bg-[#00B3A6]/40 rounded-md  text-sm text-foreground font-norma cursor-pointerl"
+																	className="px-2 py-0.5 w-full flex justify-start cursor-pointer hover:bg-[#00B3A6]/80 rounded-md  text-sm text-foreground font-norma cursor-pointerl"
 																>
 																	<div className="flex w-full items-center justify-between gap-2">
 																		{assignedUsers.some(
@@ -140,16 +140,16 @@ export default function Body() {
 																				size={
 																					5
 																				}
-																				className=" text-foreground"
+																				className="text-white"
 																			/>
 																		)}
 																		<div className="flex min-w-0 flex-col items-start text-left">
-																			<span className="text-xs text-start">
+																			<span className="text-xs text-start text-white">
 																				{
 																					member.display_name
 																				}
 																			</span>
-																			<span className="text-[9px] font-medium text-foreground/50">
+																			<span className="text-[9px] font-medium text-white">
 																				{
 																					member.email
 																				}

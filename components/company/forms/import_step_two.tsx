@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { CustomSelect } from "@/components/custom/common/customSelect";
+import { CustomImportSelect } from "@/components/custom/common/customImportSelect";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { useCompanyStore } from "@/stores/company/company_store";
 
@@ -50,25 +50,16 @@ export default function ImportStepTwo() {
     <div className="pt-10 flex flex-col gap-12 px-5 relative">
       <div className="flex flex-col gap-4">
         {headers.map((header) => (
-          <div
+          <CustomImportSelect
             key={header}
-            className="flex flex-row items-center justify-between"
-          >
-            <span className="text-base text-foreground font-medium">
-              {header}
-            </span>
-            <div className="w-125 relative">
-              <CustomSelect
-                label=""
-                placeholder="Select a field"
-                selectable={schemaFields}
-                value={localMapping[header]}
-                onChange={(value: string) =>
-                  setLocalMapping((prev) => ({ ...prev, [header]: value }))
-                }
-              />
-            </div>
-          </div>
+            label={header}
+            placeholder="Select a field"
+            selectable={schemaFields}
+            value={localMapping[header]}
+            onChange={(value: string) =>
+              setLocalMapping((prev) => ({ ...prev, [header]: value }))
+            }
+          />
         ))}
       </div>
 

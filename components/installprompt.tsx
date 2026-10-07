@@ -29,6 +29,9 @@ export default function InstallPrompt() {
 
 		const handler = (e: Event) => {
 			e.preventDefault();
+			// Chrome re-fires this event on client-side route changes, so the
+			// dismissal check has to happen here, not just on mount
+			if (localStorage.getItem(INSTALL_DISMISSED_KEY) === "true") return;
 			setDeferredPrompt(e as BeforeInstallPromptEvent);
 			setShowInstall(true);
 		};

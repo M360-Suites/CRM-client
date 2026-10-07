@@ -38,24 +38,22 @@ export default function ImportLayout({
               <div key={step.id} className="flex items-center">
                 <div
                   className={`w-7.5 h-7.5 rounded-full flex items-center justify-center ${
-                    completedSteps.includes(step.id)
-                      ? "bg-[#C95C47]"
-                      : importSteps === step.id
-                        ? "bg-[#C95C47]"
-                        : "bg-[#F5B7A3]"
+                    completedSteps.includes(step.id) || importSteps === step.id
+                      ? "bg-primary"
+                      : "bg-primary/30"
                   }`}
                 >
-                  <span className="text-xs font-medium text-white">
+                  <span className="text-xs font-medium text-primary-foreground">
                     {step.id}
                   </span>
                 </div>
                 {index < steps.length - 1 && (
                   <div className="relative w-12 h-0.5 mx-2">
                     <div
-                      className={`absolute inset-0 ${completedSteps.includes(step.id) ? "bg-[#C95C47]" : importSteps === step.id ? "bg-[#C95C47]" : "bg-[#D9D9D9]"} rounded-full`}
+                      className={`absolute inset-0 ${completedSteps.includes(step.id) || importSteps === step.id ? "bg-primary" : "bg-[#D9D9D9]"} rounded-full`}
                     />
                     <div
-                      className={`absolute top-0 left-0 h-full bg-[#C95C47] rounded-full`}
+                      className={`absolute top-0 left-0 h-full bg-primary rounded-full`}
                       style={{
                         width: importSteps > step.id ? "100%" : "0%",
                         transition: "width 0.3s ease",

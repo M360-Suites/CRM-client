@@ -25,6 +25,8 @@ import {
 	Settings,
 	Gauge,
 	LineChart,
+	Mails,
+	Zap,
 } from "lucide-react";
 import { useRouter, usePathname } from "next/navigation";
 import { useEffect } from "react";
@@ -75,6 +77,12 @@ const sideLinks = [
 		url: "/ai-writer",
 	},
 	{
+		name: "Bulk Email",
+		icon: Mails,
+		url: "/bulk-email",
+		comingSoon: true,
+	},
+	{
 		name: "Analytics",
 		icon: LineChart,
 		url: "/analytics",
@@ -85,9 +93,16 @@ const sideLinks = [
 		url: "/report",
 	},
 	{
+		name: "Automations",
+		icon: Zap,
+		url: "/automations",
+		comingSoon: true,
+	},
+	{
 		name: "Revenue Engine",
 		icon: Gauge,
 		url: "/revenue-engine",
+		comingSoon: true,
 	},
 ];
 
@@ -172,6 +187,11 @@ export function AppSidebar() {
 							>
 								{link.name}
 							</span>
+							{link.comingSoon && (
+								<span className="ml-auto rounded-full bg-[#FFF4D6] px-2 py-0.5 text-[10px] font-medium text-[#9A6A14]">
+									Soon
+								</span>
+							)}
 						</SidebarMenuButton>
 					))}
 				</SidebarGroup>

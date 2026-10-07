@@ -150,6 +150,45 @@ body {
 	transition: none !important;
 }
 
+/* Pipeline drop target: dashed border that runs clockwise */
+.droppable-receiving {
+	background-color: rgb(230 242 255 / 0.6);
+	background-image:
+		linear-gradient(90deg, #0076d6 50%, transparent 50%),
+		linear-gradient(90deg, #0076d6 50%, transparent 50%),
+		linear-gradient(0deg, #0076d6 50%, transparent 50%),
+		linear-gradient(0deg, #0076d6 50%, transparent 50%);
+	background-repeat: repeat-x, repeat-x, repeat-y, repeat-y;
+	background-size:
+		12px 2px,
+		12px 2px,
+		2px 12px,
+		2px 12px;
+	background-position:
+		0 0,
+		0 100%,
+		0 0,
+		100% 0;
+	background-origin: border-box;
+	animation: droppable-march 0.6s linear infinite;
+}
+
+@keyframes droppable-march {
+	to {
+		background-position:
+			12px 0,
+			-12px 100%,
+			0 -12px,
+			100% 12px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.droppable-receiving {
+		animation: none;
+	}
+}
+
 /* ─── react-big-calendar overrides ─────────────────────────────────────────── */
 
 .rbc-wrapper {

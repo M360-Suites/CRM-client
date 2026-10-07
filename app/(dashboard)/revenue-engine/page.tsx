@@ -1,23 +1,20 @@
-"use client";
+import { Metadata } from "next";
+import { Gauge } from "lucide-react";
+import ModulePage from "@/components/modules/module_page";
 
-import { useState } from "react";
-import Header from "@/components/revenue-engine/header";
-import Body from "@/components/revenue-engine/body";
-import type { RevenueTabKey } from "@/components/revenue-engine/header";
+export const metadata: Metadata = {
+	title: "Revenue Engine | CRM360",
+};
 
 export default function Page() {
-	const [activeTab, setActiveTab] = useState<RevenueTabKey>("overview");
-	const [refreshing, setRefreshing] = useState(false);
-
 	return (
-		<div className="flex flex-col gap-6 py-8">
-			<Header
-				activeTab={activeTab}
-				setActiveTab={setActiveTab}
-				refreshing={refreshing}
-				onRefresh={() => setRefreshing((value) => !value)}
-			/>
-			<Body activeTab={activeTab} />
-		</div>
+		<ModulePage
+			title="Revenue Engine"
+			description="One module, eight linked layers — ad spend in, attributed revenue out."
+			icon={Gauge}
+			emptyTitle="Revenue Engine is coming soon"
+			emptyDescription="We're putting the finishing touches on ad connectors, attribution, cost intelligence and more. Check back shortly."
+			comingSoon
+		/>
 	);
 }

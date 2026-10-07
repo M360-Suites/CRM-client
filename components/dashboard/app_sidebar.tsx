@@ -67,7 +67,7 @@ const sideLinks = [
 		url: "/documents",
 	},
 	{
-		name: "Email Inbox",
+		name: "Inbox",
 		icon: Inbox,
 		url: "/inbox",
 	},
@@ -115,11 +115,10 @@ const otherSides = [
 ];
 
 export function AppSidebar() {
-	const { mutate: logoutUser, isPending } = useLogout();
 	const router = useRouter();
-	const { activeLink, setActiveLink } = useDashStore();
 	const currentPath = usePathname();
-
+	const { activeLink, setActiveLink } = useDashStore();
+	const { mutate: logoutUser, isPending } = useLogout();
 	const { isMobile, setOpenMobile } = useSidebar();
 
 	useEffect(() => {

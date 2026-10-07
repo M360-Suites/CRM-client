@@ -27,7 +27,7 @@ export default function Navbar() {
 	};
 
 	return (
-		<div className="fixed  top-0 z-50 xl:px-10 lg:px-8 px-4 w-full md:py-1 py-1.5 border-r-0 flex items-center gap-3 border border-[#e8e8e8] bg-[#F2F7FB] ">
+		<div className="fixed top-0 z-50 xl:px-10 lg:px-8 px-4 w-full md:py-0.5 py-1.5 border-r-0 flex items-center gap-3 border border-[#e8e8e8] bg-[#F2F7FB] ">
 			<SidebarTrigger className="inline lg:hidden" />
 			<div className="flex justify-between max-lg:justify-end items-center w-full">
 				<Image
@@ -35,7 +35,7 @@ export default function Navbar() {
 					alt="crm_logo"
 					width={900}
 					height={900}
-					className="h-10 w-auto max-lg:hidden"
+					className="h-11 w-auto max-lg:hidden"
 				/>
 				{/*<div className="border bg-[#FFF3E6] xl:w-lg lg:w-md max-lg:hidden rounded-[16px] text-[#3A2418] flex flex-row items-center gap-2 py-3 px-3">
           <Search color="#3A2418" size={20} />
@@ -47,7 +47,7 @@ export default function Navbar() {
         </div>*/}
 				<div className="flex items-center gap-4.5">
 					<CustomPopover
-						align="center"
+						align="end"
 						popoverClassname="shadow-none"
 						title="Notification"
 						action={

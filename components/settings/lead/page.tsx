@@ -84,7 +84,7 @@ export default function LeadCaptureSettings() {
 				<p className="mb-1 text-base font-medium">
 					Connect your website
 				</p>
-				<p className="mx-auto mb-5 max-w-[34ch] text-sm text-muted-foreground">
+				<p className="mx-auto mb-5 max-w-[34ch] wrap-break-word text-sm text-muted-foreground">
 					Generate a key to get a script tag that sends form
 					submissions from any site straight into this CRM.
 				</p>
@@ -158,13 +158,13 @@ export default function LeadCaptureSettings() {
 				>
 					{copied ? "Copied" : "Copy"}
 				</button>
-				<pre className="whitespace-pre-wrap wrap-break-words font-mono text-xs leading-relaxed text-foreground">
+				<pre className="whitespace-pre-wrap wrap-anywhere pr-14 font-mono text-xs leading-relaxed text-foreground">
 					{snippet}
 				</pre>
 			</div>
 
-			<div className="mt-3 flex items-center justify-between">
-				<p className="text-xs text-foreground">
+			<div className="mt-3 flex items-center justify-between gap-4">
+				<p className="min-w-0 wrap-anywhere text-xs text-foreground">
 					{platform === "html"
 						? "Paste this before the closing </body> tag on your site."
 						: "Add this inside your root layout.tsx, next to your other <Script> tags."}
@@ -174,7 +174,7 @@ export default function LeadCaptureSettings() {
 					onClick={() => {
 						revokeKey("public");
 					}}
-					className="text-xs"
+					className="shrink-0 text-xs"
 				>
 					{loadingRevoke ? "Revoking..." : "Revoke key"}
 				</CustomButton>

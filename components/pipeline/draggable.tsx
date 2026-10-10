@@ -29,10 +29,13 @@ export function Draggable({ lead }: { lead: Deal }) {
 				</span>
 				<CustomPopover
 					trigger={
-						<MoreVertical
-							size={16}
-							className="text-black/80 hover:cursor-pointer"
-						/>
+						<button
+							type="button"
+							aria-label="Deal actions"
+							className="cursor-pointer"
+						>
+							<MoreVertical size={16} className="text-black/80" />
+						</button>
 					}
 				>
 					<div className="flex flex-col w-24 max-md:w-22 pt-2">

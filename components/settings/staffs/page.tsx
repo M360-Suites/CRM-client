@@ -1,10 +1,11 @@
-import { Pencil, Trash2, Loader } from "lucide-react";
+import { Pencil, Trash2 } from "lucide-react";
 import { handleRoleDisplay } from "@/lib/utils";
 import { useGetStaffs } from "@/hooks/user/admin/get_staffs";
 import { useDeleteStaff } from "@/hooks/user/admin/delete_staff";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CustomDrawer } from "@/components/custom/common/drawer";
 import AddStaffForm from "@/components/settings/roles/forms/add_staff";
+import { ConfirmRevokeModal } from "@/components/custom/common/confirm_revoke_modal";
 
 const StaffRowSkeleton = () => (
   <tr className="border-t border-[#E8E8E8]">
@@ -118,19 +119,42 @@ export default function Staffs() {
                           )}
                         </CustomDrawer>
                         <div>
-                          {deleteStaffMutation.isPending &&
-                            deleteStaffMutation.variables === staff._id ? (
-                            <div className="w-4 h-4 text-red-400 cursor-pointer">
-                              <Loader className="animate-spin" />
-                            </div>
-                          ) : (
-                            <Trash2
-                              className="w-4 h-4 text-red-400 cursor-pointer"
-                              onClick={() =>
-                                deleteStaffMutation.mutate(staff._id)
-                              }
-                            />
-                          )}
+                          <ConfirmRevokeModal
+                            title="Remove access?"
+                            description={
+                              <>
+                                Are you sure you want to remove access for{" "}
+                                <span className="font-medium text-foreground">
+                                  {staff.display_name || staff.email}
+                                </span>
+                                ? They will no longer be able to sign in to
+                                this CRM.
+                              </>
+                            }
+                            confirmationText="I WANT TO REVOKE STAFF"
+                            confirmLabel="Revoke staff"
+                            pendingLabel="Revoking..."
+                            isPending={
+                              deleteStaffMutation.isPending &&
+                              deleteStaffMutation.variables === staff._id
+                            }
+                            onConfirm={(close) =>
+                              deleteStaffMutation.mutate(staff._id, {
+                                onSuccess: (data) => {
+                                  if (data.status) close();
+                                },
+                              })
+                            }
+                            trigger={
+                              <button
+                                type="button"
+                                aria-label={`Revoke ${staff.display_name}`}
+                                className="flex cursor-pointer"
+                              >
+                                <Trash2 className="w-4 h-4 text-red-400" />
+                              </button>
+                            }
+                          />
                         </div>
                       </div>
                     </td>

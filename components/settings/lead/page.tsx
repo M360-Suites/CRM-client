@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { CustomButton } from "@/components/custom/common/customButton";
+import { ConfirmRevokeModal } from "@/components/custom/common/confirm_revoke_modal";
 import {
 	useGetAvailableKeys,
 	useGeneratePublicKey,
@@ -60,7 +61,6 @@ export default function LeadCaptureSettings() {
 	const [tags, setTags] = useState("");
 	const [debug, setDebug] = useState(false);
 	const [copied, setCopied] = useState(false);
-
 	async function handleCopy(snippet: string) {
 		await navigator.clipboard.writeText(snippet);
 		setCopied(true);
@@ -169,15 +169,29 @@ export default function LeadCaptureSettings() {
 						? "Paste this before the closing </body> tag on your site."
 						: "Add this inside your root layout.tsx, next to your other <Script> tags."}
 				</p>
-				<CustomButton
-					variant="destructive"
-					onClick={() => {
-						revokeKey("public");
-					}}
-					className="shrink-0 text-xs"
-				>
-					{loadingRevoke ? "Revoking..." : "Revoke key"}
-				</CustomButton>
+				<ConfirmRevokeModal
+					title="Remove access?"
+					description="Are you sure you want to remove access? Your website will stop sending leads to this CRM until you generate a new key and update the script on your site."
+					confirmationText="I WANT TO REVOKE"
+					confirmLabel="Revoke key"
+					pendingLabel="Revoking..."
+					isPending={loadingRevoke}
+					onConfirm={(close) =>
+						revokeKey("public", {
+							onSuccess: (data) => {
+								if (data.status) close();
+							},
+						})
+					}
+					trigger={
+						<CustomButton
+							variant="destructive"
+							className="shrink-0 text-xs"
+						>
+							Revoke key
+						</CustomButton>
+					}
+				/>
 			</div>
 		</div>
 	);

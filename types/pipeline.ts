@@ -1,6 +1,7 @@
 export interface Deal {
   id: string;
   title: string;
+  summary?: string;
   value: number;
   source: string;
   industry: string;

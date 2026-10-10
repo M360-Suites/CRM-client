@@ -61,6 +61,17 @@ export default function DealDetail({ deal }: { deal: Deal }) {
 				</div>
 			</div>
 
+			{deal.summary && (
+				<div className="flex flex-col gap-2">
+					<span className="text-base font-medium text-foreground">
+						Summary
+					</span>
+					<p className="text-sm text-foreground/70 whitespace-pre-wrap break-words">
+						{deal.summary}
+					</p>
+				</div>
+			)}
+
 			<div className="flex flex-col w-full">
 				{rows.map((row) => (
 					<div

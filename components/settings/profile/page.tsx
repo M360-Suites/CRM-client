@@ -15,7 +15,7 @@ export default function Profile() {
       <span className="text-foreground font-medium max-md:text-sm text-base tracking-tight">
         My Account
       </span>
-      <div className=" flex items-center justify-start w-xl max-md:w-full px-2 max-md:px-0">
+      <div className="flex items-center justify-start w-full max-w-xl px-2 max-md:px-0">
         {isProfileFetching ? (
           // skeleton that matches the real layout
           <div className="flex flex-col items-start md:gap-4 gap-1 w-full h-full animate-pulse">
@@ -49,12 +49,12 @@ export default function Profile() {
                 {UserData.map((item, index) => (
                   <div
                     key={index}
-                    className="w-full flex items-center justify-between"
+                    className="w-full flex items-center justify-between gap-4"
                   >
                     <h4 className="text-sm max-md:text-xs text-foreground/80 font-medium">
                       {item.label}
                     </h4>
-                    <p className="text-sm max-md:text-xs font-medium text-foreground">
+                    <p className="min-w-0 text-right wrap-anywhere text-sm max-md:text-xs font-medium text-foreground">
                       {item.value || "N/A"}
                     </p>
                   </div>

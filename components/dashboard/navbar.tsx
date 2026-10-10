@@ -167,7 +167,7 @@ export default function Navbar() {
 					{isPending ? (
 						// skeleton
 						<div className="flex items-center gap-2 p-2 animate-pulse">
-							<div className="flex flex-col gap-1.5 items-end">
+							<div className="flex flex-col gap-1.5 items-end max-sm:hidden">
 								<div className="h-3.5 lg:w-28 w-10 bg-gray-200 rounded-full" />
 								<div className="h-3 lg:w-36 w-20 bg-gray-200 rounded-full" />
 							</div>
@@ -176,7 +176,7 @@ export default function Navbar() {
 					) : (
 						// real content
 						<div className="flex items-center md:gap-2 gap-1 p-2">
-							<div className="flex flex-col justify-center md:gap-1 gap-0.5 items-end">
+							<div className="flex flex-col justify-center md:gap-1 gap-0.5 items-end max-sm:hidden">
 								<span className="md:text-[13px]/[100%] text-xs font-medium capitalize">
 									{user?.display_name}
 								</span>

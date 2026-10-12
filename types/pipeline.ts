@@ -8,6 +8,7 @@ export interface Deal {
   stage_id: string;
   company: null;
   stage_changed_at: string;
+  custom_fields?: Record<string, unknown>;
   created_at: string;
   updated_at: string;
 }

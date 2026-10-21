@@ -23,7 +23,6 @@ import {
 	ChartColumn,
 	LogOut,
 	Settings,
-	Gauge,
 	LineChart,
 	Mails,
 	Zap,
@@ -96,12 +95,6 @@ const sideLinks = [
 		name: "Automations",
 		icon: Zap,
 		url: "/automations",
-		comingSoon: true,
-	},
-	{
-		name: "Revenue Engine",
-		icon: Gauge,
-		url: "/revenue-engine",
 		comingSoon: true,
 	},
 ];

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { Check, Copy } from "lucide-react";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { ConfirmRevokeModal } from "@/components/custom/common/confirm_revoke_modal";
 import {
@@ -153,12 +154,19 @@ export default function LeadCaptureSettings() {
 
 			<div className="relative rounded-lg bg-[#E6F2FF] p-4">
 				<button
+					type="button"
 					onClick={() => handleCopy(snippet)}
-					className="absolute right-3 top-3 rounded-md border border-white/20 px-2 py-1 text-xs text-white/80 hover:border-[#C95C47]"
+					aria-label="Copy snippet"
+					className="absolute right-3 top-3 flex items-center gap-1 rounded-md border bg-white px-2 py-1 text-xs text-foreground hover:border-[#C95C47]"
 				>
+					{copied ? (
+						<Check className="h-3.5 w-3.5 text-green-600" />
+					) : (
+						<Copy className="h-3.5 w-3.5" />
+					)}
 					{copied ? "Copied" : "Copy"}
 				</button>
-				<pre className="whitespace-pre-wrap wrap-anywhere pr-14 font-mono text-xs leading-relaxed text-foreground">
+				<pre className="whitespace-pre-wrap wrap-anywhere pr-20 font-mono text-xs leading-relaxed text-foreground">
 					{snippet}
 				</pre>
 			</div>

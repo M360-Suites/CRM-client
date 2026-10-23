@@ -396,3 +396,28 @@ body {
 		border-bottom: 1px solid #cdcac9;
 	}
 }
+/* Thin scrollbar: WebKit/Blink get a 4px bar, Firefox falls back to "thin" */
+.thin-scrollbar::-webkit-scrollbar {
+	width: 4px;
+	height: 4px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb {
+	background-color: rgb(0 0 0 / 0.2);
+	border-radius: 9999px;
+}
+
+.thin-scrollbar::-webkit-scrollbar-thumb:hover {
+	background-color: rgb(0 0 0 / 0.35);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+	.thin-scrollbar {
+		scrollbar-width: thin;
+		scrollbar-color: rgb(0 0 0 / 0.2) transparent;
+	}
+}

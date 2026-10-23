@@ -1,6 +1,7 @@
 import { useGetPipelineBoard } from "@/hooks/pipeline/get_pipeline_board";
 import { Deal } from "@/types/pipeline";
 import { formatRelativeDateTime, getInitials, toUTC } from "@/lib/utils";
+import DealOwner from "./deal_owner";
 
 const formatFieldLabel = (key: string) =>
 	key
@@ -42,18 +43,12 @@ const renderFieldValue = (value: string) => {
 export default function DealDetail({ deal }: { deal: Deal }) {
 	const { data: pipelineBoard } = useGetPipelineBoard();
 	const stage = pipelineBoard?.stages.find((s) => s.id === deal.stage_id);
-	const assignees = stage?.assignees ?? [];
-	const company = deal.company as
-		| { name?: string }
-		| string
-		| null
-		| undefined;
+	const company = deal.company as { name?: string } | string | null | undefined;
 	const customCompany = formatFieldValue(deal.custom_fields?.company);
-	const dealCompanyName =
-		typeof company === "string" ? company : company?.name;
+	const dealCompanyName = typeof company === "string" ? company : company?.name;
 	const companyName = dealCompanyName || customCompany;
 
-  const rows = [
+	const rows = [
 		{ label: "Value", value: `₦${(deal.value ?? 0).toLocaleString()}` },
 		{ label: "Stage", value: stage?.name },
 		{ label: "Source", value: deal.source },
@@ -113,9 +108,7 @@ export default function DealDetail({ deal }: { deal: Deal }) {
 
 			{deal.summary && (
 				<div className="flex flex-col gap-2">
-					<span className="text-base font-medium text-foreground">
-						Summary
-					</span>
+					<span className="text-base font-medium text-foreground">Summary</span>
 					<p className="text-sm text-foreground/70 whitespace-pre-wrap break-words">
 						{deal.summary}
 					</p>
@@ -157,39 +150,7 @@ export default function DealDetail({ deal }: { deal: Deal }) {
 				</div>
 			)}
 
-			<div className="flex flex-col gap-4">
-				<span className="text-base font-medium text-foreground">
-					Stage Assignees
-				</span>
-				{assignees.length > 0 ? (
-					<div className="flex flex-col gap-3">
-						{assignees.map((assignee) => (
-							<div
-								key={assignee.id}
-								className="flex items-center gap-3"
-							>
-								<span className="inline-flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#00B3A6] text-xs font-semibold text-white">
-									{getInitials(assignee.display_name)}
-								</span>
-								<div className="flex flex-col min-w-0">
-									<span className="text-sm text-foreground">
-										{assignee.display_name}
-									</span>
-									<span className="text-xs text-foreground/50 truncate">
-										{assignee.email}
-									</span>
-								</div>
-							</div>
-						))}
-					</div>
-				) : (
-					<div className="border border-dashed border-border rounded-[8px] py-10 flex justify-center items-center">
-						<span className="text-sm text-foreground">
-							No assignees yet
-						</span>
-					</div>
-				)}
-			</div>
+			<DealOwner deal={deal} teamMembers={pipelineBoard?.team_members ?? []} />
 		</div>
 	);
 }

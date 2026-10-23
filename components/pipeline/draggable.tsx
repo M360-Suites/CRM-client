@@ -6,6 +6,7 @@ import { useDeleteDeal } from "@/hooks/pipeline/delete_deal";
 import AddDealForm from "./form/add_deal";
 import DealDetail from "./deal_detail";
 import { Deal } from "@/types/pipeline";
+import DealOwnerPicker from "./deal_owner_picker";
 
 export function Draggable({ lead }: { lead: Deal }) {
 	const { mutate: deleteDeal, isPending: isDeleting } = useDeleteDeal();
@@ -23,84 +24,79 @@ export function Draggable({ lead }: { lead: Deal }) {
 				isDragging ? "opacity-40" : "opacity-100"
 			}`}
 		>
-			<div className="flex items-start justify-between w-full">
-				<span className="text-sm font-medium text-[#334155] max-w-[85%] truncate">
+			<div className="flex items-start justify-between gap-2 w-full">
+				<span className="text-sm font-medium text-[#334155] min-w-0 flex-1 truncate">
 					{lead.title}
 				</span>
-				<CustomPopover
-					trigger={
-						<button
-							type="button"
-							aria-label="Deal actions"
-							className="cursor-pointer"
-						>
-							<MoreVertical size={16} className="text-black/80" />
-						</button>
-					}
-				>
-					<div className="flex flex-col w-24 max-md:w-22 pt-2">
-						<CustomDrawer
-							trigger={
-								<button className="flex items-center gap-2.5 px-1.5 py-2 text-foreground transition-colors cursor-pointer text-sm hover:bg-gray-100 rounded-md">
-									<Eye size={14} color="#4A4A4A" />
-									View
-								</button>
-							}
-							label="Deal Details"
-						>
-							<DealDetail deal={lead} />
-						</CustomDrawer>
+				<div className="flex shrink-0 items-center gap-1.5">
+					<DealOwnerPicker dealId={lead.id} />
+					<CustomPopover
+						trigger={
+							<button
+								type="button"
+								aria-label="Deal actions"
+								className="cursor-pointer"
+							>
+								<MoreVertical size={16} className="text-black/80" />
+							</button>
+						}
+					>
+						<div className="flex flex-col w-24 max-md:w-22 pt-2">
+							<CustomDrawer
+								trigger={
+									<button className="flex items-center gap-2.5 px-1.5 py-2 text-foreground transition-colors cursor-pointer text-sm hover:bg-gray-100 rounded-md">
+										<Eye size={14} color="#4A4A4A" />
+										View
+									</button>
+								}
+								label="Deal Details"
+							>
+								<DealDetail deal={lead} />
+							</CustomDrawer>
 
-						<CustomDrawer
-							trigger={
-								<button className="flex items-center gap-2.5 px-1.5 py-2 text-foreground transition-colors cursor-pointer text-sm hover:bg-gray-100 rounded-md">
-									<Pencil size={14} color="#4A4A4A" />
-									Edit
-								</button>
-							}
-							label="Edit Deal"
-						>
-							{(close) => (
-								<AddDealForm
-									editMode={true}
-									deal={lead}
-									onSuccess={() => {
-										close();
-									}}
-								/>
-							)}
-						</CustomDrawer>
+							<CustomDrawer
+								trigger={
+									<button className="flex items-center gap-2.5 px-1.5 py-2 text-foreground transition-colors cursor-pointer text-sm hover:bg-gray-100 rounded-md">
+										<Pencil size={14} color="#4A4A4A" />
+										Edit
+									</button>
+								}
+								label="Edit Deal"
+							>
+								{(close) => (
+									<AddDealForm
+										editMode={true}
+										deal={lead}
+										onSuccess={() => {
+											close();
+										}}
+									/>
+								)}
+							</CustomDrawer>
 
-						<button
-							className="flex items-center gap-2.5 px-1.5 py-2 text-[#FB3748] hover:bg-gray-100 rounded-md transition-colors cursor-pointer"
-							onClick={() => deleteDeal(lead.id)}
-							disabled={isDeleting}
-						>
-							{isDeleting ? (
-								<Loader
-									size={16}
-									className="animate-spin"
-									color="#FB3748"
-								/>
-							) : (
-								<Trash2 size={16} color="#FB3748" />
-							)}
-							{isDeleting ? "Deleting..." : "Delete"}
-						</button>
-					</div>
-				</CustomPopover>
+							<button
+								className="flex items-center gap-2.5 px-1.5 py-2 text-[#FB3748] hover:bg-gray-100 rounded-md transition-colors cursor-pointer"
+								onClick={() => deleteDeal(lead.id)}
+								disabled={isDeleting}
+							>
+								{isDeleting ? (
+									<Loader size={16} className="animate-spin" color="#FB3748" />
+								) : (
+									<Trash2 size={16} color="#FB3748" />
+								)}
+								{isDeleting ? "Deleting..." : "Delete"}
+							</button>
+						</div>
+					</CustomPopover>
+				</div>
 			</div>
 			{lead.industry && (
 				<span className="text-xs text-black/50">{lead.industry}</span>
 			)}
 
-			{lead.value != null ? (
-				<span className="text-xs font-medium text-black">
-					₦{lead.value.toLocaleString()}
-				</span>
-			) : (
-				<span className="text-xs font-medium text-black">₦0</span>
-			)}
+			<span className="text-xs font-medium text-black truncate">
+				₦{(lead.value ?? 0).toLocaleString()}
+			</span>
 		</div>
 	);
 }

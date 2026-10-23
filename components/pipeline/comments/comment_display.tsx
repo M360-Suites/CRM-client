@@ -1,28 +1,31 @@
 import { useGetCommentsByStage } from "@/hooks/pipeline/comment/get_comments";
 import { formatRelativeDateTime } from "@/lib/utils";
 import { Loader, MoreVertical } from "lucide-react";
+import { PipelineTeamMembers } from "@/types/pipeline";
+import { MentionText } from "./mentions";
 
-export const CommentDisplay = ({ stageId }: { stageId: string }) => {
+export const CommentDisplay = ({
+	stageId,
+	members,
+}: {
+	stageId: string;
+	members: PipelineTeamMembers[];
+}) => {
 	const { data: comments, isPending: isFetchingComments } =
 		useGetCommentsByStage(stageId);
 
-	console.log("comments:", comments);
 	return (
-		<div className="max-h-75 overflow-y-auto w-full pt-2 pb-10 px-4">
+		<div className="max-h-75 overflow-y-auto thin-scrollbar w-full pt-2 pb-10 px-4">
 			<div className="h-full">
 				{isFetchingComments && (
 					<div className="flex items-center justify-center flex-col gap-2">
 						<Loader className="animate-spin" />
-						<span className="text-black text-sm">
-							Fetching comments...
-						</span>
+						<span className="text-black text-sm">Fetching comments...</span>
 					</div>
 				)}
 				{!isFetchingComments && comments?.data.length === 0 && (
 					<div className="flex items-center justify-center flex-col gap-2 min-h-40">
-						<span className="text-black text-sm">
-							No comments yet.
-						</span>
+						<span className="text-black text-sm">No comments yet.</span>
 					</div>
 				)}
 				{!isFetchingComments && comments?.data && (
@@ -37,25 +40,24 @@ export const CommentDisplay = ({ stageId }: { stageId: string }) => {
 											<div className="flex flex-col gap-1">
 												<span className="flex flex-row justify-between">
 													<h6 className="font-medium text-white text-xs">
-														{
-															comment.sender
-																.display_name
-														}
+														{comment.sender.display_name}
 													</h6>
 													<MoreVertical
 														size={14}
 														className="text-white/80 hover:text-white"
 													/>
 												</span>
-												<p className="text-white text-xs">
-													{comment.content}
+												<p className="text-white text-xs whitespace-pre-wrap break-words">
+													<MentionText
+														content={comment.content}
+														members={members}
+														mentionClassName="font-semibold underline underline-offset-2"
+													/>
 												</p>
 											</div>
 											<div className="w-full">
 												<h6 className="text-white/80 text-[9px] text-right w-full">
-													{formatRelativeDateTime(
-														comment.created_at,
-													)}
+													{formatRelativeDateTime(comment.created_at)}
 												</h6>
 											</div>
 										</div>
@@ -65,25 +67,24 @@ export const CommentDisplay = ({ stageId }: { stageId: string }) => {
 											<div className="flex flex-col gap-1">
 												<span className="flex flex-row justify-between">
 													<h6 className="font-medium text-foreground text-xs">
-														{
-															comment.sender
-																.display_name
-														}
+														{comment.sender.display_name}
 													</h6>
 													<MoreVertical
 														size={14}
 														className="text-foreground/80 hover:text-foreground"
 													/>
 												</span>
-												<p className="text-foreground text-xs">
-													{comment.content}
+												<p className="text-foreground text-xs whitespace-pre-wrap break-words">
+													<MentionText
+														content={comment.content}
+														members={members}
+														mentionClassName="font-medium text-[#0091FE]"
+													/>
 												</p>
 											</div>
 											<div className="w-full">
 												<h6 className="text-foreground/80 text-[9px] text-right w-full">
-													{formatRelativeDateTime(
-														comment.created_at,
-													)}
+													{formatRelativeDateTime(comment.created_at)}
 												</h6>
 											</div>
 										</div>

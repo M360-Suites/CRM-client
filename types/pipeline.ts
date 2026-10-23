@@ -36,11 +36,6 @@ export interface PipelineBoard {
     position: number;
     is_won: boolean;
     is_lost: boolean;
-    assignees: {
-      id: string;
-      display_name: string;
-      email: string;
-    }[];
     deals: Deal[];
   }[];
   team_members: PipelineTeamMembers[];
@@ -68,3 +63,5 @@ export type PipelineComment = {
   limit: number;
   total_pages: number;
 };
+
+export type AssignmentMode = "auto" | "manual";

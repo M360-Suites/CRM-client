@@ -6,8 +6,16 @@ export default function useAddComment() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (variables: { stageId: string; content: string }) =>
-      addCommentByStage(variables.stageId, variables.content),
+    mutationFn: (variables: {
+      stageId: string;
+      content: string;
+      mentions?: string[];
+    }) =>
+      addCommentByStage(
+        variables.stageId,
+        variables.content,
+        variables.mentions ?? [],
+      ),
     onSuccess: (data) => {
       if (data.status) {
         toast.success(data.message);

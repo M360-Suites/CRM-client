@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidPhoneNumber } from "react-phone-number-input/max";
 
 export const addCompanySchema = z.object({
   _id: z.string().optional(),
@@ -9,8 +10,12 @@ export const addCompanySchema = z.object({
   contactPerson: z.string().min(2, "Contact person is required"),
   email: z.literal("").or(z.email("Invalid email address")).optional(),
   phone: z
-    .string()
-    .min(10, "Phone number is required and must be at least 10 digits"),
+    .string("Invalid phone number")
+    .min(1, "Phone number is required")
+    .refine(
+      (value) => isValidPhoneNumber(value),
+      "Enter a valid phone number for the selected country",
+    ),
 });
 
 export type AddCompanyRequestData = z.infer<typeof addCompanySchema>;

@@ -2,6 +2,7 @@
 
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import CustomInput from "@/components/custom/common/customInput";
+import CustomPhoneInput from "@/components/custom/common/customPhoneInput";
 import { CustomSelect } from "@/components/custom/common/customSelect";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { AddContactRequestData, addContactSchema } from "@/validation/contact";
@@ -88,12 +89,18 @@ export default function AddContactForm({ onSuccess }: AddContactFormProps) {
         )}
       </div>
       <div className="w-full relative">
-        <CustomInput
-          label="Phone Number"
-          placeholder="Enter phone number"
-          error={errors.phone?.message}
-          type="text"
-          {...register("phone", { required: true })}
+        <Controller
+          name="phone"
+          control={control}
+          render={({ field }) => (
+            <CustomPhoneInput
+              label="Phone Number"
+              error={errors.phone?.message}
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+            />
+          )}
         />
         {errors.phone && (
           <span className="text-xs text-foundation-error-6 absolute right-0 -bottom-5">

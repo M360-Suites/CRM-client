@@ -1,7 +1,10 @@
 "use client";
 
-import { useForm, SubmitHandler } from "react-hook-form";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import CustomInput from "@/components/custom/common/customInput";
+import CustomPhoneInput, {
+  toE164,
+} from "@/components/custom/common/customPhoneInput";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { Company } from "@/types/company";
 import { AddCompanyRequestData, addCompanySchema } from "@/validation/company";
@@ -26,6 +29,7 @@ export default function AddCompanyForm({
   const { mutate: editCompany, isPending: isEditing } = useEditCompany();
   const {
     register,
+    control,
     handleSubmit,
     reset,
     formState: { errors, dirtyFields },
@@ -34,7 +38,7 @@ export default function AddCompanyForm({
     defaultValues: {
       companyName: company?.name,
       email: company?.email,
-      phone: company?.phone,
+      phone: toE164(company?.phone) ?? "",
       companyAddress: company?.address,
       website: company?.website,
       industry: company?.industry,
@@ -68,7 +72,7 @@ export default function AddCompanyForm({
       reset({
         companyName: company.name || "",
         email: company.email || "",
-        phone: company.phone || "",
+        phone: toE164(company.phone) ?? "",
         companyAddress: company.address || "",
         website: company.website || "",
         industry: company.industry || "",
@@ -153,12 +157,18 @@ export default function AddCompanyForm({
         )}
       </div>
       <div className="relative w-full">
-        <CustomInput
-          label="Phone Number"
-          placeholder="Enter phone number"
-          error={errors.phone?.message}
-          type="text"
-          {...register("phone", { required: true })}
+        <Controller
+          name="phone"
+          control={control}
+          render={({ field }) => (
+            <CustomPhoneInput
+              label="Phone Number"
+              error={errors.phone?.message}
+              value={field.value}
+              onChange={field.onChange}
+              onBlur={field.onBlur}
+            />
+          )}
         />
         {errors.phone && (
           <span className="text-xs text-foundation-error-6 absolute right-0 -bottom-5">

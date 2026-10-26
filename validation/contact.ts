@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { isValidPhoneNumber } from "react-phone-number-input/max";
 
 export const addContactSchema = z.object({
   firstName: z
@@ -12,7 +13,11 @@ export const addContactSchema = z.object({
   email: z.email("Invalid email address"),
   phone: z
     .string("Invalid phone number")
-    .min(10, "Phone number must be 11 digits"),
+    .min(1, "Phone number is required")
+    .refine(
+      (value) => isValidPhoneNumber(value),
+      "Enter a valid phone number for the selected country",
+    ),
   role: z
     .string()
     .min(3, "Role is required")

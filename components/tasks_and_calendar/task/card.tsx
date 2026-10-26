@@ -40,7 +40,7 @@ export default function TaskCard({ task }: { task: Task }) {
 						<EyeIcon className="size-5 text-[#4a0f0a] cursor-pointer" />
 					}
 				>
-					{(close) => <TaskSummary task={task} />}
+					{(close) => <TaskSummary task={task} onDeleted={close} />}
 				</CustomDrawer>
 				<CustomDrawer
 					label="Edit Task"

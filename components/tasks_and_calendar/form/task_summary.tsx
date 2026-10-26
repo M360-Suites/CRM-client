@@ -1,8 +1,10 @@
 import { Task } from "@/types/task";
 import { parseDateWithTime } from "@/lib/handler";
 import { formatRelativeDateTime } from "@/lib/utils";
+import { useDeleteTask } from "@/hooks/tasks/delete_task";
 import {
 	Trash2,
+	Loader,
 	Clock,
 	AlarmClock,
 	UserRound,
@@ -29,7 +31,14 @@ const priorityStyles: Record<Task["priority"], string> = {
 const humanize = (value: string) =>
 	value.charAt(0).toUpperCase() + value.slice(1).replace(/_/g, " ");
 
-function TaskSummary({ task }: { task: Task }) {
+function TaskSummary({
+	task,
+	onDeleted,
+}: {
+	task: Task;
+	onDeleted?: () => void;
+}) {
+	const { mutate: deleteTask, isPending: isDeleting } = useDeleteTask();
 	const { date, month, time, year } = parseDateWithTime(task.due_at);
 	const end = task.duration_minutes
 		? parseDateWithTime(
@@ -66,10 +75,22 @@ function TaskSummary({ task }: { task: Task }) {
 						</span>
 						<button
 							type="button"
-							className="flex h-8 items-center gap-1.5 rounded-full border border-[#F5C2C0] px-3 text-xs font-medium text-[#D92D20] cursor-pointer transition hover:bg-[#FDECEC]"
+							disabled={isDeleting}
+							onClick={() =>
+								deleteTask(task._id, {
+									onSuccess: (data) => {
+										if (data.status) onDeleted?.();
+									},
+								})
+							}
+							className="flex h-8 items-center gap-1.5 rounded-full border border-[#F5C2C0] px-3 text-xs font-medium text-[#D92D20] cursor-pointer transition hover:bg-[#FDECEC] disabled:opacity-50 disabled:cursor-not-allowed"
 						>
-							<Trash2 className="size-3.5" />
-							Delete
+							{isDeleting ? (
+								<Loader className="size-3.5 animate-spin" />
+							) : (
+								<Trash2 className="size-3.5" />
+							)}
+							{isDeleting ? "Deleting..." : "Delete"}
 						</button>
 					</div>
 

@@ -4,6 +4,7 @@ import { useCompanyStore } from "@/stores/company/company_store";
 import { getInitials } from "@/lib/utils";
 import { UserRound, Mail, Phone, MapPin, Globe, Building2 } from "lucide-react";
 import { CustomDrawer } from "@/components/custom/common/drawer";
+import { CustomButton } from "@/components/custom/common/customButton";
 import AddCompanyForm from "../forms/add_company";
 
 interface CompanyDetailsSheetProps {
@@ -56,7 +57,7 @@ export default function CompanyDetailsSheet({
     { label: "Contacts", value: selectedCompany?.stats.contact_count || 0 },
     {
       label: "Deals",
-      value: `$${selectedCompany?.stats.deal_count || 0}`,
+      value: selectedCompany?.stats.deal_count || 0,
     },
     {
       label: "Pipeline value",
@@ -79,8 +80,8 @@ export default function CompanyDetailsSheet({
     <div className="w-full flex flex-col h-full">
       {/* Company identity */}
       <div className="flex items-center gap-3 px-6 pb-5 border-b border-b-gray-300/60">
-        <div className="w-10 h-10 rounded-lg bg-[#E6F2FF] flex items-center justify-center shrink-0">
-          <span className="text-sm font-semibold text-foreground">
+        <div className="w-10 h-10 rounded-lg bg-[#D8F3F1] flex items-center justify-center shrink-0">
+          <span className="text-sm font-semibold text-[#2F9E94]">
             {getInitials(selectedCompany?.name || "")}
           </span>
         </div>
@@ -95,11 +96,11 @@ export default function CompanyDetailsSheet({
       </div>
 
       {/* Fields */}
-      <div className="flex flex-col gap-1 px-6 py-4 border-b border-b-gray-300">
+      <div className="flex flex-col gap-1 px-6 py-4 border-b border-b-gray-300/60">
         {fields.map(({ icon: Icon, label, value }) => (
           <div key={label} className="flex items-center gap-4 py-2.5">
-            <div className="w-10 h-10 rounded-[10px] bg-[#E6F2FF] flex items-center justify-center shrink-0">
-              <Icon size={18} className="text-[#E2725B]" />
+            <div className="w-10 h-10 rounded-[10px] bg-[#D8F3F1] flex items-center justify-center shrink-0">
+              <Icon size={18} className="text-[#2F9E94]" />
             </div>
             <div className="flex flex-col">
               <span className="text-xs text-foreground">{label}</span>
@@ -114,10 +115,8 @@ export default function CompanyDetailsSheet({
         ))}
       </div>
 
-      <div className="h-px bg-[#F5B7A3] w-full" />
-
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-8 px-6 py-3">
+      <div className="grid sm:grid-cols-4 grid-cols-2 gap-2 px-6 py-3">
         {stats.map(({ label, value }) => (
           <div key={label} className="flex flex-col gap-1 p-2.5">
             <span className="text-xs text-black">{label}</span>
@@ -130,25 +129,30 @@ export default function CompanyDetailsSheet({
 
       {/* Actions */}
       <div className="flex flex-row items-center gap-4 px-6 py-6 mt-auto">
-        <button
+        <CustomButton
+          variant="outline"
           onClick={onDelete}
-          className="flex-1 py-4 rounded-[12px] border border-[#E2725B] text-base font-medium text-foreground hover:bg-[#FFF3E6] transition-colors cursor-pointer"
+          disabled={isLoading}
+          className="py-4 px-5 flex-1 text-base"
         >
           {isLoading ? "Deleting..." : "Delete"}
-        </button>
+        </CustomButton>
 
         <CustomDrawer
           label="Edit Company"
           trigger={
-            <button
-              className="flex-1 py-4 rounded-[12px] bg-[#E2725B] text-base font-medium text-white hover:opacity-90 transition-opacity cursor-pointer"
-              onClick={onEdit}
-            >
+            <CustomButton className="py-4 px-5 flex-1 text-base" onClick={onEdit}>
               Edit company
-            </button>
+            </CustomButton>
           }
         >
-          <AddCompanyForm mode="edit" company={selectedCompany} />
+          {(close) => (
+            <AddCompanyForm
+              mode="edit"
+              company={selectedCompany}
+              onSuccess={() => close()}
+            />
+          )}
         </CustomDrawer>
       </div>
     </div>

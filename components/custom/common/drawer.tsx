@@ -11,11 +11,13 @@ import {
 } from "@/components/ui/drawer";
 
 interface CustomDrawerProps {
-	trigger: React.ReactNode;
+	trigger?: React.ReactNode;
 	label?: string;
 	// children can be static nodes or a render function that receives `close()`
 	children: React.ReactNode | ((close: () => void) => React.ReactNode);
 	defaultOpen?: boolean;
+	// pass `open` to control the drawer from outside (e.g. open it programmatically)
+	open?: boolean;
 	onOpenChange?: (open: boolean) => void;
 }
 
@@ -24,9 +26,11 @@ export function CustomDrawer({
 	label,
 	children,
 	defaultOpen = false,
+	open: controlledOpen,
 	onOpenChange,
 }: CustomDrawerProps) {
-	const [open, setOpen] = useState<boolean>(defaultOpen);
+	const [uncontrolledOpen, setOpen] = useState<boolean>(defaultOpen);
+	const open = controlledOpen ?? uncontrolledOpen;
 
 	const handleOpenChange = useCallback(
 		(next: boolean) => {
@@ -43,7 +47,7 @@ export function CustomDrawer({
 
 	return (
 		<Drawer direction="right" open={open} onOpenChange={handleOpenChange}>
-			<DrawerTrigger asChild>{trigger}</DrawerTrigger>
+			{trigger && <DrawerTrigger asChild>{trigger}</DrawerTrigger>}
 			<DrawerContent className="font-inter w-full border border-[#D9E1E8] rounded-l-lg">
 				<DrawerHeader className="flex items-center flex-row justify-between w-full px-6 py-5 border-b border-b-[#00B3A6]">
 					<DrawerTitle>{label}</DrawerTitle>

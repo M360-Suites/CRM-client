@@ -1,3 +1,4 @@
+import { cn } from "@/lib/utils";
 import {
 	Select,
 	SelectContent,
@@ -18,6 +19,7 @@ export interface SelectProps {
 	}[];
 	value?: string;
 	onChange?: (value: string) => void;
+	className?: string;
 }
 
 export function CustomSelect({
@@ -27,9 +29,12 @@ export function CustomSelect({
 	selectable,
 	value,
 	onChange,
+	className,
 }: SelectProps) {
 	return (
-		<div className="w-full flex flex-col gap-3 font-inter">
+		<div
+			className={cn("w-full min-w-0 flex flex-col gap-3 font-inter", className)}
+		>
 			{label && (
 				<label className="text-foreground font-regular max-md:text-xs text-base/[120%]">
 					{label}
@@ -38,17 +43,19 @@ export function CustomSelect({
 			{/* Controlled Select: value is a string, onChange receives the selected string */}
 			<Select value={value} onValueChange={(v: string) => onChange?.(v)}>
 				<SelectTrigger
-					className={`w-full rounded-[10px] border flex flex-row justify-between items-center ${
+					className={`w-full min-w-0 *:data-[slot=select-value]:block *:data-[slot=select-value]:truncate rounded-[10px] border flex flex-row justify-between items-center ${
 						error ? "border-foundation-error-6" : "border-[#D9E1E8]"
 					} bg-[#F2F7FB] px-4 py-7`}
 				>
 					<SelectValue placeholder={placeholder} />
 				</SelectTrigger>
-				<SelectContent position="popper" align="center">
+				<SelectContent
+					position="popper"
+					align="center"
+					className="w-(--radix-select-trigger-width)"
+				>
 					<SelectGroup>
-						<SelectLabel className="max-md:text-sm">
-							{placeholder}
-						</SelectLabel>
+						<SelectLabel className="max-md:text-sm">{placeholder}</SelectLabel>
 						{selectable.length === 0 ? (
 							<div className="py-3 font-inter px-2 text-sm text-muted-foreground text-center">
 								{`No ${label ?? "options"} available`}

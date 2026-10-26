@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { CustomButton } from "../custom/common/customButton";
 import { CustomSelect } from "../custom/common/customSelect";
 import CustomInput from "../custom/common/customInput";
-import { Sparkles, XIcon, Loader, Send } from "lucide-react";
+import { Sparkles, XIcon, Loader, Send, Mail } from "lucide-react";
 import { getInitials } from "@/lib/utils";
 import { useGetAllContacts } from "@/hooks/contact/get_all_contacts";
 import { useGetDeals } from "@/hooks/pipeline/get_deals";
@@ -14,6 +14,8 @@ import { useForm, Controller } from "react-hook-form";
 import CustomEmailArea from "../custom/common/customEmailTextArea";
 import AttachmentUpload from "../ai_writer/attachment_file";
 import { SendMailRequest } from "@/types/gmail";
+import { CustomDrawer } from "../custom/common/drawer";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const toneOptions = [
   { name: "Friendly", value: "friendly" },
@@ -53,6 +55,9 @@ export default function Body() {
   const { data: deals } = useGetDeals();
 
   const [attachments, setAttachments] = useState<File[]>([]);
+  // below lg the draft lives in a drawer instead of stacking under the form
+  const isMobile = useIsMobile(1024);
+  const [draftOpen, setDraftOpen] = useState(false);
 
   const { control, handleSubmit, setValue, watch } = useForm<EmailFormValues>({
     defaultValues: {
@@ -102,6 +107,7 @@ export default function Body() {
 
   const onGenerate = (values: EmailFormValues) => {
     generateMail(values);
+    if (isMobile) setDraftOpen(true);
   };
 
   const onSend = () => {
@@ -120,6 +126,7 @@ export default function Body() {
       sendMail(formData as unknown as SendMailRequest, {
         onSuccess: () => {
           setTimeout(() => {
+            setDraftOpen(false);
             // reset send form
             setSendValue("to", "");
             setSendValue("subject", "");
@@ -145,6 +152,7 @@ export default function Body() {
         } as SendMailRequest,
         {
           onSuccess: () => {
+            setDraftOpen(false);
             // reset send form
             setSendValue("to", "");
             setSendValue("subject", "");
@@ -163,12 +171,129 @@ export default function Body() {
     }
   };
 
+  const draftForm = (
+    <form
+      className={`flex flex-col gap-4 min-w-0 bg-white ${
+        isMobile
+          ? "px-4"
+          : "shadow-[0px_6px_24px_0px_rgba(0,0,0,0.02),0px_0px_0px_1px_rgba(0,0,0,0.08)] rounded-[12px] lg:px-5 px-2 pt-5 pb-2"
+      }`}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2">
+          <span className="text-base text-[#3A2418] font-medium">Draft</span>
+          {/*<span className="bg-[#c6f7dc] max-xl:hidden border border-[#43f897] rounded-full py-1 px-2 text-[10px] text-[#128648] font-semibold">
+            AI Generated
+          </span>*/}
+        </div>
+        <div className="flex items-center gap-3">
+          {/* Attachment trigger only — list renders below body */}
+          <AttachmentUpload onFilesChange={setAttachments} triggerOnly />
+          <button
+            type="button"
+            disabled={!canSend}
+            onClick={onSend}
+            className="flex items-center bg-[#00B3A6] px-3 py-1.5 rounded-full gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+          >
+            {isSending ? (
+              <Loader size={14} color="#fff" className="animate-spin" />
+            ) : (
+              <Send size={14} color="#fff" />
+            )}
+            <span className="text-sm text-white font-medium">
+              {isSending ? "Sending" : "Send"}
+            </span>
+          </button>
+        </div>
+      </div>
+
+      {/* To */}
+      <div className="border-y flex items-center gap-2 py-2 min-w-0">
+        <span className="text-foreground text-base font-medium shrink-0">
+          To:
+        </span>
+        {selectedContact ? (
+          <div className="border rounded-full p-1 text-sm text-[#4A4A4A] font-medium flex items-center gap-2 min-w-0 max-w-full">
+            <div className="rounded-full text-white bg-[#4a0f0a] size-9 shrink-0 flex items-center justify-center text-xs font-medium">
+              {getInitials(
+                `${selectedContact.first_name} ${selectedContact.last_name}`,
+              )}
+            </div>
+            <span className="truncate min-w-0">
+              {selectedContact.email.toLowerCase()}
+            </span>
+            <button
+              type="button"
+              className="p-2 cursor-pointer shrink-0"
+              onClick={handleRemoveContact}
+            >
+              <XIcon size={16} color="#4a0f0a" />
+            </button>
+          </div>
+        ) : (
+          <CustomEmailArea
+            kind="to"
+            body={watchSend("to")}
+            onChange={(value) => setSendValue("to", value)}
+            placeholder="Enter recipient email"
+          />
+        )}
+      </div>
+
+      {/* Subject */}
+      <div className="border-b flex items-center gap-2 pb-2">
+        <span className="text-foreground text-base font-medium">Subject:</span>
+        {isPending ? (
+          <div className="h-6 w-3/4 rounded bg-[#E8E8E8] animate-pulse" />
+        ) : (
+          <CustomEmailArea
+            kind="subject"
+            body={watchSend("subject")}
+            onChange={(value) => setSendValue("subject", value)}
+            placeholder="Subject of the mail"
+          />
+        )}
+      </div>
+
+      {/* Body */}
+      <div className="text-foreground text-sm whitespace-pre-line">
+        {isPending ? (
+          <div className="space-y-2">
+            <div className="h-3 w-full rounded bg-[#E8E8E8] animate-pulse" />
+            <div className="h-3 w-full rounded bg-[#E8E8E8] animate-pulse" />
+            <div className="h-3 w-5/6 rounded bg-[#E8E8E8] animate-pulse" />
+            <div className="h-3 w-5/6 rounded bg-[#E8E8E8] animate-pulse" />
+            <div className="h-3 w-5/6 rounded bg-[#E8E8E8] animate-pulse" />
+            <div className="h-3 w-5/6 rounded bg-[#E8E8E8] animate-pulse" />
+          </div>
+        ) : (
+          <CustomEmailArea
+            kind="body"
+            body={watchSend("body")}
+            placeholder="Write your email here..."
+            onChange={(value) => setSendValue("body", value)}
+          />
+        )}
+      </div>
+
+      {/* Attached files list — always visible below body */}
+      {attachments.length > 0 && (
+        <AttachmentUpload
+          onFilesChange={setAttachments}
+          listOnly
+          files={attachments}
+        />
+      )}
+    </form>
+  );
+
   return (
     <div className="grid lg:grid-cols-2 sm:grid-cols-1 xl:gap-8 gap-4">
       {/* Generate form */}
       <form
         onSubmit={handleSubmit(onGenerate)}
-        className="flex flex-col lg:gap-8 gap-4 sm:w-full bg-white shadow-[0px_6px_24px_0px_rgba(0,0,0,0.02),0px_0px_0px_1px_rgba(0,0,0,0.08)] rounded-[12px] xl:p-5 px-2 py-2.5 self-start"
+        className="flex flex-col lg:gap-8 gap-4 min-w-0 sm:w-full bg-white shadow-[0px_6px_24px_0px_rgba(0,0,0,0.02),0px_0px_0px_1px_rgba(0,0,0,0.08)] rounded-[12px] xl:p-5 px-2 py-2.5 self-start"
       >
         <div className="flex flex-col gap-4">
           <Controller
@@ -178,6 +303,7 @@ export default function Body() {
               <CustomSelect
                 label="Contact (optional)"
                 placeholder="Select a contact"
+                className="max-w-md"
                 selectable={contactData}
                 value={field.value}
                 onChange={field.onChange}
@@ -191,6 +317,7 @@ export default function Body() {
               <CustomSelect
                 label="Deal (optional)"
                 placeholder="Select a deal"
+                className="max-w-md"
                 selectable={dealData}
                 value={field.value}
                 onChange={field.onChange}
@@ -259,123 +386,30 @@ export default function Body() {
             {isPending ? "Generating" : "Generate draft"}
           </span>
         </CustomButton>
-      </form>
-
-      {/* Send form */}
-      <form
-        // onSubmit={handleSendSubmit(onSend)}
-        className="flex flex-col gap-4 max-sm:col-span-1 shadow-[0px_6px_24px_0px_rgba(0,0,0,0.02),0px_0px_0px_1px_rgba(0,0,0,0.08)] bg-white rounded-[12px] lg:px-5 px-2 pt-5 pb-2"
-      >
-        {/* Header */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2">
-            <span className="text-base text-[#3A2418] font-medium">Draft</span>
-            {/*<span className="bg-[#c6f7dc] max-xl:hidden border border-[#43f897] rounded-full py-1 px-2 text-[10px] text-[#128648] font-semibold">
-              AI Generated
-            </span>*/}
-          </div>
-          <div className="flex items-center gap-3">
-            {/* Attachment trigger only — list renders below body */}
-            <AttachmentUpload onFilesChange={setAttachments} triggerOnly />
-            <button
-              type="button"
-              disabled={!canSend}
-              onClick={onSend}
-              className="flex items-center bg-[#00B3A6] px-3 py-1.5 rounded-full gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            >
-              {isSending ? (
-                <Loader size={14} color="#fff" className="animate-spin" />
-              ) : (
-                <Send size={14} color="#fff" />
-              )}
-              <span className="text-sm text-white font-medium">
-                {isSending ? "Sending" : "Send"}
-              </span>
-            </button>
-          </div>
-        </div>
-
-        {/* To */}
-        <div className="border-y flex items-center gap-2 py-2">
-          <span className="text-foreground text-base font-medium">To:</span>
-          {selectedContact ? (
-            <div className="border rounded-full p-1 text-sm text-[#4A4A4A] font-medium flex items-center gap-2">
-              <div className="flex items-center gap-2">
-                <div className="rounded-full text-white bg-[#4a0f0a] w-9 h-9 flex items-center justify-center text-xs font-medium">
-                  {getInitials(
-                    `${selectedContact.first_name} ${selectedContact.last_name}`,
-                  )}
-                </div>
-                <span className="max-md:hidden">
-                  {selectedContact.first_name + " " + selectedContact.last_name}
-                </span>
-              </div>
-              <span>{`<${selectedContact.email.toLowerCase()}>`}</span>
-              <button
-                type="button"
-                className="p-2 cursor-pointer"
-                onClick={handleRemoveContact}
-              >
-                <XIcon size={16} color="#4a0f0a" />
-              </button>
-            </div>
-          ) : (
-            <CustomEmailArea
-              kind="to"
-              body={watchSend("to")}
-              onChange={(value) => setSendValue("to", value)}
-              placeholder="Enter recipient email"
-            />
-          )}
-        </div>
-
-        {/* Subject */}
-        <div className="border-b flex items-center gap-2 pb-2">
-          <span className="text-foreground text-base font-medium">
-            Subject:
-          </span>
-          {isPending ? (
-            <div className="h-6 w-3/4 rounded bg-[#E8E8E8] animate-pulse" />
-          ) : (
-            <CustomEmailArea
-              kind="subject"
-              body={watchSend("subject")}
-              onChange={(value) => setSendValue("subject", value)}
-              placeholder="Subject of the mail"
-            />
-          )}
-        </div>
-
-        {/* Body */}
-        <div className="text-foreground text-sm whitespace-pre-line">
-          {isPending ? (
-            <div className="space-y-2">
-              <div className="h-3 w-full rounded bg-[#E8E8E8] animate-pulse" />
-              <div className="h-3 w-full rounded bg-[#E8E8E8] animate-pulse" />
-              <div className="h-3 w-5/6 rounded bg-[#E8E8E8] animate-pulse" />
-              <div className="h-3 w-5/6 rounded bg-[#E8E8E8] animate-pulse" />
-              <div className="h-3 w-5/6 rounded bg-[#E8E8E8] animate-pulse" />
-              <div className="h-3 w-5/6 rounded bg-[#E8E8E8] animate-pulse" />
-            </div>
-          ) : (
-            <CustomEmailArea
-              kind="body"
-              body={watchSend("body")}
-              placeholder="Write your email here..."
-              onChange={(value) => setSendValue("body", value)}
-            />
-          )}
-        </div>
-
-        {/* Attached files list — always visible below body */}
-        {attachments.length > 0 && (
-          <AttachmentUpload
-            onFilesChange={setAttachments}
-            listOnly
-            files={attachments}
-          />
+        {isMobile && (
+          <CustomButton
+            type="button"
+            variant="outline"
+            className="rounded-full py-3.5 text-foreground"
+            onClick={() => setDraftOpen(true)}
+          >
+            <Mail />
+            <span className="text-sm">View draft</span>
+          </CustomButton>
         )}
       </form>
+
+      {isMobile ? (
+        <CustomDrawer
+          label="Draft"
+          open={draftOpen}
+          onOpenChange={setDraftOpen}
+        >
+          {draftForm}
+        </CustomDrawer>
+      ) : (
+        draftForm
+      )}
     </div>
   );
 }

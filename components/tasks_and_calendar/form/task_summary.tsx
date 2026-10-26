@@ -2,6 +2,8 @@ import { Task } from "@/types/task";
 import { parseDateWithTime } from "@/lib/handler";
 import { formatRelativeDateTime } from "@/lib/utils";
 import { useDeleteTask } from "@/hooks/tasks/delete_task";
+import { useCompleteTask } from "@/hooks/tasks/complete_task";
+import { CustomButton } from "@/components/custom/common/customButton";
 import {
 	Trash2,
 	Loader,
@@ -13,6 +15,7 @@ import {
 	Briefcase,
 	Link2,
 	ListChecks,
+	CircleCheck,
 } from "lucide-react";
 
 const statusStyles: Record<Task["status"], string> = {
@@ -39,6 +42,8 @@ function TaskSummary({
 	onDeleted?: () => void;
 }) {
 	const { mutate: deleteTask, isPending: isDeleting } = useDeleteTask();
+	const { mutate: completeTask, isPending: isCompleting } = useCompleteTask();
+	const isCompleted = task.status === "completed";
 	const { date, month, time, year } = parseDateWithTime(task.due_at);
 	const end = task.duration_minutes
 		? parseDateWithTime(
@@ -225,6 +230,24 @@ function TaskSummary({
 					/>
 				</div>
 			</section>
+
+			<CustomButton
+				variant={isCompleted ? "outline" : "secondary"}
+				disabled={isCompleted || isCompleting}
+				onClick={() => completeTask(task._id)}
+				className={`w-full py-3 text-base ${isCompleted ? "text-[#2F9E94] disabled:opacity-100" : "text-white"}`}
+			>
+				{isCompleting ? (
+					<Loader className="animate-spin" />
+				) : (
+					<CircleCheck />
+				)}
+				{isCompleted
+					? "Completed"
+					: isCompleting
+						? "Marking complete..."
+						: "Mark as complete"}
+			</CustomButton>
 		</div>
 	);
 }

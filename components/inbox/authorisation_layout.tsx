@@ -14,7 +14,7 @@ export default function AuthorisationPage({
 }: AuthorisationPageProps) {
   return (
     <div className="min-h-120 flex flex-col gap-4 items-center justify-center">
-      <p className="text-sm">
+      <p className="text-sm text-center">
         Connect channel so your inbound messages will appear here automatically
         and can be converted to leads.
       </p>

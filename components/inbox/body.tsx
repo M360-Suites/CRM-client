@@ -94,7 +94,7 @@ export default function Body() {
   return (
     <div className="grid lg:grid-cols-4 max-md:grid-cols-1 gap-5 max-lg:w-full w-full">
       {/* Sidebar tabs */}
-      <div className="flex lg:flex-col gap-1 max-lg:w-full px-2.5 max-md:px-1 lg:py-3 py-1 sticky top-20 col-span-1 max-lg:bg-white lg:self-start border border-[#E8E8E8] lg:rounded-[12px] rounded-full">
+      <div className="flex lg:flex-col gap-1 max-lg:w-full md:px-2.5 px-1 lg:py-3 py-1 sticky top-20 col-span-1 max-lg:bg-white lg:self-start border border-[#E8E8E8] lg:rounded-[12px] rounded-full">
         {InboxTabs.map((tab) => (
           <button
             key={tab.name}

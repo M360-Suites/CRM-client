@@ -86,7 +86,7 @@ export default function MailAuthorisation() {
           onClick={() => mutate()}
         >
           {isPending && <Loader className="animate-spin" />}
-          Authorize
+          {isPending ? "Authorizing" : "Authorize"}
         </CustomButton>
       </div>
     </div>

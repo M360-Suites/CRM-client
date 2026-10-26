@@ -33,8 +33,8 @@ export default function RolesAccess() {
   const isEmpty = !staffs || staffs.length === 0;
   return (
     <div className="w-full flex flex-col gap-4">
-      <div className="flex items-center w-full justify-between">
-        <h1 className="lg:text-base text-sm text-foreground font-medium">
+      <div className="flex items-center w-full justify-between gap-3">
+        <h1 className="lg:text-base text-sm text-foreground font-medium min-w-0">
           Manage invitations and staff access
         </h1>
         <CustomDrawer
@@ -42,10 +42,11 @@ export default function RolesAccess() {
           trigger={
             <CustomButton
               variant="default"
-              className="rounded-full flex flex-row max-md:hidden items-center gap-2 md:px-5 max-md:px-4 py-2"
+              aria-label="Invite staff"
+              className="rounded-full flex flex-row shrink-0 items-center gap-2 md:px-5 max-md:size-10 max-md:p-0 py-2"
             >
-              <UserPlus className="" />
-              <span>Invite staff</span>
+              <UserPlus />
+              <span className="max-md:hidden">Invite staff</span>
             </CustomButton>
           }
         >

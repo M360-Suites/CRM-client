@@ -7,9 +7,12 @@ import AddCompanyForm from "./forms/add_company";
 import ImportCompanies from "./import";
 import { useGetCompanies } from "@/hooks/company/get_companies";
 import { downloadFile } from "@/lib/handler";
+import { handleRoleDisplay } from "@/lib/utils";
+import { useUserProfile } from "@/hooks/user/profile";
 
 export default function Header() {
 	const { data: companies } = useGetCompanies({});
+	const { data: user } = useUserProfile();
 
 	const handleExport = (format: "csv" | "json") => {
 		if (!companies?.data.length) return;
@@ -46,9 +49,11 @@ export default function Header() {
 								{companies?.total} companies
 							</span>
 						</div>
-						<span className="text-[#0091FE] xl:text-sm max-md:hidden w-fit max-md:text-[8px] text-[10px] bg-[#F2F7FB] border border-[#D9E1E8] rounded-full py-1 px-3">
-							Sales rep
-						</span>
+						{user?.role && (
+							<span className="text-[#0091FE] xl:text-sm max-md:hidden w-fit max-md:text-[8px] text-[10px] bg-[#F2F7FB] border border-[#D9E1E8] rounded-full py-1 px-3">
+								{handleRoleDisplay(user.role)}
+							</span>
+						)}
 					</div>
 					<CustomDrawer
 						label="Add Company"

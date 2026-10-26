@@ -14,10 +14,10 @@ export default function CompanyCard({ company }: CompanyCardProps) {
 	const { setSelectedCompany } = useCompanyStore();
 	const { mutate: deleteCompany, isPending: isDeleting } = useDeleteCompany();
 	return (
-		<div className="w-full bg-white border border-[#D9E1E8] rounded-[8px] p-4 flex flex-col gap-4">
+		<div className="w-full min-w-0 h-full bg-white border border-[#D9E1E8] rounded-[8px] p-4 flex flex-col gap-4">
 			{/* Header */}
-			<div className="flex flex-row items-center justify-between">
-				<div className="flex flex-row items-center gap-3">
+			<div className="flex flex-row items-center justify-between gap-3">
+				<div className="flex flex-row items-center gap-3 min-w-0 flex-1">
 					{/* Avatar */}
 					<div className="w-9 h-9 rounded-lg bg-[#D8F3F1] flex items-center justify-center shrink-0">
 						<span className="text-sm font-medium text-[#334155]">
@@ -26,18 +26,21 @@ export default function CompanyCard({ company }: CompanyCardProps) {
 					</div>
 
 					{/* Name + Industry */}
-					<div className="flex flex-col">
-						<span className="text-sm font-medium text-black">
+					<div className="flex flex-col min-w-0">
+						<span
+							title={company?.name}
+							className="text-sm font-medium text-black truncate"
+						>
 							{company?.name ?? "-----"}
 						</span>
-						<span className="text-xs text-foreground">
+						<span className="text-xs text-foreground truncate">
 							{company?.industry ?? "-----"}
 						</span>
 					</div>
 				</div>
 
 				{/* Actions */}
-				<div className="flex flex-row items-center gap-4">
+				<div className="flex flex-row items-center gap-4 shrink-0">
 					<CustomDrawer
 						label="Company Details"
 						trigger={
@@ -83,7 +86,7 @@ export default function CompanyCard({ company }: CompanyCardProps) {
 			<div className="w-full h-px bg-[#00B3A6]" />
 
 			{/* Stats */}
-			<div className="flex flex-row items-start gap-16 py-2.5">
+			<div className="grid grid-cols-2 gap-4 py-2.5">
 				<div className="flex flex-col gap-1">
 					<span className="text-xs text-black">Contacts</span>
 					<span className="text-sm font-medium text-black">

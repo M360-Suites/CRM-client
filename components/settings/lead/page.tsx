@@ -71,16 +71,16 @@ export default function LeadCaptureSettings() {
 	if (loadingKeys) {
 		return (
 			<div className="flex items-center justify-center rounded-xl border bg-white p-8 min-h-80">
-				<div className="h-6 w-6 animate-spin rounded-full border-2 border-[#4a0f0a] border-t-transparent" />
+				<div className="h-6 w-6 animate-spin rounded-full border-2 border-[#00B3A6] border-t-transparent" />
 			</div>
 		);
 	}
 
 	if (!generatedPublicKey) {
 		return (
-			<div className="rounded-xl border bg-white p-8 text-center">
-				<div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-[#FFD9C0]">
-					<span className="text-[#4a0f0a]">＋</span>
+			<div className="rounded-xl border bg-white sm:p-8 p-5 text-center">
+				<div className="mx-auto mb-4 flex h-11 w-11 items-center justify-center rounded-full bg-[#D8F3F1]">
+					<span className="text-[#2F9E94]">＋</span>
 				</div>
 				<p className="mb-1 text-base font-medium">
 					Connect your website
@@ -107,7 +107,7 @@ export default function LeadCaptureSettings() {
 			: buildNextSnippet(generatedPublicKey, selector, tags, debug);
 
 	return (
-		<div className="rounded-xl border bg-white p-6">
+		<div className="rounded-xl border bg-white sm:p-6 p-4">
 			<div className="mb-4 flex items-center gap-2 text-sm text-muted-foreground">
 				<span className="h-2 w-2 rounded-full bg-green-500" />
 				Connected · no leads received yet
@@ -120,7 +120,7 @@ export default function LeadCaptureSettings() {
 				<input
 					value={selector}
 					onChange={(e) => setSelector(e.target.value)}
-					className="w-full rounded-md border px-3 py-1.5 text-sm"
+					className="w-full rounded-md border px-3 py-2 text-sm"
 					placeholder="#contact-form"
 				/>
 			</label>
@@ -130,7 +130,7 @@ export default function LeadCaptureSettings() {
 				<input
 					value={tags}
 					onChange={(e) => setTags(e.target.value)}
-					className="w-full rounded-md border px-3 py-1.5 text-sm"
+					className="w-full rounded-md border px-3 py-2 text-sm"
 					placeholder="lead,marketing"
 				/>
 			</label>
@@ -139,39 +139,44 @@ export default function LeadCaptureSettings() {
 				<CustomButton
 					variant={platform === "html" ? "default" : "outline"}
 					onClick={() => setPlatform("html")}
-					className="px-3  text-xs"
+					className={`max-sm:flex-1 px-3 text-sm ${platform !== "html" && "text-foreground"}`}
 				>
 					Plain HTML site
 				</CustomButton>
 				<CustomButton
 					variant={platform === "nextjs" ? "default" : "outline"}
 					onClick={() => setPlatform("nextjs")}
-					className="px-3 py-0 text-xs"
+					className={`max-sm:flex-1 px-3 text-sm ${platform !== "nextjs" && "text-foreground"}`}
 				>
 					Next.js site
 				</CustomButton>
 			</div>
 
-			<div className="relative rounded-lg bg-[#E6F2FF] p-4">
-				<button
-					type="button"
-					onClick={() => handleCopy(snippet)}
-					aria-label="Copy snippet"
-					className="absolute right-3 top-3 flex items-center gap-1 rounded-md border bg-white px-2 py-1 text-xs text-foreground hover:border-[#C95C47]"
-				>
-					{copied ? (
-						<Check className="h-3.5 w-3.5 text-green-600" />
-					) : (
-						<Copy className="h-3.5 w-3.5" />
-					)}
-					{copied ? "Copied" : "Copy"}
-				</button>
-				<pre className="whitespace-pre-wrap wrap-anywhere pr-20 font-mono text-xs leading-relaxed text-foreground">
+			<div className="rounded-lg bg-[#E6F2FF] overflow-hidden">
+				<div className="flex items-center justify-between gap-2 border-b border-b-[#D9E1E8] px-4 py-2">
+					<span className="text-xs font-medium text-foreground">
+						{platform === "html" ? "index.html" : "layout.tsx"}
+					</span>
+					<button
+						type="button"
+						onClick={() => handleCopy(snippet)}
+						aria-label="Copy snippet"
+						className="flex items-center gap-1 rounded-md border bg-white px-2.5 py-1.5 text-xs text-foreground hover:border-[#00B3A6] cursor-pointer"
+					>
+						{copied ? (
+							<Check className="h-3.5 w-3.5 text-green-600" />
+						) : (
+							<Copy className="h-3.5 w-3.5" />
+						)}
+						{copied ? "Copied" : "Copy"}
+					</button>
+				</div>
+				<pre className="whitespace-pre-wrap wrap-anywhere p-4 font-mono text-xs leading-relaxed text-foreground">
 					{snippet}
 				</pre>
 			</div>
 
-			<div className="mt-3 flex items-center justify-between gap-4">
+			<div className="mt-3 flex sm:flex-row flex-col sm:items-center justify-between sm:gap-4 gap-3">
 				<p className="min-w-0 wrap-anywhere text-xs text-foreground">
 					{platform === "html"
 						? "Paste this before the closing </body> tag on your site."
@@ -194,7 +199,7 @@ export default function LeadCaptureSettings() {
 					trigger={
 						<CustomButton
 							variant="destructive"
-							className="shrink-0 text-xs"
+							className="shrink-0 max-sm:w-full text-sm"
 						>
 							Revoke key
 						</CustomButton>

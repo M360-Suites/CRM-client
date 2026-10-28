@@ -2,6 +2,7 @@ import { useContactStore } from "@/stores/contact/contact_store";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { CustomDrawer } from "@/components/custom/common/drawer";
 import EditContactForm from "./edit_contact";
+import { CustomFields } from "@/components/custom/common/customFields";
 import { ContactTabs, getInitials, toUTC } from "@/lib/utils";
 
 interface ContactDetailsSheetProps {
@@ -70,7 +71,11 @@ export default function Detail({
 				</div>
 				<div className="py-2 flex justify-between w-full">
 					<span>Tags</span>
-					<p className="text-sm text-foreground/70">----</p>
+					<p className="text-sm text-foreground/70">
+						{selectedContact?.tags?.length
+							? selectedContact.tags.join(", ")
+							: "----"}
+					</p>
 				</div>
 				<div className="py-2 flex justify-between w-full">
 					<span>Last Contacted</span>
@@ -79,6 +84,7 @@ export default function Detail({
 					</p>
 				</div>
 			</div>
+			<CustomFields fields={selectedContact?.custom_fields} />
 			<div className="flex flex-col gap-4">
 				<span className="text-base font-medium text-foreground">
 					Activity Timeline

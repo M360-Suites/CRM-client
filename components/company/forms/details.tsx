@@ -6,6 +6,7 @@ import { UserRound, Mail, Phone, MapPin, Globe, Building2 } from "lucide-react";
 import { CustomDrawer } from "@/components/custom/common/drawer";
 import { CustomButton } from "@/components/custom/common/customButton";
 import AddCompanyForm from "../forms/add_company";
+import { CustomFields } from "@/components/custom/common/customFields";
 
 interface CompanyDetailsSheetProps {
   onDelete: () => void;
@@ -114,6 +115,11 @@ export default function CompanyDetailsSheet({
           </div>
         ))}
       </div>
+
+      <CustomFields
+        fields={selectedCompany.custom_fields}
+        className="px-6 py-4 border-b border-b-gray-300/60"
+      />
 
       {/* Stats */}
       <div className="grid sm:grid-cols-4 grid-cols-2 gap-2 px-6 py-3">

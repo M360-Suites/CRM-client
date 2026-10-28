@@ -18,6 +18,8 @@ export interface Contact {
   };
   temperature: string;
   tags: string[];
+  // Extra columns from bulk import / site forms, keyed by column name
+  custom_fields?: Record<string, unknown>;
   created_at: string;
   updated_at: string;
   __v: number;

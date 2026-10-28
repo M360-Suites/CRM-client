@@ -12,6 +12,8 @@ export interface Company {
   email: string;
   phone: string;
   address: string;
+  // Extra columns from bulk import, keyed by column name
+  custom_fields?: Record<string, unknown>;
   created_at: string;
   updated_at: string;
   stats: {

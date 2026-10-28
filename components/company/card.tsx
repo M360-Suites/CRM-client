@@ -5,19 +5,37 @@ import CompanyDetailsSheet from "./forms/details";
 import { useCompanyStore } from "@/stores/company/company_store";
 import { useDeleteCompany } from "@/hooks/company/delete_companies";
 import { Company } from "@/types/company";
+import { SelectCheckbox } from "../custom/common/selectCheckbox";
 
 interface CompanyCardProps {
 	company: Company;
+	selected?: boolean;
+	onToggleSelect?: () => void;
 }
 
-export default function CompanyCard({ company }: CompanyCardProps) {
+export default function CompanyCard({
+	company,
+	selected = false,
+	onToggleSelect,
+}: CompanyCardProps) {
 	const { setSelectedCompany } = useCompanyStore();
 	const { mutate: deleteCompany, isPending: isDeleting } = useDeleteCompany();
 	return (
-		<div className="w-full min-w-0 h-full bg-white border border-[#D9E1E8] rounded-[8px] p-4 flex flex-col gap-4">
+		<div
+			className={`w-full min-w-0 h-full bg-white border rounded-[8px] p-4 flex flex-col gap-4 transition-colors ${
+				selected ? "border-primary ring-1 ring-primary" : "border-[#D9E1E8]"
+			}`}
+		>
 			{/* Header */}
 			<div className="flex flex-row items-center justify-between gap-3">
 				<div className="flex flex-row items-center gap-3 min-w-0 flex-1">
+					{onToggleSelect && (
+						<SelectCheckbox
+							label={`Select ${company.name}`}
+							checked={selected}
+							onChange={onToggleSelect}
+						/>
+					)}
 					{/* Avatar */}
 					<div className="w-9 h-9 rounded-lg bg-[#D8F3F1] flex items-center justify-center shrink-0">
 						<span className="text-sm font-medium text-[#334155]">

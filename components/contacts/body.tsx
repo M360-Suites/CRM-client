@@ -15,7 +15,11 @@ import { CustomDrawer } from "@/components/custom/common/drawer";
 import CustomPagination from "../custom/common/customPagination";
 import AddContactForm from "./forms/add_contact";
 import Detail from "./forms/detail";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { useSelection } from "@/hooks/use-selection";
+import { SelectCheckbox } from "../custom/common/selectCheckbox";
+import { BulkActionBar } from "../custom/common/bulkActionBar";
 
 const ContactRowSkeleton = () => (
 	<div className="flex items-center justify-between p-4 border-b last:border-b-0 animate-pulse">
@@ -58,6 +62,12 @@ export default function Body() {
 	});
 	const { mutate: deleteContact, isPending: isLoading } = useDeleteContact();
 	const isFiltering = search.trim() !== "" || activeTab !== ContactTabs.ALL;
+	const { selected, toggle, toggleAll, clear } = useSelection();
+	const pageIds = contacts?.data.map((c) => c._id) ?? [];
+	const selectedOnPage = pageIds.filter((id) => selected.has(id)).length;
+
+	// Selection only covers the visible page
+	useEffect(clear, [clear, page, limit, search, activeTab]);
 
 	return (
 		<div className="w-full flex-col flex gap-8">
@@ -131,38 +141,69 @@ export default function Body() {
 					contacts.data.length > 0 && (
 						<div className="w-full">
 							<div className="border border-[#D9E1E8] rounded-t-[12px]">
+								<div className="flex items-center gap-3 px-5 max-md:px-1.5 py-2.5 border-b border-b-[#D9E1E8] bg-[#F2F7FB] rounded-t-[12px]">
+									<SelectCheckbox
+										label="Select all contacts on this page"
+										checked={
+											pageIds.length > 0 &&
+											selectedOnPage === pageIds.length
+										}
+										indeterminate={
+											selectedOnPage > 0 &&
+											selectedOnPage < pageIds.length
+										}
+										onChange={() => toggleAll(pageIds)}
+									/>
+									<span className="text-xs text-foreground">
+										{selectedOnPage > 0
+											? `${selectedOnPage} selected`
+											: "Select all"}
+									</span>
+								</div>
 								{contacts.data.map((contact, index) => (
 									<CustomDrawer
 										key={index}
 										label="Contact Details"
 										trigger={
 											<div
-												className="grid grid-cols-5 lg:gap-4 gap-1 bg-white rounded-t-[12px] max-md:gap-0.5 w-full py-3 max-md:py-2 px-5 max-md:px-1.5 items-center border-b border-b-[#D9E1E8] last:border-b-0 cursor-pointer"
+												className={`flex items-center gap-3 max-md:gap-1.5 w-full py-3 max-md:py-2 px-5 max-md:px-1.5 border-b border-b-[#D9E1E8] last:border-b-0 cursor-pointer ${
+													selected.has(contact._id)
+														? "bg-[#0091FE]/5"
+														: "bg-white"
+												}`}
 												onClick={() =>
 													setSelectedContact(contact)
 												}
 											>
-												<div className="flex col-span-2 items-center gap-4 flex-1">
-													<div className="bg-[#D8F3F1] h-10 w-10 max-md:h-8 px-2 max-md:w-8 rounded-full flex items-center justify-center md:text-base text-sm font-medium text-[#2F9E94]">
-														{getInitials(
-															[
-																contact.first_name,
-																contact.last_name,
-															]
-																.filter(Boolean)
-																.join(" "),
-														)}
-													</div>
-													<div className="flex flex-col items-start">
-														<span className="md:text-sm text-xs text-start font-medium">
-															{contact.first_name +
-																" " +
-																contact.last_name}
-														</span>
-														<span className="md:text-sm text-xs font-normal text-foreground">
-															{contact.role_title}
-														</span>
-													</div>
+												<SelectCheckbox
+													label={`Select ${contact.first_name} ${contact.last_name}`}
+													checked={selected.has(contact._id)}
+													onChange={() =>
+														toggle(contact._id)
+													}
+												/>
+												<div className="grid grid-cols-5 lg:gap-4 gap-1 max-md:gap-0.5 flex-1 min-w-0 items-center">
+													<div className="flex col-span-2 items-center gap-4 flex-1">
+														<div className="bg-[#D8F3F1] h-10 w-10 max-md:h-8 px-2 max-md:w-8 rounded-full flex items-center justify-center md:text-base text-sm font-medium text-[#2F9E94]">
+															{getInitials(
+																[
+																	contact.first_name,
+																	contact.last_name,
+																]
+																	.filter(Boolean)
+																	.join(" "),
+															)}
+														</div>
+														<div className="flex flex-col items-start">
+															<span className="md:text-sm text-xs text-start font-medium">
+																{contact.first_name +
+																	" " +
+																	contact.last_name}
+															</span>
+															<span className="md:text-sm text-xs font-normal text-foreground">
+																{contact.role_title}
+															</span>
+														</div>
 												</div>
 
 												<div className="flex flex-col items-start overflow-hidden">
@@ -198,6 +239,7 @@ export default function Body() {
 															}
 														</span>
 													</div>
+												</div>
 												</div>
 											</div>
 										}
@@ -244,6 +286,17 @@ export default function Body() {
 						</div>
 					)}
 			</div>
+
+			<BulkActionBar
+				count={selected.size}
+				noun={["contact", "contacts"]}
+				onClear={clear}
+				onDelete={(close) => {
+					// TODO: call the bulk delete endpoint once the backend adds one
+					toast.info("Bulk delete isn't available yet");
+					close();
+				}}
+			/>
 		</div>
 	);
 }

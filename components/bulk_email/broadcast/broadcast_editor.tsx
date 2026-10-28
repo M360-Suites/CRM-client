@@ -3,21 +3,22 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import {
+	ChevronRight,
 	EllipsisVertical,
 	Eye,
 	FlaskConical,
-	Maximize2,
-	Minimize2,
-	Sparkles,
+	Maximize,
+	Minimize,
+	Plus,
 	Trash2,
+	Zap,
 } from "lucide-react";
 import { toast } from "sonner";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { CustomPopover } from "@/components/custom/common/customPopover";
 import { useBulkEmailStore } from "@/stores/bulk_email/bulk_email_store";
-import { useUserStore } from "@/stores/user/user_store";
 import { BulkEmail, EmailContent } from "@/types/bulk_email";
-import { AUDIENCE_LABELS, createDefaultContent } from "../data";
+import { DEFAULT_TEMPLATE_NAME, createDefaultContent } from "../data";
 import ConfirmationModal from "../confirmation_modal";
 import EmailCanvas from "../editor/email_canvas";
 import EditorHeader, {
@@ -26,21 +27,22 @@ import EditorHeader, {
 } from "../editor/editor_header";
 import FormatToolbar from "../editor/format_toolbar";
 import { ColorField, Toggle } from "../editor/controls";
-import PreviewPanel from "./preview_panel";
+import PreviewPanel, { PreviewHeader } from "./preview_panel";
 
 function Stepper({ step }: { step: "edit" | "preview" }) {
+	const published = step === "preview";
 	return (
-		<div className="flex items-center gap-3 text-xs">
-			<span className="flex items-center gap-1.5 text-[#0F172A] font-medium">
-				<span className="h-2 w-2 rounded-full bg-[#0091FE]" />
+		<div className="flex items-center gap-2 text-xs">
+			<span className="flex items-center gap-1.5 text-[#334155]">
+				<span className="h-1.5 w-1.5 rounded-full bg-[#0F172A]" />
 				Draft
 			</span>
-			<span className="h-px w-3 bg-[#CBD5E1]" />
+			<ChevronRight size={12} color="#94A3B8" />
 			<span
-				className={`flex items-center gap-1.5 ${step === "preview" ? "text-[#0F172A] font-medium" : "text-[#94A3B8]"}`}
+				className={`flex items-center gap-1.5 ${published ? "text-[#334155]" : "text-[#94A3B8]"}`}
 			>
 				<span
-					className={`h-2 w-2 rounded-full border ${step === "preview" ? "bg-[#0091FE] border-[#0091FE]" : "border-[#94A3B8]"}`}
+					className={`h-1.5 w-1.5 rounded-full border ${published ? "bg-[#0F172A] border-[#0F172A]" : "border-[#94A3B8]"}`}
 				/>
 				Publish
 			</span>
@@ -61,19 +63,19 @@ function TemplateSection({
 
 	return (
 		<div className="flex flex-col gap-2">
-			<span className="flex items-center gap-1.5 text-xs font-medium text-[#0F172A]">
+			<span className="flex items-center gap-1.5 text-xs text-[#334155]">
 				Template
-				<span className="h-1.5 w-1.5 rounded-full bg-[#059669]" />
+				<span className="h-1.5 w-1.5 rounded-full bg-[#F97316]" />
 			</span>
-			<div className="flex gap-3 rounded-md border border-[#E2E8F0] p-3">
-				<div className="w-11 h-14 shrink-0 rounded-sm bg-[#F1F5F9] flex flex-col gap-1 p-1.5">
-					<span className="h-3 w-full rounded-[2px] bg-[#CBD5E1]" />
-					<span className="h-1 w-3/4 rounded-full bg-[#CBD5E1]" />
-					<span className="h-1 w-full rounded-full bg-[#CBD5E1]" />
-					<span className="h-1 w-1/2 rounded-full bg-[#CBD5E1]" />
+			<div className="flex gap-3 rounded-md border border-[#E2E8F0] p-2.5">
+				<div className="w-11 h-14 shrink-0 rounded-[3px] border border-[#E2E8F0] bg-white flex flex-col gap-1 p-1.5">
+					<span className="h-3 w-full rounded-[1px] bg-[#BAE6FD]" />
+					<span className="h-0.5 w-3/4 rounded-full bg-[#E2E8F0]" />
+					<span className="h-0.5 w-full rounded-full bg-[#E2E8F0]" />
+					<span className="mt-0.5 h-1 w-1/2 rounded-full bg-[#14B8A6]" />
 				</div>
 				<div className="flex flex-col gap-1.5 flex-1 min-w-0">
-					<span className="text-xs text-[#0F172A] truncate">
+					<span className="text-xs font-semibold text-[#0F172A] truncate">
 						{templateName}
 					</span>
 					<CustomPopover
@@ -82,7 +84,7 @@ function TemplateSection({
 						popoverClassname="max-h-72 overflow-y-auto"
 						className="pt-2 flex flex-col w-56"
 						trigger={
-							<button className="rounded-md border border-[#E2E8F0] py-1 text-xs text-[#0F172A] hover:bg-gray-50 cursor-pointer">
+							<button className="rounded-[4px] border border-[#E2E8F0] py-1 text-[11px] text-[#334155] hover:bg-gray-50 cursor-pointer">
 								Browse templates
 							</button>
 						}
@@ -106,7 +108,7 @@ function TemplateSection({
 					</CustomPopover>
 					<button
 						onClick={onSave}
-						className="rounded-md border border-[#E2E8F0] py-1 text-xs text-[#0F172A] hover:bg-gray-50 cursor-pointer"
+						className="rounded-[4px] border border-[#E2E8F0] py-1 text-[11px] text-[#334155] hover:bg-gray-50 cursor-pointer"
 					>
 						Save template
 					</button>
@@ -139,7 +141,8 @@ function Editor({ initial }: { initial: BulkEmail }) {
 		setEmail((e) => ({ ...e, content: { ...e.content, ...patch } }));
 
 	const templateName =
-		templates.find((t) => t._id === email.template_id)?.name ?? "Default";
+		templates.find((t) => t._id === email.template_id)?.name ??
+		DEFAULT_TEMPLATE_NAME;
 
 	const handleContinue = () => {
 		if (step === "edit") {
@@ -161,8 +164,11 @@ function Editor({ initial }: { initial: BulkEmail }) {
 		setSent(true);
 	};
 
+	const iconButton =
+		"h-6 w-6 flex items-center justify-center rounded text-[#64748B] hover:bg-[#F1F5F9] cursor-pointer";
+
 	return (
-		<div className="w-full flex flex-col gap-6 pt-8 pb-24">
+		<div className="w-full flex flex-col gap-10 pt-8 pb-24">
 			<EditorHeader
 				backHref="/bulk-email"
 				title={email.title}
@@ -176,7 +182,7 @@ function Editor({ initial }: { initial: BulkEmail }) {
 									aria-label="More actions"
 									className="p-1 rounded hover:bg-gray-100 cursor-pointer"
 								>
-									<EllipsisVertical size={16} color="#64748B" />
+									<EllipsisVertical size={14} color="#94A3B8" />
 								</button>
 							}
 							className="pt-2 flex flex-col w-40"
@@ -197,26 +203,28 @@ function Editor({ initial }: { initial: BulkEmail }) {
 				}
 			/>
 
-			<div className="flex max-lg:flex-col gap-6 items-start justify-center">
+			<div
+				className={`flex max-lg:flex-col items-start justify-center ${step === "preview" ? "gap-6" : "gap-8"}`}
+			>
 				<div
-					className={`flex flex-col gap-4 w-full min-w-0 ${expanded ? "max-w-none flex-1" : "max-w-[720px]"}`}
+					className={`flex flex-col w-full min-w-0 ${expanded ? "max-w-none flex-1" : "max-w-[720px]"}`}
 				>
 					{step === "edit" ? (
 						<>
-							<div className="flex flex-col gap-2 rounded-md border border-[#E2E8F0] bg-white p-4">
+							<div className="mb-4 flex flex-col gap-2 rounded-md border border-[#E2E8F0] bg-white px-4 pt-5 pb-4">
 								<label
 									htmlFor="subject"
-									className="text-xs font-medium text-[#334155]"
+									className="text-xs text-[#334155]"
 								>
 									Subject Line
 								</label>
-								<div className="flex items-center gap-2 rounded-md border border-[#E2E8F0] px-3 py-2 focus-within:border-[#0091FE]">
+								<div className="flex items-center gap-2 rounded-[4px] border border-[#E2E8F0] px-3 h-9 focus-within:border-[#0091FE]">
 									<input
 										id="subject"
 										value={email.subject}
 										placeholder="New Broadcast"
 										onChange={(e) => update({ subject: e.target.value })}
-										className="flex-1 min-w-0 text-sm text-[#0F172A] outline-none bg-transparent"
+										className="flex-1 min-w-0 text-sm text-[#0F172A] outline-none bg-transparent placeholder:text-[#0F172A]/60"
 									/>
 									<button
 										title="Suggest a subject line with AI"
@@ -225,18 +233,18 @@ function Editor({ initial }: { initial: BulkEmail }) {
 											// TODO: wire to the AI writer endpoint
 											toast.info("AI subject suggestions aren't available yet")
 										}
-										className="text-[#64748B] hover:text-[#0091FE] cursor-pointer"
+										className="text-[#94A3B8] hover:text-[#0091FE] cursor-pointer"
 									>
-										<Sparkles size={16} />
+										<Zap size={14} />
 									</button>
 									<button
 										title="Run an A/B test"
 										aria-label="Run an A/B test"
 										aria-pressed={email.ab_test}
 										onClick={() => update({ ab_test: !email.ab_test })}
-										className={`cursor-pointer ${email.ab_test ? "text-[#0091FE]" : "text-[#64748B] hover:text-[#0091FE]"}`}
+										className={`cursor-pointer ${email.ab_test ? "text-[#0091FE]" : "text-[#94A3B8] hover:text-[#0091FE]"}`}
 									>
-										<FlaskConical size={16} />
+										<FlaskConical size={14} />
 									</button>
 								</div>
 								{showPreviewText ? (
@@ -247,27 +255,28 @@ function Editor({ initial }: { initial: BulkEmail }) {
 										onChange={(e) =>
 											update({ preview_text: e.target.value })
 										}
-										className="rounded-md border border-[#E2E8F0] px-3 py-2 text-xs text-[#0F172A] outline-none focus:border-[#0091FE]"
+										className="rounded-[4px] border border-[#E2E8F0] px-3 h-8 text-xs text-[#0F172A] outline-none focus:border-[#0091FE]"
 									/>
 								) : (
 									<button
 										onClick={() => setShowPreviewText(true)}
-										className="w-fit text-xs text-[#0091FE] hover:underline cursor-pointer"
+										className="w-fit flex items-center gap-1 text-xs text-[#64748B] hover:text-[#0F172A] cursor-pointer"
 									>
-										+ Add preview text
+										<Plus size={14} />
+										Add preview text
 									</button>
 								)}
 							</div>
 
 							<FormatToolbar
-								className="sticky top-20 z-10 rounded-md border border-[#E2E8F0] bg-white px-2 py-1"
+								className="sticky top-20 z-10 rounded-t-md border border-b-0 border-[#E2E8F0] bg-white px-3 py-1.5"
 								right={
 									<div className="flex items-center gap-1 shrink-0">
 										<button
 											title="Preview"
 											aria-label="Preview"
 											onClick={handleContinue}
-											className="h-6 w-6 flex items-center justify-center rounded text-[#334155] hover:bg-[#F1F5F9] cursor-pointer"
+											className={iconButton}
 										>
 											<Eye size={14} />
 										</button>
@@ -275,13 +284,9 @@ function Editor({ initial }: { initial: BulkEmail }) {
 											title={expanded ? "Collapse" : "Expand"}
 											aria-label={expanded ? "Collapse" : "Expand"}
 											onClick={() => setExpanded((x) => !x)}
-											className="h-6 w-6 flex items-center justify-center rounded text-[#334155] hover:bg-[#F1F5F9] cursor-pointer"
+											className={iconButton}
 										>
-											{expanded ? (
-												<Minimize2 size={14} />
-											) : (
-												<Maximize2 size={14} />
-											)}
+											{expanded ? <Minimize size={14} /> : <Maximize size={14} />}
 										</button>
 									</div>
 								}
@@ -295,6 +300,7 @@ function Editor({ initial }: { initial: BulkEmail }) {
 						size="md"
 						editable={step === "edit"}
 						content={email.content}
+						className={step === "edit" ? "rounded-b-md" : ""}
 						onHtmlChange={(html) => updateContent({ html })}
 					/>
 				</div>
@@ -331,22 +337,24 @@ function Editor({ initial }: { initial: BulkEmail }) {
 								updateContent({ background_color })
 							}
 						/>
-						<Toggle
-							label="Run an A/B Test"
-							checked={email.ab_test}
-							onChange={(ab_test) => update({ ab_test })}
-						/>
+						<div className="border-t border-[#F1F5F9] pt-4">
+							<Toggle
+								label="Run an A/B Test"
+								checked={email.ab_test}
+								onChange={(ab_test) => update({ ab_test })}
+							/>
+						</div>
 					</aside>
 				)}
 
 				{step === "preview" && <PreviewPanel />}
 			</div>
 
-			<div className="fixed bottom-0 right-0 z-20 flex items-center gap-4 rounded-tl-lg border-t border-l border-[#E2E8F0] bg-white px-6 py-3">
+			<div className="fixed bottom-0 right-0 z-20 flex items-center gap-5 px-5 py-4">
 				{step === "preview" && (
 					<button
 						onClick={() => setStep("edit")}
-						className="text-sm text-[#334155] hover:underline cursor-pointer"
+						className="text-xs text-[#64748B] hover:text-[#0F172A] cursor-pointer"
 					>
 						Back to edit
 					</button>
@@ -354,7 +362,7 @@ function Editor({ initial }: { initial: BulkEmail }) {
 				<SavedStatus saving={saving} />
 				<CustomButton
 					onClick={handleContinue}
-					className="rounded-md px-5 py-1.5 min-h-8 text-sm"
+					className="rounded-[4px] border-0 px-5 min-h-8 py-1.5 text-[13px] font-normal"
 				>
 					{step === "edit" ? "Continue" : "Send"}
 				</CustomButton>
@@ -367,56 +375,6 @@ function Editor({ initial }: { initial: BulkEmail }) {
 				actionLabel="Done"
 				onAction={() => router.push("/bulk-email")}
 			/>
-		</div>
-	);
-}
-
-function PreviewHeader({
-	email,
-	onChange,
-}: {
-	email: BulkEmail;
-	onChange: (patch: Partial<BulkEmail>) => void;
-}) {
-	const user = useUserStore((s) => s.user);
-
-	return (
-		<div className="flex flex-col gap-2 rounded-md border border-[#E2E8F0] bg-white px-4 py-3 text-xs">
-			<div className="flex items-center">
-				<span className="w-20 text-[#64748B]">Subject</span>
-				<span className="text-sm font-medium text-[#0F172A]">
-					{email.subject}
-				</span>
-			</div>
-			<div className="flex items-center">
-				<span className="w-20 text-[#64748B]">From</span>
-				<span className="text-[#0F172A] truncate">
-					{user
-						? `${user.display_name} <${user.email}>`
-						: "Your connected inbox"}
-				</span>
-			</div>
-			<div className="flex items-center justify-between gap-4 border-t border-[#F1F5F9] pt-2">
-				<label className="flex items-center">
-					<span className="w-20 text-[#64748B]">To</span>
-					<select
-						value={email.audience}
-						onChange={(e) =>
-							onChange({ audience: e.target.value as BulkEmail["audience"] })
-						}
-						className="rounded-md border border-[#E2E8F0] bg-white px-2 py-1 text-xs text-[#0F172A] outline-none cursor-pointer"
-					>
-						{Object.entries(AUDIENCE_LABELS).map(([value, label]) => (
-							<option key={value} value={value}>
-								{label}
-							</option>
-						))}
-					</select>
-				</label>
-				<span className="text-[#64748B] truncate">
-					{email.preview_text || "No preview text"}
-				</span>
-			</div>
 		</div>
 	);
 }

@@ -2,11 +2,10 @@
 
 import { useEffect, useRef } from "react";
 import { ImageIcon } from "lucide-react";
-import { EmailContent } from "@/types/bulk_email";
+import { EmailContent, EmailImageSettings } from "@/types/bulk_email";
 
-const CROP_ASPECT = { original: "520 / 256", square: "1 / 1", wide: "16 / 9" };
-const RADIUS = { none: 0, small: 8, large: 16 };
-const BORDER = { none: 0, thin: 1, thick: 3 };
+const RADIUS = { none: 0, curved: 8, round: 24 };
+const BORDER = { none: 0, normal: 1, large: 4 };
 const ALIGN = { left: "flex-start", center: "center", right: "flex-end" };
 
 export const countWords = (html: string) =>
@@ -15,22 +14,32 @@ export const countWords = (html: string) =>
 		.split(/\s+/)
 		.filter(Boolean).length;
 
+const radiusOf = (image: EmailImageSettings) =>
+	image.radius === "custom" ? image.radius_px : RADIUS[image.radius];
+
+const borderOf = (image: EmailImageSettings) =>
+	image.border_width === "custom"
+		? image.border_px
+		: BORDER[image.border_width];
+
 function EmailImage({
 	image,
 	selected,
 	onSelect,
+	defaultAspect,
 }: {
-	image: EmailContent["image"];
+	image: EmailImageSettings;
 	selected: boolean;
 	onSelect?: () => void;
+	defaultAspect: string;
 }) {
+	const border = borderOf(image);
 	const style: React.CSSProperties = {
-		width: image.width_mode === "full" ? "100%" : `${image.width}%`,
-		aspectRatio: CROP_ASPECT[image.crop],
-		borderRadius: RADIUS[image.radius],
-		border: BORDER[image.border_width]
-			? `${BORDER[image.border_width]}px solid #${image.border_color}`
-			: undefined,
+		width: image.width_mode === "full" ? "100%" : image.width,
+		maxWidth: "100%",
+		aspectRatio: image.crop === "square" ? "1 / 1" : defaultAspect,
+		borderRadius: radiusOf(image),
+		border: border ? `${border}px solid #${image.border_color}` : undefined,
 	};
 
 	return (
@@ -56,7 +65,7 @@ function EmailImage({
 						className="h-full w-full object-cover"
 					/>
 				) : (
-					<div className="h-full w-full bg-linear-to-br from-[#BEE3E6] to-[#7CC4CB] flex flex-col items-center justify-center gap-2 text-[#0F6973]">
+					<div className="h-full w-full bg-[#E2E8F0] flex flex-col items-center justify-center gap-2 text-[#64748B]">
 						<ImageIcon size={28} />
 						{onSelect && (
 							<span className="text-xs">Click to add an image</span>
@@ -73,6 +82,9 @@ function EmailImage({
 	);
 }
 
+const BODY_STYLES =
+	"flex flex-col gap-5 text-[13px] leading-[21px] text-[#334155] outline-none [&_h1]:text-[28px] [&_h1]:leading-9 [&_h1]:text-[#0F172A] [&_h2]:text-2xl [&_h2]:leading-8 [&_h2]:text-[#0F172A] [&_h3]:text-lg [&_h3]:text-[#0F172A] [&_a]:underline [&_a.cta]:inline-flex [&_a.cta]:items-center [&_a.cta]:no-underline [&_a.cta]:rounded-[3px] [&_a.cta]:bg-(--btn-bg) [&_a.cta]:text-(--btn-fg)";
+
 export default function EmailCanvas({
 	content,
 	editable = false,
@@ -81,6 +93,7 @@ export default function EmailCanvas({
 	onSelectImage,
 	onSelectText,
 	size = "lg",
+	className = "",
 }: {
 	content: EmailContent;
 	editable?: boolean;
@@ -88,7 +101,9 @@ export default function EmailCanvas({
 	onHtmlChange?: (html: string) => void;
 	onSelectImage?: () => void;
 	onSelectText?: () => void;
+	// lg: full-bleed template editor card, md: broadcast/preview card
 	size?: "md" | "lg";
+	className?: string;
 }) {
 	const bodyRef = useRef<HTMLDivElement>(null);
 
@@ -104,19 +119,22 @@ export default function EmailCanvas({
 		"--btn-fg": `#${content.button_text_color}`,
 	} as React.CSSProperties;
 
+	const lg = size === "lg";
+
 	return (
 		<div
-			className="relative w-full flex flex-col items-center rounded-md md:px-10 px-3 pt-10 pb-6"
+			className={`relative w-full flex flex-col items-center md:px-10 px-3 ${lg ? "pt-12 pb-11" : "pt-10 pb-14"} ${className}`}
 			style={{ backgroundColor: `#${content.background_color}` }}
 		>
 			<div
-				className={`w-full bg-white shadow-sm ${size === "lg" ? "max-w-[520px]" : "max-w-[480px] md:px-10 px-4 pt-6 pb-4"}`}
+				className={`w-full bg-white ${lg ? "max-w-[520px] shadow-[0_8px_24px_rgba(15,23,42,0.12)]" : "max-w-[480px] md:px-10 px-4 pt-10 pb-10"}`}
 				style={cssVars}
 			>
 				<EmailImage
 					image={content.image}
 					selected={imageSelected}
 					onSelect={onSelectImage}
+					defaultAspect={lg ? "520 / 256" : "400 / 192"}
 				/>
 				<div
 					ref={bodyRef}
@@ -125,36 +143,46 @@ export default function EmailCanvas({
 					suppressContentEditableWarning
 					onFocus={onSelectText}
 					onInput={(e) => onHtmlChange?.(e.currentTarget.innerHTML)}
-					className={`flex flex-col gap-4 text-sm leading-6 text-[#334155] outline-none ${
-						size === "lg" ? "px-8 py-8" : "py-6"
-					} [&_h1]:text-3xl [&_h1]:font-semibold [&_h1]:text-[#0F172A] [&_h2]:text-2xl [&_h2]:font-semibold [&_h2]:text-[#0F172A] [&_h3]:text-lg [&_h3]:font-semibold [&_h3]:text-[#0F172A] [&_a]:text-[#0F6973] [&_a]:underline [&_a.cta]:inline-block [&_a.cta]:no-underline [&_a.cta]:rounded [&_a.cta]:px-5 [&_a.cta]:py-2 [&_a.cta]:text-sm [&_a.cta]:font-medium [&_a.cta]:bg-(--btn-bg) [&_a.cta]:text-(--btn-fg)`}
+					className={`${BODY_STYLES} ${
+						lg
+							? "px-8 pt-10 pb-9 [&_a]:text-[#0F172A] [&_a.cta]:h-9 [&_a.cta]:px-5 [&_a.cta]:text-xs [&_a.cta]:font-semibold"
+							: "pt-8 [&_h2]:font-serif [&_h1]:font-serif [&_a.cta]:h-8 [&_a.cta]:px-5 [&_a.cta]:text-[13px]"
+					}`}
 				/>
-				{size === "md" && (
-					<div className="flex flex-col items-center gap-1 border-t border-[#F1F5F9] pt-4 text-[11px] text-[#94A3B8]">
+				{!lg && (
+					<div className="mt-14 flex flex-col gap-1 text-xs text-[#0F172A]">
 						<span>{"{{ address }}"}</span>
-						<span>Unsubscribe · Preferences</span>
+						<span>
+							<span className="underline">Unsubscribe</span> ·{" "}
+							<span className="underline">Preferences</span>
+						</span>
 					</div>
 				)}
 			</div>
 
-			{size === "lg" && (
-				<div className="flex flex-col items-center gap-1 pt-6 text-[11px] text-white/80">
-					<span>{"{{ address }}"}</span>
+			{lg && (
+				<div className="flex flex-col items-center gap-1.5 pt-10 text-[11px] text-white">
+					<span className="font-mono text-white/80">{"{{ address }}"}</span>
 					<span>
-						<span className="underline">Unsubscribe</span> ·{" "}
+						<span className="underline">Unsubscribe</span>
+						{"  ·  "}
 						<span className="underline">Preferences</span>
 					</span>
 				</div>
 			)}
 
-			<div className="mt-6 flex items-center gap-1 rounded-full bg-white px-4 py-1 shadow-sm">
-				<span className="text-[11px] text-[#64748B]">Built with</span>
-				<span className="text-sm font-semibold text-[#0091FE]">CRM360</span>
+			<div
+				className={`${lg ? "mt-7" : "mt-8"} flex items-center gap-1.5 rounded-[3px] bg-white px-3.5 py-1 text-[#0F172A]`}
+			>
+				<span className="text-xs font-semibold">Built with</span>
+				<span className="text-sm font-bold">CRM360</span>
 			</div>
 
-			<span className="absolute bottom-3 right-3 rounded bg-black/20 px-2 py-0.5 text-[10px] text-white backdrop-blur-sm">
-				{countWords(content.html)} words
-			</span>
+			{!lg && (
+				<span className="absolute bottom-5 right-3 rounded-[3px] bg-white px-2.5 py-0.5 text-[10px] text-[#64748B]">
+					{countWords(content.html)} words
+				</span>
+			)}
 		</div>
 	);
 }

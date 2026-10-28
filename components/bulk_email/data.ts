@@ -16,26 +16,30 @@ export const DEFAULT_EMAIL_HTML = `<p>Lorem ipsum dolor sit amet, consectetur ad
 <p><a class="cta" href="#">Click here</a></p>
 <p>Duis vel dui in elit tristique mattis ut vel nisl. Nam sit amet euismod sapien, sed auctor eros. Morbi aliquet lobortis tellus, sit amet ullamcorper purus egestas non. Morbi nec massa lacus. Sed blandit tincidunt dui sit amet fermentum. Donec vehicula feugiat pretium.</p>`;
 
+export const DEFAULT_TEMPLATE_NAME = "Monterey";
+
 export const createDefaultContent = (): EmailContent => ({
-	background_color: "218B95",
+	background_color: "0091FE",
 	button_text_color: "FFFFFF",
-	button_background_color: "0F6973",
+	button_background_color: "0091FE",
 	html: DEFAULT_EMAIL_HTML,
 	image: {
-		url: "",
+		url: "/assets/bulk-email-hero.jpg",
 		alt: "Header Image",
 		link: "",
 		show_caption: false,
 		caption: "",
 		width_mode: "full",
-		width: 100,
-		crop: "original",
+		width: 350,
+		crop: "none",
 		radius: "none",
+		radius_px: 12,
 		align: "center",
 		border_color: "000000",
 		border_width: "none",
+		border_px: 2,
 		wrap_text: false,
-		optimize: true,
+		optimize: false,
 		margin: 0,
 	},
 });

@@ -49,7 +49,7 @@ function Editor({ initial }: { initial: EmailTemplate }) {
 	};
 
 	return (
-		<div className="w-full flex flex-col gap-4 pt-8 pb-8">
+		<div className="w-full flex flex-col gap-12 pt-8 pb-8">
 			<EditorHeader
 				backHref="/bulk-email/templates"
 				title={template.name}
@@ -97,7 +97,7 @@ function Editor({ initial }: { initial: EmailTemplate }) {
 						<SavedStatus saving={saving} />
 						<CustomButton
 							onClick={createBroadcast}
-							className="rounded-md px-4 py-1.5 min-h-8 text-sm"
+							className="rounded-[4px] border-0 px-3.5 min-h-8 py-1.5 text-[13px] font-normal"
 						>
 							Create a broadcast
 						</CustomButton>
@@ -105,9 +105,11 @@ function Editor({ initial }: { initial: EmailTemplate }) {
 				}
 			/>
 
-			<div className="flex max-lg:flex-col gap-4 items-start">
-				<div className="flex-1 min-w-0 w-full flex flex-col gap-4">
-					<FormatToolbar className="sticky top-20 z-10 mx-auto w-fit max-w-full rounded-lg border border-[#E2E8F0] bg-white px-2 py-1 shadow-sm" />
+			<div className="flex max-lg:flex-col items-stretch xl:-mr-8 -mr-5 max-lg:mr-0">
+				<div className="relative flex-1 min-w-0 w-full flex flex-col">
+					<div className="sticky top-20 z-10 flex justify-center pb-2">
+						<FormatToolbar className="w-full max-w-150 rounded-md border border-[#E2E8F0] bg-white px-2 py-0.5 shadow-sm" />
+					</div>
 					<EmailCanvas
 						editable
 						content={template.content}
@@ -118,7 +120,9 @@ function Editor({ initial }: { initial: EmailTemplate }) {
 					/>
 				</div>
 
-				<aside className="lg:w-72 w-full shrink-0 bg-white border border-[#E2E8F0] rounded-md lg:sticky lg:top-20 lg:max-h-[calc(100vh-6rem)] overflow-y-auto">
+				<aside
+					className={`${panel === "image" ? "lg:w-80" : "lg:w-70"} w-full shrink-0 bg-white overflow-y-auto`}
+				>
 					{panel === "image" ? (
 						<ImageInspector
 							image={template.content.image}

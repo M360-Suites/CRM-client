@@ -12,11 +12,13 @@ export interface EmailImageSettings {
 	caption: string;
 	width_mode: "fixed" | "full";
 	width: number;
-	crop: "original" | "square" | "wide";
-	radius: "none" | "small" | "large";
+	crop: "none" | "square";
+	radius: "none" | "curved" | "round" | "custom";
+	radius_px: number;
 	align: "left" | "center" | "right";
 	border_color: string;
-	border_width: "none" | "thin" | "thick";
+	border_width: "none" | "normal" | "large" | "custom";
+	border_px: number;
 	wrap_text: boolean;
 	optimize: boolean;
 	margin: number;

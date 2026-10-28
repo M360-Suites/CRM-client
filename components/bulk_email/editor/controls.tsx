@@ -18,7 +18,7 @@ export function ColorField({
 }) {
 	return (
 		<div className="flex flex-col gap-1.5">
-			<span className="text-xs text-[#334155]">{label}</span>
+			<span className="text-[11px] text-[#64748B]">{label}</span>
 			<div className="flex items-center gap-2 rounded-md border border-[#E2E8F0] bg-white px-2.5 py-1.5">
 				<label
 					className="relative h-4 w-4 shrink-0 rounded-full border border-[#E2E8F0] cursor-pointer overflow-hidden"
@@ -43,7 +43,7 @@ export function ColorField({
 						HEX.test(e.target.value) &&
 						onChange(e.target.value.toUpperCase())
 					}
-					className="flex-1 min-w-0 text-xs text-[#0F172A] outline-none bg-transparent"
+					className="flex-1 min-w-0 font-mono text-[11px] text-[#0F172A] outline-none bg-transparent"
 				/>
 			</div>
 		</div>
@@ -74,7 +74,7 @@ export function Segmented<T extends string>({
 						onClick={() => onChange(o.value)}
 						className={`flex-1 flex items-center justify-center rounded-[5px] py-1 text-xs cursor-pointer ${
 							o.value === value
-								? "bg-white text-[#0F172A] shadow-sm"
+								? "bg-white font-medium text-[#0F172A] shadow-sm"
 								: "text-[#64748B] hover:text-[#0F172A]"
 						}`}
 					>
@@ -159,7 +159,7 @@ export function Slider({
 							if (!Number.isNaN(n))
 								onChange(Math.min(max, Math.max(min, n)));
 						}}
-						className="w-7 text-right outline-none bg-transparent"
+						className="w-8 text-right font-mono outline-none bg-transparent"
 					/>
 					<span className="text-[#94A3B8]">{unit}</span>
 				</div>
@@ -172,22 +172,27 @@ export function TextField({
 	label,
 	value,
 	placeholder,
+	icon,
 	onChange,
 }: {
 	label: string;
 	value: string;
 	placeholder?: string;
+	icon?: React.ReactNode;
 	onChange: (value: string) => void;
 }) {
 	return (
 		<label className="flex flex-col gap-1.5">
 			<span className="text-xs text-[#334155]">{label}</span>
-			<input
-				value={value}
-				placeholder={placeholder}
-				onChange={(e) => onChange(e.target.value)}
-				className="rounded-md border border-[#E2E8F0] bg-white px-2.5 py-1.5 text-xs text-[#0F172A] outline-none focus:border-[#0091FE]"
-			/>
+			<span className="flex items-center gap-2 rounded-md border border-[#E2E8F0] bg-white px-2.5 py-1.5 focus-within:border-[#0091FE]">
+				<input
+					value={value}
+					placeholder={placeholder}
+					onChange={(e) => onChange(e.target.value)}
+					className="flex-1 min-w-0 text-xs text-[#0F172A] outline-none bg-transparent placeholder:text-[#CBD5E1]"
+				/>
+				{icon}
+			</span>
 		</label>
 	);
 }

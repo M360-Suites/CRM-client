@@ -10,7 +10,7 @@ import {
 	MailOpen,
 	PlusIcon,
 	Search,
-	SquarePen,
+	Pencil,
 	Trash2,
 } from "lucide-react";
 import { toast } from "sonner";
@@ -73,13 +73,14 @@ function RowActions({ id }: { id: string }) {
 					<EllipsisVertical size={16} color="#64748B" />
 				</button>
 			}
-			className="pt-2 flex flex-col gap-1 w-28"
+			className="pt-2 flex flex-col w-28"
+			popoverClassname="bg-[#F7FAFC]"
 		>
 			<button
 				onClick={() => router.push(`/bulk-email/new?id=${id}`)}
-				className="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-foreground hover:bg-gray-100 cursor-pointer"
+				className="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-[#334155] hover:bg-gray-100 cursor-pointer"
 			>
-				<SquarePen size={16} />
+				<Pencil size={14} />
 				Edit
 			</button>
 			<button
@@ -90,7 +91,7 @@ function RowActions({ id }: { id: string }) {
 				}}
 				className="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-[#DC2626] hover:bg-red-50 cursor-pointer"
 			>
-				<Trash2 size={16} />
+				<Trash2 size={14} />
 				Delete
 			</button>
 		</CustomPopover>
@@ -162,7 +163,7 @@ export default function Body() {
 				<table className="w-full min-w-[860px] text-left">
 					<thead className="bg-[#F1F5F9]">
 						<tr className="text-[11px] font-medium tracking-wider text-[#334155] uppercase">
-							<th className="py-5 px-4 font-medium text-center">Email title</th>
+							<th className="py-5 px-4 font-medium text-center w-48">Email title</th>
 							<th className="py-5 px-4 font-medium text-center">Subject line</th>
 							<th className="py-5 px-4 font-medium text-center">Sent to</th>
 							<th className="py-5 px-4 font-medium text-center">Status</th>
@@ -176,10 +177,10 @@ export default function Body() {
 								key={email._id}
 								className="border-b border-[#F1F5F9] last:border-b-0"
 							>
-								<td className="py-3 px-4 max-w-56">
+								<td className="py-3 px-4">
 									<Link
 										href={`/bulk-email/new?id=${email._id}`}
-										className="text-[13px] font-medium text-[#0F172A] hover:underline line-clamp-2"
+										className="block max-w-40 text-[13px] leading-5 font-semibold text-[#0F172A] hover:underline line-clamp-2"
 									>
 										{email.title}
 									</Link>
@@ -189,18 +190,18 @@ export default function Body() {
 								</td>
 								<td className="py-3 px-4">
 									<div
-										className={`mx-auto w-24 flex items-center justify-center gap-1.5 rounded-md py-1 text-[11px] ${AUDIENCE_STYLES[email.audience]}`}
+										className={`mx-auto w-24 flex items-center justify-center gap-1.5 rounded-full py-1 text-[11px] ${AUDIENCE_STYLES[email.audience]}`}
 									>
-										<span className="h-1 w-1 rounded-full bg-white" />
+										<span className="h-1.5 w-1.5 rounded-full bg-white" />
 										{AUDIENCE_LABELS[email.audience]}
 									</div>
 								</td>
 								<td className="py-3 px-4">
 									<div
-										className={`mx-auto w-fit flex items-center gap-1 rounded-md px-2 py-1 text-[10px] font-semibold tracking-wider uppercase ${STATUS_STYLES[email.status]}`}
+										className={`mx-auto w-fit flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-semibold tracking-wider uppercase ${STATUS_STYLES[email.status]}`}
 									>
 										{email.status === "published" && (
-											<span className="h-1 w-1 rounded-full bg-[#059669]" />
+											<span className="h-1.5 w-1.5 rounded-full bg-[#059669]" />
 										)}
 										{email.status}
 									</div>

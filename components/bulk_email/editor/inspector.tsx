@@ -1,7 +1,15 @@
 "use client";
 
 import { useRef } from "react";
-import { AlignCenter, AlignLeft, AlignRight, ChevronRight } from "lucide-react";
+import {
+	AlignCenter,
+	AlignLeft,
+	AlignRight,
+	ChevronRight,
+	Crop,
+	Upload,
+	Zap,
+} from "lucide-react";
 import { EmailContent, EmailImageSettings } from "@/types/bulk_email";
 import {
 	Accordion,
@@ -11,6 +19,8 @@ import {
 	TextField,
 	Toggle,
 } from "./controls";
+
+const MAX_IMAGE_WIDTH = 520;
 
 export function StylesInspector({
 	content,
@@ -22,7 +32,7 @@ export function StylesInspector({
 	return (
 		<div className="flex flex-col">
 			<div className="border-b border-[#F1F5F9] px-4 py-4">
-				<h3 className="text-xs font-semibold text-[#0F172A]">Styles</h3>
+				<h3 className="text-xs text-[#0F172A]">Template</h3>
 			</div>
 			<div className="flex flex-col gap-5 px-4 py-4">
 				<ColorField
@@ -32,7 +42,7 @@ export function StylesInspector({
 				/>
 				<Accordion title="Buttons">
 					<ColorField
-						label="Text color"
+						label="Text"
 						value={content.button_text_color}
 						onChange={(button_text_color) =>
 							onChange({ button_text_color })
@@ -64,16 +74,16 @@ export function ImageInspector({
 
 	return (
 		<div className="flex flex-col">
-			<nav className="flex items-center gap-1 border-b border-[#F1F5F9] px-4 py-4 text-xs">
+			<nav className="flex items-center gap-1.5 border-b border-[#F1F5F9] px-4 py-4 text-xs">
 				<button
 					onClick={onBack}
-					className="text-[#64748B] hover:text-[#0F172A] cursor-pointer"
+					className="text-[#94A3B8] hover:text-[#0F172A] cursor-pointer"
 				>
-					Styles
+					Template
 				</button>
-				<ChevronRight size={12} color="#94A3B8" />
-				<span className="text-[#64748B]">Content</span>
-				<ChevronRight size={12} color="#94A3B8" />
+				<ChevronRight size={12} color="#CBD5E1" />
+				<span className="text-[#94A3B8]">Section</span>
+				<ChevronRight size={12} color="#CBD5E1" />
 				<span className="font-semibold text-[#0F172A]">Image</span>
 			</nav>
 
@@ -81,16 +91,20 @@ export function ImageInspector({
 				<div className="flex gap-2">
 					<button
 						onClick={() => fileRef.current?.click()}
-						className="flex-1 rounded-md border border-[#E2E8F0] bg-white py-1.5 text-xs text-[#0F172A] hover:bg-gray-50 cursor-pointer"
+						className="flex-1 flex items-center justify-center gap-1.5 rounded-md border border-[#E2E8F0] bg-white py-1.5 text-xs text-[#0F172A] hover:bg-gray-50 cursor-pointer"
 					>
+						<Upload size={14} />
 						Replace
 					</button>
 					<button
-						onClick={() => onChange({ url: "" })}
-						disabled={!image.url}
-						className="flex-1 rounded-md border border-[#E2E8F0] bg-white py-1.5 text-xs text-[#0F172A] hover:bg-gray-50 cursor-pointer disabled:opacity-40 disabled:cursor-not-allowed"
+						onClick={() => {
+							const url = window.prompt("Image address", image.url);
+							if (url !== null) onChange({ url });
+						}}
+						className="flex-1 flex items-center justify-center gap-1.5 rounded-md border border-[#E2E8F0] bg-white py-1.5 text-xs text-[#0F172A] hover:bg-gray-50 cursor-pointer"
 					>
-						Remove
+						<Crop size={14} />
+						Edit
 					</button>
 					<input
 						ref={fileRef}
@@ -110,6 +124,7 @@ export function ImageInspector({
 					label="URL"
 					placeholder="https://"
 					value={image.link}
+					icon={<Zap size={14} color="#94A3B8" />}
 					onChange={(link) => onChange({ link })}
 				/>
 
@@ -126,7 +141,7 @@ export function ImageInspector({
 					/>
 				)}
 
-				<div className="flex flex-col gap-2">
+				<div className="flex flex-col gap-2 border-t border-[#F1F5F9] pt-4">
 					<Segmented
 						label="Width"
 						value={image.width_mode}
@@ -136,38 +151,49 @@ export function ImageInspector({
 						]}
 						onChange={(width_mode) => onChange({ width_mode })}
 					/>
-					{image.width_mode === "fixed" && (
-						<Slider
-							value={image.width}
-							min={10}
-							max={100}
-							unit="%"
-							onChange={(width) => onChange({ width })}
-						/>
-					)}
+					<Slider
+						value={
+							image.width_mode === "full" ? MAX_IMAGE_WIDTH : image.width
+						}
+						min={50}
+						max={MAX_IMAGE_WIDTH}
+						unit="px"
+						onChange={(width) => onChange({ width, width_mode: "fixed" })}
+					/>
 				</div>
 
 				<Segmented
 					label="Crop"
 					value={image.crop}
 					options={[
-						{ value: "original", label: "Original" },
+						{ value: "none", label: "None" },
 						{ value: "square", label: "Square" },
-						{ value: "wide", label: "Wide" },
 					]}
 					onChange={(crop) => onChange({ crop })}
 				/>
 
-				<Segmented
-					label="Corner radius"
-					value={image.radius}
-					options={[
-						{ value: "none", label: "None" },
-						{ value: "small", label: "Small" },
-						{ value: "large", label: "Large" },
-					]}
-					onChange={(radius) => onChange({ radius })}
-				/>
+				<div className="flex flex-col gap-2">
+					<Segmented
+						label="Corner radius"
+						value={image.radius}
+						options={[
+							{ value: "none", label: "None" },
+							{ value: "curved", label: "Curved" },
+							{ value: "round", label: "Round" },
+							{ value: "custom", label: "Custom" },
+						]}
+						onChange={(radius) => onChange({ radius })}
+					/>
+					{image.radius === "custom" && (
+						<Slider
+							value={image.radius_px}
+							min={0}
+							max={64}
+							unit="px"
+							onChange={(radius_px) => onChange({ radius_px })}
+						/>
+					)}
+				</div>
 
 				<Segmented
 					label="Alignment"
@@ -195,11 +221,21 @@ export function ImageInspector({
 						value={image.border_width}
 						options={[
 							{ value: "none", label: "None" },
-							{ value: "thin", label: "Thin" },
-							{ value: "thick", label: "Thick" },
+							{ value: "normal", label: "Normal" },
+							{ value: "large", label: "Large" },
+							{ value: "custom", label: "Custom" },
 						]}
 						onChange={(border_width) => onChange({ border_width })}
 					/>
+					{image.border_width === "custom" && (
+						<Slider
+							value={image.border_px}
+							min={0}
+							max={16}
+							unit="px"
+							onChange={(border_px) => onChange({ border_px })}
+						/>
+					)}
 				</Accordion>
 
 				<Accordion title="Accessibility">

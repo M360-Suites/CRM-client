@@ -5,9 +5,10 @@ import {
 	AlignJustify,
 	AlignLeft,
 	AlignRight,
-	Baseline,
-	Highlighter,
+	Code,
+	Droplet,
 	Link2,
+	PenLine,
 	Pilcrow,
 	Redo2,
 	Undo2,
@@ -56,7 +57,7 @@ if (typeof document !== "undefined") {
 	});
 }
 
-const exec = (command: string, value?: string) => {
+const restoreSelection = () => {
 	const editor = savedRange && editorOf(savedRange);
 	if (savedRange && editor?.isConnected) {
 		editor.focus();
@@ -64,7 +65,22 @@ const exec = (command: string, value?: string) => {
 		sel?.removeAllRanges();
 		sel?.addRange(savedRange);
 	}
+};
+
+const exec = (command: string, value?: string) => {
+	restoreSelection();
 	document.execCommand(command, false, value);
+};
+
+const wrapInCode = () => {
+	restoreSelection();
+	const text = document.getSelection()?.toString();
+	if (!text) return;
+	const escaped = text
+		.replace(/&/g, "&amp;")
+		.replace(/</g, "&lt;")
+		.replace(/>/g, "&gt;");
+	document.execCommand("insertHTML", false, `<code>${escaped}</code>`);
 };
 
 // Keep focus (and so the selection) in the editor when a toolbar button is pressed
@@ -195,7 +211,7 @@ export default function FormatToolbar({
 				<Divider />
 				<MenuButton
 					label="Text size"
-					trigger={<span className="text-xs">Tt</span>}
+					trigger={<span className="text-xs font-semibold">Tt</span>}
 					items={SIZES.map((s) => ({
 						label: s.label,
 						onSelect: () => exec("fontSize", s.size),
@@ -206,7 +222,7 @@ export default function FormatToolbar({
 					onMouseDown={keepSelection}
 					className="relative h-6 min-w-6 flex items-center justify-center rounded text-[#334155] hover:bg-[#F1F5F9] cursor-pointer"
 				>
-					<Baseline size={14} />
+					<Droplet size={14} />
 					<input
 						type="color"
 						aria-label="Text color"
@@ -219,7 +235,7 @@ export default function FormatToolbar({
 					onMouseDown={keepSelection}
 					className="relative h-6 min-w-6 flex items-center justify-center rounded text-[#334155] hover:bg-[#F1F5F9] cursor-pointer"
 				>
-					<Highlighter size={14} />
+					<PenLine size={14} />
 					<input
 						type="color"
 						aria-label="Highlight color"
@@ -236,6 +252,9 @@ export default function FormatToolbar({
 					}}
 				>
 					<Link2 />
+				</ToolButton>
+				<ToolButton label="Inline code" onClick={wrapInCode}>
+					<Code />
 				</ToolButton>
 				<MenuButton
 					label="Insert merge tag"

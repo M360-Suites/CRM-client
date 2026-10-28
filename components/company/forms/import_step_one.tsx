@@ -5,7 +5,7 @@ import { CustomButton } from "@/components/custom/common/customButton";
 import Papa from "papaparse";
 
 export default function ImportStepOne() {
-  const { setImportSteps, setCompletedSteps, setFile, setHeaders, setRows } =
+  const { setImportSteps, setCompletedSteps, setFile, setHeaders, setRows, setMapping } =
     useCompanyStore();
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -44,6 +44,7 @@ export default function ImportStepOne() {
         setFile(file);
         setHeaders(headers);
         setRows(rows);
+        setMapping({});
         setCompletedSteps([1]);
         setImportSteps(2);
       },
@@ -177,9 +178,21 @@ export default function ImportStepOne() {
       </CustomButton>
 
       <div className="flex flex-col gap-2">
-        <span className="text-sm text-foreground">Expected columns:</span>
+        <span className="text-sm text-foreground">
+          Expected columns (* required, others optional — any extra column is
+          kept as a custom field):
+        </span>
         <ul className="text-sm text-foreground">
-          {["Company name", "Industry", "Website", "Notes"].map((col) => (
+          {[
+            "Company name *",
+            "Email *",
+            "Phone *",
+            "Industry",
+            "Website",
+            "Address",
+            "Contact person",
+            "Notes",
+          ].map((col) => (
             <li key={col} className="flex flex-row items-center gap-2 p-2.5">
               <svg
                 width="8"

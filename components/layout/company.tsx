@@ -1,5 +1,4 @@
 "use client";
-import { FileText } from "lucide-react";
 import { useCompanyStore } from "@/stores/company/company_store";
 
 const steps = [
@@ -26,7 +25,7 @@ export default function ImportLayout({
 }: {
   children: React.ReactNode;
 }) {
-  const { importSteps, completedSteps, rows } = useCompanyStore();
+  const { importSteps, completedSteps } = useCompanyStore();
 
   return (
     <div>
@@ -80,15 +79,6 @@ export default function ImportLayout({
             ))}
           </div>
         </div>
-        {importSteps === 2 && (
-          <div className="flex flex-row items-center gap-2">
-            <FileText size={14} color="#3A2418" />
-            <span className="text-[#3A2418] text-sm">
-              {rows.length} rows detected. Match your file&apos;s columns to
-              fields:
-            </span>
-          </div>
-        )}
       </div>
       {children}
     </div>

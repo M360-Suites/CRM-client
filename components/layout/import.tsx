@@ -1,5 +1,4 @@
 "use client";
-import { FileText } from "lucide-react";
 import { useContactStore } from "@/stores/contact/contact_store";
 import { useEffect } from "react";
 
@@ -24,10 +23,8 @@ const steps = [
 
 export default function ImportLayout({
   children,
-  rows,
 }: {
   children: React.ReactNode;
-  rows?: Record<string, string>[];
 }) {
   const { importSteps, completedSteps, setCompletedSteps, setImportSteps } =
     useContactStore();
@@ -95,15 +92,6 @@ export default function ImportLayout({
             ))}
           </div>
         </div>
-        {importSteps === 2 && (
-          <div className="flex flex-row items-center gap-2">
-            <FileText size={14} color="#3A2418" />
-            <span className="text-[#3A2418] text-sm">
-              {rows?.length ?? 0} rows detected. Match your file&apos;s columns
-              to fields:
-            </span>
-          </div>
-        )}
       </div>
       {children}
     </div>

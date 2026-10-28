@@ -5,7 +5,7 @@ import { useState, useRef } from "react";
 import Papa from "papaparse";
 
 export default function ImportStepOne() {
-  const { setImportSteps, setCompletedSteps, setFile, setHeaders, setRows } =
+  const { setImportSteps, setCompletedSteps, setFile, setHeaders, setRows, setMapping } =
     useContactStore();
   const inputRef = useRef<HTMLInputElement>(null);
   const [dragOver, setDragOver] = useState(false);
@@ -43,6 +43,7 @@ export default function ImportStepOne() {
         setFile(file);
         setHeaders(headers);
         setRows(rows);
+        setMapping({});
         setCompletedSteps([1]);
         setImportSteps(2);
       },
@@ -72,10 +73,9 @@ export default function ImportStepOne() {
       "last_name",
       "email",
       "phone",
-      "role",
+      "role_title",
+      "company",
       "temperature",
-      "source",
-      "date",
     ];
     const rows = [
       [
@@ -84,9 +84,8 @@ export default function ImportStepOne() {
         "john.doe@acmecorp.com",
         "+2348012345678",
         "CEO",
+        "Acme Corp",
         "hot",
-        "Referral",
-        "12/03/2026",
       ],
       [
         "Jane",
@@ -94,9 +93,8 @@ export default function ImportStepOne() {
         "jane.smith@techbridge.io",
         "+2348023456789",
         "CTO",
+        "TechBridge",
         "warm",
-        "LinkedIn",
-        "15/03/2026",
       ],
       [
         "Michael",
@@ -104,9 +102,8 @@ export default function ImportStepOne() {
         "m.okafor@finlab.com",
         "+2348034567890",
         "Product Manager",
+        "FinLab",
         "cold",
-        "Website",
-        "20/03/2026",
       ],
     ];
 
@@ -166,16 +163,19 @@ export default function ImportStepOne() {
       </CustomButton>
 
       <div className="flex flex-col gap-2">
-        <span className="text-sm text-foreground">Expected columns:</span>
+        <span className="text-sm text-foreground">
+          Expected columns (* required, others optional — any extra column is
+          kept as a custom field):
+        </span>
         <ul className="text-sm text-foreground">
           {[
-            "Name (Full Name, or First Name + Last Name)",
-            "Email",
-            "Phone",
+            "Name (Full Name, or First Name + Last Name) *",
+            "Email *",
+            "Phone *",
             "Role / Title",
+            "Company",
             "Temperature (hot/warm/cold)",
-            "Source",
-            "Date (DD/MM/YYYY)",
+            "Tags",
           ].map((col) => (
             <li key={col} className="flex flex-row items-center gap-2 p-2.5">
               <svg

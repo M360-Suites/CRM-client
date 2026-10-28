@@ -11,10 +11,10 @@ interface ImportProps {
 }
 
 export default function ImportContacts({ onSuccess }: ImportProps) {
-  const { importSteps, rows } = useContactStore();
+  const { importSteps } = useContactStore();
 
   return (
-    <ImportLayout rows={rows}>
+    <ImportLayout>
       {importSteps === 1 && <ImportStepOne />}
       {importSteps === 2 && <ImportStepTwo />}
       {importSteps === 3 && <ImportStepThree />}

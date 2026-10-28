@@ -6,8 +6,12 @@ import { CustomDrawer } from "@/components/custom/common/drawer";
 import CustomPagination from "@/components/custom/common/customPagination";
 import AddCompanyForm from "./forms/add_company";
 import { Company } from "@/types/company";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CompanyCard from "./card";
+import { toast } from "sonner";
+import { useSelection } from "@/hooks/use-selection";
+import { SelectCheckbox } from "@/components/custom/common/selectCheckbox";
+import { BulkActionBar } from "@/components/custom/common/bulkActionBar";
 
 const CompanySkeleton = () => (
   <div className="w-full bg-white border border-[#ECE7E6] rounded-[8px] p-4 animate-pulse">
@@ -24,6 +28,12 @@ export default function Body() {
 
   const companies = data?.data ?? [];
   const totalPages = data?.total_pages ?? 1;
+  const { selected, toggle, toggleAll, clear } = useSelection();
+  const pageIds = companies.map((c) => c._id);
+  const selectedOnPage = pageIds.filter((id) => selected.has(id)).length;
+
+  // Selection only covers the visible page
+  useEffect(clear, [clear, page, limit]);
 
   return (
     <div className="w-full flex flex-col gap-8">
@@ -55,9 +65,27 @@ export default function Body() {
           </div>
         ) : (
           <div className="w-full px-2">
+            <div className="flex items-center gap-3 py-2">
+              <SelectCheckbox
+                label="Select all companies on this page"
+                checked={pageIds.length > 0 && selectedOnPage === pageIds.length}
+                indeterminate={
+                  selectedOnPage > 0 && selectedOnPage < pageIds.length
+                }
+                onChange={() => toggleAll(pageIds)}
+              />
+              <span className="text-sm text-foreground">
+                {selectedOnPage > 0 ? `${selectedOnPage} selected` : "Select all"}
+              </span>
+            </div>
             <div className="py-2 grid xl:grid-cols-3 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2 grid-cols-1 gap-4 w-full">
               {companies.map((company: Company) => (
-                <CompanyCard key={company._id} company={company} />
+                <CompanyCard
+                  key={company._id}
+                  company={company}
+                  selected={selected.has(company._id)}
+                  onToggleSelect={() => toggle(company._id)}
+                />
               ))}
             </div>
 
@@ -79,6 +107,17 @@ export default function Body() {
           </div>
         )}
       </div>
+
+      <BulkActionBar
+        count={selected.size}
+        noun={["company", "companies"]}
+        onClear={clear}
+        onDelete={(close) => {
+          // TODO: call the bulk delete endpoint once the backend adds one
+          toast.info("Bulk delete isn't available yet");
+          close();
+        }}
+      />
     </div>
   );
 }

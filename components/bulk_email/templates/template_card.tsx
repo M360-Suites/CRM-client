@@ -6,10 +6,13 @@ export default function TemplateCard({
 	template,
 	onSelect,
 	onUse,
+	meta,
 }: {
-	template: EmailTemplate;
+	template: Pick<EmailTemplate, "name" | "description">;
 	onSelect: () => void;
 	onUse?: () => void;
+	// Shown left of "Use Template", e.g. how many emails a workflow sends
+	meta?: React.ReactNode;
 }) {
 	return (
 		<div
@@ -35,15 +38,20 @@ export default function TemplateCard({
 					{template.description}
 				</p>
 				{onUse && (
-					<button
-						onClick={(e) => {
-							e.stopPropagation();
-							onUse();
-						}}
-						className="mt-auto w-fit rounded-md bg-[#E6F2FF] px-3 py-1 text-[11px] text-[#0091FE] hover:bg-[#D5E9FF] cursor-pointer"
-					>
-						Use Template
-					</button>
+					<div className="mt-auto flex items-center justify-between gap-2">
+						{meta && (
+							<span className="text-sm text-[#0091FE]">{meta}</span>
+						)}
+						<button
+							onClick={(e) => {
+								e.stopPropagation();
+								onUse();
+							}}
+							className={`w-fit rounded-md bg-[#E6F2FF] text-[#0091FE] hover:bg-[#D5E9FF] cursor-pointer ${meta ? "px-4 py-1.5 text-xs" : "px-3 py-1 text-[11px]"}`}
+						>
+							Use Template
+						</button>
+					</div>
 				)}
 			</div>
 		</div>

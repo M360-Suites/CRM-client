@@ -33,7 +33,13 @@ import { CustomButton } from "../custom/common/customButton";
 import { useLogout } from "@/hooks/auth/logout";
 import CRMLOGO from "@/public/assets/crm-new-logo.png";
 
-const sideLinks = [
+// comingSoon shows a "Soon" badge for modules that aren't built yet
+const sideLinks: {
+	name: string;
+	icon: React.ElementType;
+	url: string;
+	comingSoon?: boolean;
+}[] = [
 	{
 		name: "Dashboard",
 		icon: LayoutGrid,
@@ -94,7 +100,6 @@ const sideLinks = [
 		name: "Automations",
 		icon: Zap,
 		url: "/automations",
-		comingSoon: true,
 	},
 ];
 

@@ -149,8 +149,8 @@ function ImportResult({
 
   return (
     <div className="flex flex-col gap-6 w-full pt-8 px-7">
-      <div className="bg-[#FFF6EC] py-8 rounded-[10px] flex flex-col items-center justify-center gap-2">
-        <Check size={36} color="#E2725B" />
+      <div className="bg-emerald-50 py-8 rounded-[10px] flex flex-col items-center justify-center gap-2">
+        <Check size={36} className="text-emerald-600" />
         <span className="text-foreground text-sm font-normal text-center">
           {result
             ? `${result.imported} deal${result.imported === 1 ? "" : "s"} imported${

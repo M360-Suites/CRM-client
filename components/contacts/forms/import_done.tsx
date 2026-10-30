@@ -8,8 +8,8 @@ interface DoneProps {
 export default function ImportDone({ onSuccess }: DoneProps) {
   return (
     <div className="flex flex-col gap-10 w-full px-8 pt-8">
-      <div className="bg-[#FFF6EC] h-40 rounded-[10px] flex flex-col items-center justify-center gap-2">
-        <Check size={36} color="#E2725B" className="mx-auto" />
+      <div className="bg-emerald-50 h-40 rounded-[10px] flex flex-col items-center justify-center gap-2">
+        <Check size={36} className="mx-auto text-emerald-600" />
         <span className="text-foreground text-sm font-normal block text-center">
           Your contacts have been successfully imported!
         </span>

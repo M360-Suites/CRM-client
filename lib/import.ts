@@ -184,7 +184,14 @@ export const DEAL_IMPORT_FIELDS: ImportField[] = [
   {
     key: "value",
     label: "Value",
+    required: true,
     aliases: ["amount", "deal_value", "budget", "price", "estimated_value"],
+  },
+  {
+    key: "contact_email",
+    label: "Contact Email",
+    required: true,
+    aliases: ["email", "email_address", "emailaddress", "e_mail", "mail"],
   },
   { key: "currency", label: "Currency" },
   { key: "status", label: "Status", aliases: ["deal_status"] },
@@ -207,11 +214,6 @@ export const DEAL_IMPORT_FIELDS: ImportField[] = [
     aliases: ["company_name", "organization", "organisation"],
   },
   { key: "company_id", label: "Company ID" },
-  {
-    key: "contact_email",
-    label: "Contact Email",
-    aliases: ["email", "email_address", "emailaddress", "e_mail", "mail"],
-  },
   { key: "contact_id", label: "Contact ID" },
 ];
 

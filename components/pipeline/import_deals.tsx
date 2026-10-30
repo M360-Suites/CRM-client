@@ -12,13 +12,13 @@ import { BulkImportResult } from "@/types/pipeline";
 
 const EXPECTED_COLUMNS = [
   "Deal title *",
-  "Value / Amount (5000, $5,000, 5k)",
+  "Value / Amount * (5000, $5,000, 5k)",
+  "Contact email * (linked if the contact exists)",
   "Currency",
   "Status (open/won/lost)",
   "Stage (defaults to the first open stage)",
   "Expected close date",
   "Company (linked if it exists)",
-  "Contact email (linked if the contact exists)",
   "Source, Industry, Description",
 ];
 

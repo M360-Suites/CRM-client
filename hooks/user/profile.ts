@@ -7,6 +7,8 @@ export const useUserProfile = () => {
   return useQuery<User>({
     queryKey: ["user"],
     queryFn: getUser,
-    refetchInterval: 2 * 60 * 100,
+    // Fetch once per session; logout removes it so the next login refetches
+    staleTime: Infinity,
+    refetchOnWindowFocus: false,
   });
 };

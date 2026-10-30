@@ -1,9 +1,10 @@
 "use client";
 
 import { CustomButton } from "@/components/custom/common/customButton";
-import { PlusIcon } from "lucide-react";
+import { Download, PlusIcon } from "lucide-react";
 import { CustomDrawer } from "@/components/custom/common/drawer";
 import AddDealForm from "./form/add_deal";
+import ImportDeals from "./import_deals";
 
 export default function Header() {
   return (
@@ -18,6 +19,20 @@ export default function Header() {
           </span>
         </div>
         <div className="flex flex-row gap-4">
+          <CustomDrawer
+            label="Import Deals"
+            trigger={
+              <CustomButton
+                variant="ghost"
+                className="rounded-full flex text-sm flex-row items-center gap-2 md:px-5 px-3 py-3"
+              >
+                <Download />
+                <span>Import</span>
+              </CustomButton>
+            }
+          >
+            {(close) => <ImportDeals onSuccess={() => close()} />}
+          </CustomDrawer>
           <CustomDrawer
             label="Add Deal"
             trigger={

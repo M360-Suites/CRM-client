@@ -65,3 +65,12 @@ export type PipelineComment = {
 };
 
 export type AssignmentMode = "auto" | "manual";
+
+// Response of POST /deals/bulk-import. The error shape isn't documented, so
+// rows may carry either `message` or `error`.
+export interface BulkImportResult {
+  imported: number;
+  failed: number;
+  custom_columns?: string[];
+  errors?: { row?: number; message?: string; error?: string }[];
+}

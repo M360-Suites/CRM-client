@@ -1,0 +1,58 @@
+const steps = [
+  { id: 1, name: "Upload" },
+  { id: 2, name: "Map" },
+  { id: 3, name: "Preview" },
+  { id: 4, name: "Done" },
+];
+
+// Upload → Map → Preview → Done progress indicator for import drawers.
+// Every step before `current` counts as completed.
+export function ImportStepper({ current }: { current: number }) {
+  return (
+    <div className="flex flex-col items-center mb-2">
+      {/* Row 1: circles + dashes */}
+      <div className="flex flex-row items-center">
+        {steps.map((step, index) => (
+          <div key={step.id} className="flex items-center">
+            <div
+              className={`w-7.5 h-7.5 rounded-full flex items-center justify-center ${
+                current >= step.id ? "bg-primary" : "bg-primary/30"
+              }`}
+            >
+              <span className="text-xs font-medium text-primary-foreground">
+                {step.id}
+              </span>
+            </div>
+            {index < steps.length - 1 && (
+              <div className="relative w-12 h-0.5 mx-2">
+                <div
+                  className={`absolute inset-0 ${current >= step.id ? "bg-primary" : "bg-[#D9D9D9]"} rounded-full`}
+                />
+                <div
+                  className="absolute top-0 left-0 h-full bg-primary rounded-full"
+                  style={{
+                    width: current > step.id ? "100%" : "0%",
+                    transition: "width 0.3s ease",
+                  }}
+                />
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+
+      {/* Row 2: labels, each centered under its circle */}
+      <div className="flex flex-row items-start mt-3">
+        {steps.map((step, index) => (
+          <div key={step.id} className="flex items-center">
+            <span className="text-sm font-normal w-10 text-center text-foreground">
+              {step.name}
+            </span>
+            {/* Spacer to account for dash width between circles */}
+            {index < steps.length - 1 && <div className="w-14" />}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}

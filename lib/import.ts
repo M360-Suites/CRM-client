@@ -173,3 +173,64 @@ export function buildImportFile(
   const csv = Papa.unparse({ fields: columns.map((c) => c.header), data });
   return new File([csv], originalName, { type: "text/csv" });
 }
+
+export const DEAL_IMPORT_FIELDS: ImportField[] = [
+  {
+    key: "title",
+    label: "Deal Title",
+    required: true,
+    aliases: ["deal_title", "deal_name", "deal", "name"],
+  },
+  {
+    key: "value",
+    label: "Value",
+    aliases: ["amount", "deal_value", "budget", "price", "estimated_value"],
+  },
+  { key: "currency", label: "Currency" },
+  { key: "status", label: "Status", aliases: ["deal_status"] },
+  { key: "stage", label: "Stage", aliases: ["stage_name", "pipeline_stage"] },
+  { key: "stage_id", label: "Stage ID" },
+  { key: "pipeline", label: "Pipeline", aliases: ["pipeline_name"] },
+  { key: "pipeline_id", label: "Pipeline ID" },
+  {
+    key: "expected_close_date",
+    label: "Expected Close Date",
+    aliases: ["close_date", "closing_date", "expected_close"],
+  },
+  { key: "summary", label: "Summary" },
+  { key: "description", label: "Description", aliases: ["notes", "note"] },
+  { key: "source", label: "Source", aliases: ["lead_source"] },
+  { key: "industry", label: "Industry", aliases: ["sector"] },
+  {
+    key: "company",
+    label: "Company",
+    aliases: ["company_name", "organization", "organisation"],
+  },
+  { key: "company_id", label: "Company ID" },
+  {
+    key: "contact_email",
+    label: "Contact Email",
+    aliases: ["email", "email_address", "emailaddress", "e_mail", "mail"],
+  },
+  { key: "contact_id", label: "Contact ID" },
+];
+
+const pad = (n: number) => String(n).padStart(2, "0");
+
+// Normalize to YYYY-MM-DD. Slash/dash dates are read as DD/MM/YYYY unless the
+// second part is > 12 (then MM/DD/YYYY). Unparseable values are kept as-is.
+export function normalizeDate(value: string) {
+  if (!value) return "";
+  const dmy = value.match(/^(\d{1,2})[/.-](\d{1,2})[/.-](\d{2,4})$/);
+  if (dmy) {
+    let [a, b] = [Number(dmy[1]), Number(dmy[2])];
+    const year = dmy[3].length === 2 ? 2000 + Number(dmy[3]) : Number(dmy[3]);
+    if (b > 12) [a, b] = [b, a];
+    const date = new Date(year, b - 1, a);
+    if (date.getMonth() !== b - 1) return value;
+    return `${year}-${pad(b)}-${pad(a)}`;
+  }
+  const parsed = new Date(value);
+  if (isNaN(parsed.getTime())) return value;
+  return `${parsed.getFullYear()}-${pad(parsed.getMonth() + 1)}-${pad(parsed.getDate())}`;
+}

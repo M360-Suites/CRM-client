@@ -1,6 +1,6 @@
 import { Metadata } from "next";
-import { Mails } from "lucide-react";
-import ModulePage from "@/components/modules/module_page";
+import Header from "@/components/bulk_email/header";
+import Body from "@/components/bulk_email/body";
 
 export const metadata: Metadata = {
 	title: "Bulk Email | CRM360",
@@ -8,13 +8,9 @@ export const metadata: Metadata = {
 
 export default function Page() {
 	return (
-		<ModulePage
-			title="Bulk Email"
-			description="Send email campaigns to many contacts at once"
-			icon={Mails}
-			emptyTitle="Bulk Email is coming soon"
-			emptyDescription="We're building bulk email campaigns so you can reach many contacts at once. Check back shortly."
-			comingSoon
-		/>
+		<div className="w-full flex flex-col gap-12 pb-8">
+			<Header />
+			<Body />
+		</div>
 	);
 }

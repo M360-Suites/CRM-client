@@ -1,0 +1,415 @@
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import {
+	ChevronRight,
+	EllipsisVertical,
+	Eye,
+	FlaskConical,
+	Maximize,
+	Minimize,
+	Plus,
+	Trash2,
+	Zap,
+} from "lucide-react";
+import { toast } from "sonner";
+import { CustomButton } from "@/components/custom/common/customButton";
+import { CustomPopover } from "@/components/custom/common/customPopover";
+import { useBulkEmailStore } from "@/stores/bulk_email/bulk_email_store";
+import { BulkEmail, EmailContent } from "@/types/bulk_email";
+import { DEFAULT_TEMPLATE_NAME, createDefaultContent } from "../data";
+import ConfirmationModal from "../confirmation_modal";
+import EmailCanvas from "../editor/email_canvas";
+import EditorHeader, {
+	SavedStatus,
+	useAutosave,
+} from "../editor/editor_header";
+import FormatToolbar from "../editor/format_toolbar";
+import { ColorField, Toggle } from "../editor/controls";
+import PreviewPanel, { PreviewHeader } from "./preview_panel";
+
+function Stepper({ step }: { step: "edit" | "preview" }) {
+	const published = step === "preview";
+	return (
+		<div className="flex items-center gap-2 text-xs">
+			<span className="flex items-center gap-1.5 text-[#334155]">
+				<span className="h-1.5 w-1.5 rounded-full bg-[#0F172A]" />
+				Draft
+			</span>
+			<ChevronRight size={12} color="#94A3B8" />
+			<span
+				className={`flex items-center gap-1.5 ${published ? "text-[#334155]" : "text-[#94A3B8]"}`}
+			>
+				<span
+					className={`h-1.5 w-1.5 rounded-full border ${published ? "bg-[#0F172A] border-[#0F172A]" : "border-[#94A3B8]"}`}
+				/>
+				Publish
+			</span>
+		</div>
+	);
+}
+
+function TemplateSection({
+	templateName,
+	onApply,
+	onSave,
+}: {
+	templateName: string;
+	onApply: (content: EmailContent, templateId: string) => void;
+	onSave: () => void;
+}) {
+	const { templates } = useBulkEmailStore();
+
+	return (
+		<div className="flex flex-col gap-2">
+			<span className="flex items-center gap-1.5 text-xs text-[#334155]">
+				Template
+				<span className="h-1.5 w-1.5 rounded-full bg-[#F97316]" />
+			</span>
+			<div className="flex gap-3 rounded-md border border-[#E2E8F0] p-2.5">
+				<div className="w-11 h-14 shrink-0 rounded-[3px] border border-[#E2E8F0] bg-white flex flex-col gap-1 p-1.5">
+					<span className="h-3 w-full rounded-[1px] bg-[#BAE6FD]" />
+					<span className="h-0.5 w-3/4 rounded-full bg-[#E2E8F0]" />
+					<span className="h-0.5 w-full rounded-full bg-[#E2E8F0]" />
+					<span className="mt-0.5 h-1 w-1/2 rounded-full bg-[#14B8A6]" />
+				</div>
+				<div className="flex flex-col gap-1.5 flex-1 min-w-0">
+					<span className="text-xs font-semibold text-[#0F172A] truncate">
+						{templateName}
+					</span>
+					<CustomPopover
+						align="start"
+						title="Templates"
+						popoverClassname="max-h-72 overflow-y-auto"
+						className="pt-2 flex flex-col w-56"
+						trigger={
+							<button className="rounded-[4px] border border-[#E2E8F0] py-1 text-[11px] text-[#334155] hover:bg-gray-50 cursor-pointer">
+								Browse templates
+							</button>
+						}
+					>
+						{templates.length === 0 && (
+							<span className="px-2 py-1.5 text-xs text-[#64748B]">
+								No saved templates yet
+							</span>
+						)}
+						{templates.map((t) => (
+							<button
+								key={t._id}
+								onClick={() =>
+									onApply(structuredClone(t.content), t._id)
+								}
+								className="text-left px-2 py-1.5 rounded-md text-xs text-foreground hover:bg-gray-100 cursor-pointer"
+							>
+								{t.name}
+							</button>
+						))}
+					</CustomPopover>
+					<button
+						onClick={onSave}
+						className="rounded-[4px] border border-[#E2E8F0] py-1 text-[11px] text-[#334155] hover:bg-gray-50 cursor-pointer"
+					>
+						Save template
+					</button>
+				</div>
+			</div>
+		</div>
+	);
+}
+
+function Editor({ initial }: { initial: BulkEmail }) {
+	const router = useRouter();
+	const { templates, saveEmail, deleteEmail, saveTemplate } =
+		useBulkEmailStore();
+	const [email, setEmail] = useState(initial);
+	const [step, setStep] = useState<"edit" | "preview">("edit");
+	const [expanded, setExpanded] = useState(false);
+	const [showPreviewText, setShowPreviewText] = useState(
+		initial.preview_text !== "",
+	);
+	const [sent, setSent] = useState(false);
+
+	// TODO: persist through the bulk email endpoint once it exists
+	const saving = useAutosave(email, (e) =>
+		saveEmail({ ...e, updated_at: new Date().toISOString() }),
+	);
+
+	const update = (patch: Partial<BulkEmail>) =>
+		setEmail((e) => ({ ...e, ...patch }));
+	const updateContent = (patch: Partial<EmailContent>) =>
+		setEmail((e) => ({ ...e, content: { ...e.content, ...patch } }));
+
+	const templateName =
+		templates.find((t) => t._id === email.template_id)?.name ??
+		DEFAULT_TEMPLATE_NAME;
+
+	const handleContinue = () => {
+		if (step === "edit") {
+			if (!email.subject.trim()) {
+				toast.error("Add a subject line before continuing");
+				return;
+			}
+			setStep("preview");
+			return;
+		}
+		// TODO: send through the bulk email endpoint once it exists
+		const published = {
+			...email,
+			status: "published" as const,
+			updated_at: new Date().toISOString(),
+		};
+		setEmail(published);
+		saveEmail(published);
+		setSent(true);
+	};
+
+	const iconButton =
+		"h-6 w-6 flex items-center justify-center rounded text-[#64748B] hover:bg-[#F1F5F9] cursor-pointer";
+
+	return (
+		<div className="w-full flex flex-col gap-10 pt-8 pb-24">
+			<EditorHeader
+				backHref="/bulk-email"
+				title={email.title}
+				onTitleChange={(title) => update({ title })}
+				right={
+					<>
+						<Stepper step={step} />
+						<CustomPopover
+							trigger={
+								<button
+									aria-label="More actions"
+									className="p-1 rounded hover:bg-gray-100 cursor-pointer"
+								>
+									<EllipsisVertical size={14} color="#94A3B8" />
+								</button>
+							}
+							className="pt-2 flex flex-col w-40"
+						>
+							<button
+								onClick={() => {
+									deleteEmail(email._id);
+									toast.success("Draft deleted");
+									router.push("/bulk-email");
+								}}
+								className="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-[#DC2626] hover:bg-red-50 cursor-pointer"
+							>
+								<Trash2 size={16} />
+								Delete draft
+							</button>
+						</CustomPopover>
+					</>
+				}
+			/>
+
+			<div
+				className={`flex max-lg:flex-col items-start justify-center ${step === "preview" ? "gap-6" : "gap-8"}`}
+			>
+				<div
+					className={`flex flex-col w-full min-w-0 ${expanded ? "max-w-none flex-1" : "max-w-[720px]"}`}
+				>
+					{step === "edit" ? (
+						<>
+							<div className="mb-4 flex flex-col gap-2 rounded-md border border-[#E2E8F0] bg-white px-4 pt-5 pb-4">
+								<label
+									htmlFor="subject"
+									className="text-xs text-[#334155]"
+								>
+									Subject Line
+								</label>
+								<div className="flex items-center gap-2 rounded-[4px] border border-[#E2E8F0] px-3 h-9 focus-within:border-[#0091FE]">
+									<input
+										id="subject"
+										value={email.subject}
+										placeholder="New Broadcast"
+										onChange={(e) => update({ subject: e.target.value })}
+										className="flex-1 min-w-0 text-sm text-[#0F172A] outline-none bg-transparent placeholder:text-[#0F172A]/60"
+									/>
+									<button
+										title="Suggest a subject line with AI"
+										aria-label="Suggest a subject line with AI"
+										onClick={() =>
+											// TODO: wire to the AI writer endpoint
+											toast.info("AI subject suggestions aren't available yet")
+										}
+										className="text-[#94A3B8] hover:text-[#0091FE] cursor-pointer"
+									>
+										<Zap size={14} />
+									</button>
+									<button
+										title="Run an A/B test"
+										aria-label="Run an A/B test"
+										aria-pressed={email.ab_test}
+										onClick={() => update({ ab_test: !email.ab_test })}
+										className={`cursor-pointer ${email.ab_test ? "text-[#0091FE]" : "text-[#94A3B8] hover:text-[#0091FE]"}`}
+									>
+										<FlaskConical size={14} />
+									</button>
+								</div>
+								{showPreviewText ? (
+									<input
+										aria-label="Preview text"
+										value={email.preview_text}
+										placeholder="Preview text shown after the subject in the inbox"
+										onChange={(e) =>
+											update({ preview_text: e.target.value })
+										}
+										className="rounded-[4px] border border-[#E2E8F0] px-3 h-8 text-xs text-[#0F172A] outline-none focus:border-[#0091FE]"
+									/>
+								) : (
+									<button
+										onClick={() => setShowPreviewText(true)}
+										className="w-fit flex items-center gap-1 text-xs text-[#64748B] hover:text-[#0F172A] cursor-pointer"
+									>
+										<Plus size={14} />
+										Add preview text
+									</button>
+								)}
+							</div>
+
+							<FormatToolbar
+								className="sticky top-20 z-10 rounded-t-md border border-b-0 border-[#E2E8F0] bg-white px-3 py-1.5"
+								right={
+									<div className="flex items-center gap-1 shrink-0">
+										<button
+											title="Preview"
+											aria-label="Preview"
+											onClick={handleContinue}
+											className={iconButton}
+										>
+											<Eye size={14} />
+										</button>
+										<button
+											title={expanded ? "Collapse" : "Expand"}
+											aria-label={expanded ? "Collapse" : "Expand"}
+											onClick={() => setExpanded((x) => !x)}
+											className={iconButton}
+										>
+											{expanded ? <Minimize size={14} /> : <Maximize size={14} />}
+										</button>
+									</div>
+								}
+							/>
+						</>
+					) : (
+						<PreviewHeader email={email} onChange={update} />
+					)}
+
+					<EmailCanvas
+						size="md"
+						editable={step === "edit"}
+						content={email.content}
+						className={step === "edit" ? "rounded-b-md" : ""}
+						onHtmlChange={(html) => updateContent({ html })}
+					/>
+				</div>
+
+				{step === "edit" && !expanded && (
+					<aside className="lg:w-70 w-full shrink-0 flex flex-col gap-5 rounded-md border border-[#E2E8F0] bg-white p-4 lg:sticky lg:top-20">
+						<h3 className="text-xs font-semibold text-[#0F172A] border-b border-[#F1F5F9] pb-3">
+							Email
+						</h3>
+						<TemplateSection
+							templateName={templateName}
+							onApply={(content, template_id) =>
+								update({ content, template_id })
+							}
+							onSave={() => {
+								// TODO: save through the templates endpoint once it exists
+								const _id = crypto.randomUUID();
+								saveTemplate({
+									_id,
+									name: email.title || "Untitled template",
+									description: email.subject,
+									category: "starting",
+									content: structuredClone(email.content),
+									updated_at: new Date().toISOString(),
+								});
+								update({ template_id: _id });
+								toast.success("Saved as a template");
+							}}
+						/>
+						<ColorField
+							label="Background color"
+							value={email.content.background_color}
+							onChange={(background_color) =>
+								updateContent({ background_color })
+							}
+						/>
+						<div className="border-t border-[#F1F5F9] pt-4">
+							<Toggle
+								label="Run an A/B Test"
+								checked={email.ab_test}
+								onChange={(ab_test) => update({ ab_test })}
+							/>
+						</div>
+					</aside>
+				)}
+
+				{step === "preview" && <PreviewPanel />}
+			</div>
+
+			<div className="fixed bottom-0 right-0 z-20 flex items-center gap-5 px-5 py-4">
+				{step === "preview" && (
+					<button
+						onClick={() => setStep("edit")}
+						className="text-xs text-[#64748B] hover:text-[#0F172A] cursor-pointer"
+					>
+						Back to edit
+					</button>
+				)}
+				<SavedStatus saving={saving} />
+				<CustomButton
+					onClick={handleContinue}
+					className="rounded-[4px] border-0 px-5 min-h-8 py-1.5 text-[13px] font-normal"
+				>
+					{step === "edit" ? "Continue" : "Send"}
+				</CustomButton>
+			</div>
+
+			<ConfirmationModal
+				open={sent}
+				title="Mail Sent"
+				description="Your mail is successfully sent"
+				actionLabel="Done"
+				onAction={() => router.push("/bulk-email")}
+			/>
+		</div>
+	);
+}
+
+export default function BroadcastEditor({
+	id,
+	templateId,
+}: {
+	id?: string;
+	templateId?: string;
+}) {
+	const existing = useBulkEmailStore((s) =>
+		id ? s.emails.find((e) => e._id === id) : undefined,
+	);
+	const template = useBulkEmailStore((s) =>
+		templateId ? s.templates.find((t) => t._id === templateId) : undefined,
+	);
+
+	// Fresh draft, seeded from the chosen template when there is one
+	const [draft] = useState<BulkEmail>(() => ({
+		_id: crypto.randomUUID(),
+		title: "New Broadcast",
+		subject: "",
+		preview_text: "",
+		audience: "all",
+		status: "draft",
+		template_id: template?._id ?? null,
+		ab_test: false,
+		content: template
+			? structuredClone(template.content)
+			: createDefaultContent(),
+		updated_at: new Date().toISOString(),
+		updated_by: "You",
+	}));
+
+	const initial = existing ?? draft;
+	return <Editor key={initial._id} initial={initial} />;
+}

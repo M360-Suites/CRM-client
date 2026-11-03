@@ -79,7 +79,6 @@ const sideLinks = [
 		name: "Bulk Email",
 		icon: Mails,
 		url: "/bulk-email",
-		comingSoon: true,
 	},
 	{
 		name: "Analytics",

@@ -183,9 +183,9 @@ export default function LeadCaptureSettings() {
 						: "Add this inside your root layout.tsx, next to your other <Script> tags."}
 				</p>
 				<ConfirmRevokeModal
-					title="Remove access?"
+					title="Remove access"
 					description="Are you sure you want to remove access? Your website will stop sending leads to this CRM until you generate a new key and update the script on your site."
-					confirmationText="I WANT TO REVOKE"
+					confirmationText="REVOKE"
 					confirmLabel="Revoke key"
 					pendingLabel="Revoking..."
 					isPending={loadingRevoke}

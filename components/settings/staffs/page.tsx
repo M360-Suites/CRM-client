@@ -139,7 +139,7 @@ export default function Staffs() {
                           {staff._id !== currentUser?.id &&
                             (staff.is_active ? (
                               <ConfirmRevokeModal
-                                title="Deactivate staff?"
+                                title="Deactivate staff"
                                 description={
                                   <>
                                     Deactivate{" "}
@@ -151,7 +151,7 @@ export default function Staffs() {
                                     reactivate them at any time.
                                   </>
                                 }
-                                confirmationText="I WANT TO DEACTIVATE STAFF"
+                                confirmationText="DEACTIVATE"
                                 confirmLabel="Deactivate staff"
                                 pendingLabel="Deactivating..."
                                 isPending={
@@ -204,7 +204,7 @@ export default function Staffs() {
                           {staff._id !== currentUser?.id && (
                             <div>
                               <ConfirmRevokeModal
-                                title="Delete staff permanently?"
+                                title="Delete staff permanently"
                                 description={
                                   <>
                                     Are you sure you want to permanently delete{" "}
@@ -216,7 +216,7 @@ export default function Staffs() {
                                     will be reassigned to you.
                                   </>
                                 }
-                                confirmationText="I WANT TO DELETE STAFF"
+                                confirmationText="DELETE"
                                 confirmLabel="Delete staff"
                                 pendingLabel="Deleting..."
                                 isPending={

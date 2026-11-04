@@ -6,7 +6,7 @@ import { useRevokeInvite } from "@/hooks/user/admin/revoke_invite";
 import { UserPlus, Pencil, Trash2, Loader } from "lucide-react";
 import { handleRoleDisplay } from "@/lib/utils";
 import AddStaffForm from "./forms/add_staff";
-import { useCanManageStaff } from "@/hooks/user/permissions";
+import { useCanInviteStaff, useCanManageStaff } from "@/hooks/user/permissions";
 
 const StaffRowSkeleton = () => (
   <tr className="border-t border-[#E8E8E8]">
@@ -30,7 +30,8 @@ const StaffRowSkeleton = () => (
 
 export default function RolesAccess() {
   const canManageStaff = useCanManageStaff();
-  const { data: staffs, isLoading } = useGetInvitations(canManageStaff);
+  const canInviteStaff = useCanInviteStaff();
+  const { data: staffs, isLoading } = useGetInvitations(canInviteStaff);
   const revokeInviteMutation = useRevokeInvite();
   const isEmpty = !staffs || staffs.length === 0;
   return (
@@ -39,7 +40,7 @@ export default function RolesAccess() {
         <h1 className="lg:text-base text-sm text-foreground font-medium min-w-0">
           Manage invitations and staff access
         </h1>
-        {canManageStaff && (
+        {canInviteStaff && (
           <CustomDrawer
             label="Add Staff"
             trigger={
@@ -95,7 +96,7 @@ export default function RolesAccess() {
             <span className="text-base max-md:text-sm font-normal text-foreground">
               No Invitations yet
             </span>
-            {canManageStaff && (
+            {canInviteStaff && (
               <CustomDrawer
                 label="Add Staff"
                 trigger={

@@ -8,6 +8,7 @@ import { AddStaffData, addStaffSchema } from "@/validation/roles";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useAddStaff } from "@/hooks/user/admin/add_staff";
 import { useEditStaff } from "@/hooks/user/admin/edit_staff";
+import { useCanManageStaff } from "@/hooks/user/permissions";
 
 interface EditableStaff {
   _id: string;
@@ -23,6 +24,8 @@ interface AddStaffFormProps {
 
 export default function AddStaffForm({ onSuccess, staff }: AddStaffFormProps) {
   const isEditing = !!staff;
+  // Only admins can grant the admin role
+  const canAssignAdmin = useCanManageStaff();
 
   const { mutate: addStaff, isPending: isAdding } = useAddStaff();
   const { mutate: updateStaff, isPending: isUpdating } = useEditStaff();
@@ -118,7 +121,7 @@ export default function AddStaffForm({ onSuccess, staff }: AddStaffFormProps) {
               placeholder="Select role"
               error={errors.role?.message}
               selectable={[
-                { name: "Admin", value: "admin" },
+                ...(canAssignAdmin ? [{ name: "Admin", value: "admin" }] : []),
                 { name: "Sales Rep", value: "sales_rep" },
                 {
                   name: "Sales Manager",

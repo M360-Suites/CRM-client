@@ -17,3 +17,10 @@ export const useCanManageStaff = () => {
   const { data: user } = useUserProfile();
   return user?.role === "admin";
 };
+
+const STAFF_INVITE_ROLES = ["admin", "sales_manager"];
+
+export const useCanInviteStaff = () => {
+  const { data: user } = useUserProfile();
+  return STAFF_INVITE_ROLES.includes(user?.role ?? "");
+};

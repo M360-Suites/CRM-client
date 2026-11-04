@@ -125,7 +125,7 @@ export function AppSidebar() {
 	}, [currentPath, setActiveLink]);
 
 	return (
-		<Sidebar className="inset-0 h-full overflow-y-auto">
+		<Sidebar className="inset-0 h-full overflow-y-auto border-r border-[#e8e8e8]">
 			<SidebarHeader className="lg:pt-15 pt-5 max-lg:px-7 flex items-start justify-start">
 				<Image
 					src={CRMLOGO}

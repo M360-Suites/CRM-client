@@ -33,8 +33,8 @@ export const metadata: Metadata = {
     title: "CRM360",
   },
   icons: {
-    apple: "/logo.png",
-    icon: "/logo.png",
+    apple: "/assets/apple-icon-180.png",
+    icon: "/assets/new-icon.png",
   },
 };
 

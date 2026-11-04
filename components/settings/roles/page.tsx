@@ -6,6 +6,7 @@ import { useRevokeInvite } from "@/hooks/user/admin/revoke_invite";
 import { UserPlus, Pencil, Trash2, Loader } from "lucide-react";
 import { handleRoleDisplay } from "@/lib/utils";
 import AddStaffForm from "./forms/add_staff";
+import { useCanManageStaff } from "@/hooks/user/permissions";
 
 const StaffRowSkeleton = () => (
   <tr className="border-t border-[#E8E8E8]">
@@ -28,7 +29,8 @@ const StaffRowSkeleton = () => (
 );
 
 export default function RolesAccess() {
-  const { data: staffs, isLoading } = useGetInvitations();
+  const canManageStaff = useCanManageStaff();
+  const { data: staffs, isLoading } = useGetInvitations(canManageStaff);
   const revokeInviteMutation = useRevokeInvite();
   const isEmpty = !staffs || staffs.length === 0;
   return (
@@ -37,27 +39,29 @@ export default function RolesAccess() {
         <h1 className="lg:text-base text-sm text-foreground font-medium min-w-0">
           Manage invitations and staff access
         </h1>
-        <CustomDrawer
-          label="Add Staff"
-          trigger={
-            <CustomButton
-              variant="default"
-              aria-label="Invite staff"
-              className="rounded-full flex flex-row shrink-0 items-center gap-2 md:px-5 max-md:size-10 max-md:p-0 py-2"
-            >
-              <UserPlus />
-              <span className="max-md:hidden">Invite staff</span>
-            </CustomButton>
-          }
-        >
-          {(close) => (
-            <AddStaffForm
-              onSuccess={() => {
-                close();
-              }}
-            />
-          )}
-        </CustomDrawer>
+        {canManageStaff && (
+          <CustomDrawer
+            label="Add Staff"
+            trigger={
+              <CustomButton
+                variant="default"
+                aria-label="Invite staff"
+                className="rounded-full flex flex-row shrink-0 items-center gap-2 md:px-5 max-md:size-10 max-md:p-0 py-2"
+              >
+                <UserPlus />
+                <span className="max-md:hidden">Invite staff</span>
+              </CustomButton>
+            }
+          >
+            {(close) => (
+              <AddStaffForm
+                onSuccess={() => {
+                  close();
+                }}
+              />
+            )}
+          </CustomDrawer>
+        )}
       </div>
       <div>
         {isLoading ? (
@@ -91,20 +95,24 @@ export default function RolesAccess() {
             <span className="text-base max-md:text-sm font-normal text-foreground">
               No Invitations yet
             </span>
-            <CustomDrawer
-              label="Add Staff"
-              trigger={
-                <CustomButton
-                  variant="default"
-                  className="rounded-full flex flex-row items-center gap-2 md:px-7 max-md:px-4 py-2"
-                >
-                  <UserPlus />
-                  <span className="text-base max-md:text-sm">Invite staff</span>
-                </CustomButton>
-              }
-            >
-              {(close) => <AddStaffForm onSuccess={() => close()} />}
-            </CustomDrawer>
+            {canManageStaff && (
+              <CustomDrawer
+                label="Add Staff"
+                trigger={
+                  <CustomButton
+                    variant="default"
+                    className="rounded-full flex flex-row items-center gap-2 md:px-7 max-md:px-4 py-2"
+                  >
+                    <UserPlus />
+                    <span className="text-base max-md:text-sm">
+                      Invite staff
+                    </span>
+                  </CustomButton>
+                }
+              >
+                {(close) => <AddStaffForm onSuccess={() => close()} />}
+              </CustomDrawer>
+            )}
           </div>
         ) : (
           <div className="overflow-x-auto border border-[#E8E8E8] rounded-[12px]">
@@ -138,36 +146,38 @@ export default function RolesAccess() {
                       {handleRoleDisplay(staff.role)}
                     </td>
                     <td className="px-6 py-4 text-sm font-normal text-foreground">
-                      <div className="flex items-center justify-end lg:gap-5 gap-4">
-                        <CustomDrawer
-                          label="Edit Staff"
-                          trigger={
-                            <Pencil className="w-4 h-4 cursor-pointer" />
-                          }
-                        >
-                          {(close) => (
-                            <AddStaffForm
-                              staff={staff}
-                              onSuccess={() => close()}
-                            />
-                          )}
-                        </CustomDrawer>
-                        <div>
-                          {revokeInviteMutation.isPending &&
+                      {canManageStaff && (
+                        <div className="flex items-center justify-end lg:gap-5 gap-4">
+                          <CustomDrawer
+                            label="Edit Staff"
+                            trigger={
+                              <Pencil className="w-4 h-4 cursor-pointer" />
+                            }
+                          >
+                            {(close) => (
+                              <AddStaffForm
+                                staff={staff}
+                                onSuccess={() => close()}
+                              />
+                            )}
+                          </CustomDrawer>
+                          <div>
+                            {revokeInviteMutation.isPending &&
                             revokeInviteMutation.variables === staff._id ? (
-                            <div className="w-4 h-4 text-red-400 cursor-pointer">
-                              <Loader className="animate-spin" />
-                            </div>
-                          ) : (
-                            <Trash2
-                              className="w-4 h-4 text-red-400 cursor-pointer"
-                              onClick={() =>
-                                revokeInviteMutation.mutate(staff._id)
-                              }
-                            />
-                          )}
+                              <div className="w-4 h-4 text-red-400 cursor-pointer">
+                                <Loader className="animate-spin" />
+                              </div>
+                            ) : (
+                              <Trash2
+                                className="w-4 h-4 text-red-400 cursor-pointer"
+                                onClick={() =>
+                                  revokeInviteMutation.mutate(staff._id)
+                                }
+                              />
+                            )}
+                          </div>
                         </div>
-                      </div>
+                      )}
                     </td>
                   </tr>
                 ))}

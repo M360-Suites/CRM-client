@@ -1,7 +1,13 @@
-import { Pencil, Trash2 } from "lucide-react";
+import { Loader, Pencil, Trash2, UserCheck, UserX } from "lucide-react";
 import { handleRoleDisplay } from "@/lib/utils";
 import { useGetStaffs } from "@/hooks/user/admin/get_staffs";
 import { useDeleteStaff } from "@/hooks/user/admin/delete_staff";
+import {
+  useDeactivateStaff,
+  useReactivateStaff,
+} from "@/hooks/user/admin/deactivate_staff";
+import { useCanManageStaff } from "@/hooks/user/permissions";
+import { useUserProfile } from "@/hooks/user/profile";
 import { Skeleton } from "@/components/ui/skeleton";
 import { CustomDrawer } from "@/components/custom/common/drawer";
 import AddStaffForm from "@/components/settings/roles/forms/add_staff";
@@ -30,6 +36,10 @@ const StaffRowSkeleton = () => (
 export default function Staffs() {
   const { data: staffs, isLoading } = useGetStaffs();
   const deleteStaffMutation = useDeleteStaff();
+  const deactivateStaffMutation = useDeactivateStaff();
+  const reactivateStaffMutation = useReactivateStaff();
+  const canManageStaff = useCanManageStaff();
+  const { data: currentUser } = useUserProfile();
   const isEmpty = !staffs || staffs.data.length === 0;
   return (
     <div className="flex flex-col  w-full gap-5 pt-4">
@@ -101,62 +111,140 @@ export default function Staffs() {
                       {staff.email}
                     </td>
                     <td className="px-6 max-md:px-3 py-4 text-xs md:text-sm font-normal text-foreground">
-                      {handleRoleDisplay(staff.role)}
+                      <div className="flex items-center gap-2">
+                        {handleRoleDisplay(staff.role)}
+                        {!staff.is_active && (
+                          <span className="rounded-full bg-gray-100 px-2 py-0.5 text-[10px] md:text-xs font-medium text-gray-500">
+                            Inactive
+                          </span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-6 max-md:px-3 py-4 text-xs md:text-sm font-normal text-foreground">
-                      <div className="flex items-center justify-end gap-3 md:gap-5">
-                        <CustomDrawer
-                          label="Edit Staff"
-                          trigger={
-                            <Pencil className="w-4 h-4 cursor-pointer" />
-                          }
-                        >
-                          {(close) => (
-                            <AddStaffForm
-                              staff={staff}
-                              onSuccess={() => close()}
-                            />
-                          )}
-                        </CustomDrawer>
-                        <div>
-                          <ConfirmRevokeModal
-                            title="Remove access?"
-                            description={
-                              <>
-                                Are you sure you want to remove access for{" "}
-                                <span className="font-medium text-foreground">
-                                  {staff.display_name || staff.email}
-                                </span>
-                                ? They will no longer be able to sign in to
-                                this CRM.
-                              </>
-                            }
-                            confirmationText="I WANT TO REVOKE STAFF"
-                            confirmLabel="Revoke staff"
-                            pendingLabel="Revoking..."
-                            isPending={
-                              deleteStaffMutation.isPending &&
-                              deleteStaffMutation.variables === staff._id
-                            }
-                            onConfirm={(close) =>
-                              deleteStaffMutation.mutate(staff._id, {
-                                onSuccess: (data) => {
-                                  if (data.status) close();
-                                },
-                              })
-                            }
+                      {canManageStaff && (
+                        <div className="flex items-center justify-end gap-3 md:gap-5">
+                          <CustomDrawer
+                            label="Edit Staff"
                             trigger={
+                              <Pencil className="w-4 h-4 cursor-pointer" />
+                            }
+                          >
+                            {(close) => (
+                              <AddStaffForm
+                                staff={staff}
+                                onSuccess={() => close()}
+                              />
+                            )}
+                          </CustomDrawer>
+                          {staff._id !== currentUser?.id &&
+                            (staff.is_active ? (
+                              <ConfirmRevokeModal
+                                title="Deactivate staff?"
+                                description={
+                                  <>
+                                    Deactivate{" "}
+                                    <span className="font-medium text-foreground">
+                                      {staff.display_name || staff.email}
+                                    </span>
+                                    ? They won&apos;t be able to sign in, but
+                                    their account and records are kept. You can
+                                    reactivate them at any time.
+                                  </>
+                                }
+                                confirmationText="I WANT TO DEACTIVATE STAFF"
+                                confirmLabel="Deactivate staff"
+                                pendingLabel="Deactivating..."
+                                isPending={
+                                  deactivateStaffMutation.isPending &&
+                                  deactivateStaffMutation.variables ===
+                                    staff._id
+                                }
+                                onConfirm={(close) =>
+                                  deactivateStaffMutation.mutate(staff._id, {
+                                    onSuccess: (data) => {
+                                      if (data.status) close();
+                                    },
+                                  })
+                                }
+                                trigger={
+                                  <button
+                                    type="button"
+                                    aria-label={`Deactivate ${staff.display_name}`}
+                                    title="Deactivate"
+                                    className="flex cursor-pointer"
+                                  >
+                                    <UserX className="w-4 h-4 text-amber-500" />
+                                  </button>
+                                }
+                              />
+                            ) : (
                               <button
                                 type="button"
-                                aria-label={`Revoke ${staff.display_name}`}
-                                className="flex cursor-pointer"
+                                aria-label={`Reactivate ${staff.display_name}`}
+                                title="Reactivate"
+                                className="flex cursor-pointer disabled:cursor-not-allowed"
+                                disabled={
+                                  reactivateStaffMutation.isPending &&
+                                  reactivateStaffMutation.variables ===
+                                    staff._id
+                                }
+                                onClick={() =>
+                                  reactivateStaffMutation.mutate(staff._id)
+                                }
                               >
-                                <Trash2 className="w-4 h-4 text-red-400" />
+                                {reactivateStaffMutation.isPending &&
+                                reactivateStaffMutation.variables ===
+                                  staff._id ? (
+                                  <Loader className="w-4 h-4 animate-spin text-green-600" />
+                                ) : (
+                                  <UserCheck className="w-4 h-4 text-green-600" />
+                                )}
                               </button>
-                            }
-                          />
+                            ))}
+                          {staff._id !== currentUser?.id && (
+                            <div>
+                              <ConfirmRevokeModal
+                                title="Delete staff permanently?"
+                                description={
+                                  <>
+                                    Are you sure you want to permanently delete{" "}
+                                    <span className="font-medium text-foreground">
+                                      {staff.display_name || staff.email}
+                                    </span>
+                                    ? This can&apos;t be undone. Their deals,
+                                    contacts, companies, tasks and documents
+                                    will be reassigned to you.
+                                  </>
+                                }
+                                confirmationText="I WANT TO DELETE STAFF"
+                                confirmLabel="Delete staff"
+                                pendingLabel="Deleting..."
+                                isPending={
+                                  deleteStaffMutation.isPending &&
+                                  deleteStaffMutation.variables === staff._id
+                                }
+                                onConfirm={(close) =>
+                                  deleteStaffMutation.mutate(staff._id, {
+                                    onSuccess: (data) => {
+                                      if (data.status) close();
+                                    },
+                                  })
+                                }
+                                trigger={
+                                  <button
+                                    type="button"
+                                    aria-label={`Delete ${staff.display_name}`}
+                                    title="Delete permanently"
+                                    className="flex cursor-pointer"
+                                  >
+                                    <Trash2 className="w-4 h-4 text-red-400" />
+                                  </button>
+                                }
+                              />
+                            </div>
+                          )}
                         </div>
-                      </div>
+                      )}
                     </td>
                   </tr>
                 ))}

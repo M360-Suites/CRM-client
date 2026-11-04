@@ -12,3 +12,8 @@ export const useCanChangeAssignmentMode = () => {
   const { data: user } = useUserProfile();
   return user?.role === "admin";
 };
+
+export const useCanManageStaff = () => {
+  const { data: user } = useUserProfile();
+  return user?.role === "admin";
+};

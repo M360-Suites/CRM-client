@@ -11,6 +11,7 @@ export const useAddStaff = () => {
       if (data.status) {
         toast.success(data.message || "Staff added successfully");
         queryClient.invalidateQueries({ queryKey: ["staff"] });
+        queryClient.invalidateQueries({ queryKey: ["invitations"] });
       } else {
         toast.error(data.message || "Failed to add staff");
       }

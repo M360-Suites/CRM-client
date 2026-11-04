@@ -11,6 +11,7 @@ export const useEditStaff = () => {
       if (data.status) {
         toast.success(data.message || "Staff member updated successfully");
         queryClient.invalidateQueries({ queryKey: ["staff"] });
+        queryClient.invalidateQueries({ queryKey: ["invitations"] });
       } else {
         toast.error(data.message);
       }

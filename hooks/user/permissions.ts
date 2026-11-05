@@ -18,6 +18,14 @@ export const useCanManageStaff = () => {
   return user?.role === "admin";
 };
 
+// Matches the API: authors manage their own comments, these roles manage any
+const COMMENT_MODERATOR_ROLES = ["admin", "sales_manager"];
+
+export const useCanModerateComments = () => {
+  const { data: user } = useUserProfile();
+  return COMMENT_MODERATOR_ROLES.includes(user?.role ?? "");
+};
+
 const STAFF_INVITE_ROLES = ["admin", "sales_manager"];
 
 export const useCanInviteStaff = () => {

@@ -6,6 +6,7 @@ import {
 } from "@/components/custom/common/action_menu";
 import { useGetCommentsByStage } from "@/hooks/pipeline/comment/get_comments";
 import { formatRelativeDateTime } from "@/lib/utils";
+import { useCanModerateComments } from "@/hooks/user/permissions";
 import { Comment, PipelineTeamMembers } from "@/types/pipeline";
 import { MentionText } from "./mentions";
 
@@ -32,6 +33,7 @@ export const CommentDisplay = ({
 	const { data: comments, isPending: isFetchingComments } =
 		useGetCommentsByStage(stageId);
 	const highlightRef = useRef<HTMLDivElement>(null);
+	const canModerate = useCanModerateComments();
 
 	// Oldest first, like a chat, with the composer underneath
 	const sorted = useMemo(
@@ -85,6 +87,7 @@ export const CommentDisplay = ({
 						comment={comment}
 						members={members}
 						isEditing={comment.id === editingId}
+						canManage={comment.is_owner || canModerate}
 						onEdit={onEdit}
 						onDelete={onDelete}
 					/>
@@ -98,10 +101,13 @@ function CommentBubble({
 	comment,
 	members,
 	isEditing,
+	canManage,
 	onEdit,
 	onDelete,
 }: {
 	comment: Comment;
+	// Author, or an admin/sales manager
+	canManage: boolean;
 	members: PipelineTeamMembers[];
 	isEditing: boolean;
 	onEdit?: (comment: Comment) => void;
@@ -125,9 +131,10 @@ function CommentBubble({
 					>
 						{comment.sender?.display_name ?? "Unknown member"}
 					</h6>
-					{mine && onEdit ? (
+					{canManage && (onEdit || onDelete) ? (
 						<CommentMenu
-							onEdit={() => onEdit(comment)}
+							onLight={!mine}
+							onEdit={onEdit && (() => onEdit(comment))}
 							onDelete={onDelete && (() => onDelete(comment))}
 						/>
 					) : (
@@ -163,9 +170,12 @@ function CommentBubble({
 }
 
 function CommentMenu({
+	onLight,
 	onEdit,
 	onDelete,
 }: {
+	// Trigger sits on a white bubble rather than the blue "mine" bubble
+	onLight?: boolean;
 	onEdit?: () => void;
 	onDelete?: () => void;
 }) {
@@ -190,7 +200,11 @@ function CommentMenu({
 				<button
 					type="button"
 					aria-label="Comment options"
-					className="shrink-0 rounded text-white/80 hover:text-white cursor-pointer"
+					className={`shrink-0 rounded cursor-pointer ${
+						onLight
+							? "text-foreground/50 hover:text-foreground"
+							: "text-white/80 hover:text-white"
+					}`}
 				>
 					<MoreVertical size={14} />
 				</button>

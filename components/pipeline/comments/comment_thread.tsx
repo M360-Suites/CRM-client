@@ -81,7 +81,9 @@ export function CommentThread({
 						<div className="flex min-w-0 flex-col">
 							<span className="flex items-center gap-1 text-[10px] font-medium text-[#0076D6]">
 								<Pencil size={10} />
-								Editing message
+								{editing.is_owner
+									? "Editing message"
+									: `Editing ${editing.sender?.display_name ?? "a member"}'s message`}
 							</span>
 							<span className="truncate text-xs text-foreground/60">
 								{editing.content}

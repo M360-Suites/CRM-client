@@ -114,10 +114,10 @@ export default function Body() {
 
 	return (
 		<div className="flex flex-col gap-4 w-full flex-1">
-			<div className="flex flex-row max-md:flex-col items-center max-md:items-start justify-between gap-3 w-full">
-				<AutoAssignSwitch />
-				{!isSalesRep && (
-					<div className="flex flex-wrap items-center gap-2">
+			{!isSalesRep && (
+				<div className="flex flex-row max-md:flex-col items-center max-md:items-start justify-between gap-3 w-full">
+					{canManageAssignments && <AutoAssignSwitch />}
+					<div className="flex flex-wrap items-center gap-2 ml-auto max-md:ml-0">
 						<AssignmentFilter
 							value={assignmentFilter}
 							onChange={setAssignmentFilter}
@@ -131,8 +131,8 @@ export default function Body() {
 							/>
 						)}
 					</div>
-				)}
-			</div>
+				</div>
+			)}
 			{boardNotice && <BoardNotice {...boardNotice} />}
 			{visibleStages.length > 0 && (
 				<DraggableLayout className="w-full flex-1 flex flex-col rounded-md">

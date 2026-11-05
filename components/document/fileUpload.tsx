@@ -28,8 +28,9 @@ interface FileUploadProps {
 
 export default function FileUpload({
   multiple = true,
-  accept = ".pdf,.doc,.docx,.xlsx,.csv,.png,.jpg,.jpeg, .mp3",
-  maxSizeMB = 10,
+  accept = ".pdf,.doc,.docx,.xlsx,.csv,.png,.jpg,.jpeg,.mp3,.mp4",
+  // Matches the API's per-file limit for folder uploads
+  maxSizeMB = 25,
   onUpload,
   onRemove,
 }: FileUploadProps) {

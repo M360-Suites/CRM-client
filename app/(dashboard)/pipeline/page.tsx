@@ -35,7 +35,7 @@ function PipelineLoadingFallback() {
 
 export default function page() {
   return (
-    <div className="w-full h-full flex flex-col gap-12 pb-8">
+    <div className="w-full flex-1 flex flex-col gap-12 pb-8">
       <Header />
       <Suspense fallback={<PipelineLoadingFallback />}>
         <Body />

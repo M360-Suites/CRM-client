@@ -1,8 +1,22 @@
 "use client";
 
-export type AssignmentFilterValue = "all" | "mine" | "unassigned";
+export type AssignmentFilterValue =
+	| "all"
+	| "mine"
+	| "unassigned"
+	// A single team member's deals, picked from the Team popover
+	| `member:${string}`;
 
-const OPTIONS: { value: AssignmentFilterValue; label: string }[] = [
+export const memberFilter = (id: string): AssignmentFilterValue =>
+	`member:${id}`;
+
+export const memberIdFromFilter = (value: AssignmentFilterValue) =>
+	value.startsWith("member:") ? value.slice("member:".length) : null;
+
+const OPTIONS: {
+	value: Exclude<AssignmentFilterValue, `member:${string}`>;
+	label: string;
+}[] = [
 	{ value: "all", label: "All deals" },
 	{ value: "mine", label: "My deals" },
 	{ value: "unassigned", label: "Unassigned" },

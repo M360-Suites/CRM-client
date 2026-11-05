@@ -91,7 +91,7 @@ export default function Header({ id }: HeaderProps) {
           </CustomDrawer>
         </div>
       </div>
-      <Link href="/documents" className="flex items-center gap-2">
+      <Link href="/documents" className="flex w-fit self-start items-center gap-2">
         <ArrowLeft color="#3A2418" className="h-3 w-3" />
         <span className="text-xs text-[#3A2418] font-medium">
           Go back to folders

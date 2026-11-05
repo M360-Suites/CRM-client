@@ -72,10 +72,16 @@ export function MentionInput({
 	value,
 	onChange,
 	members,
+	onSubmit,
+	onCancel,
 }: {
 	value: string;
 	onChange: (value: string) => void;
 	members: PipelineTeamMembers[];
+	// Enter sends; Shift+Enter adds a new line
+	onSubmit?: () => void;
+	// Escape cancels (e.g. an edit) instead of closing the dialog
+	onCancel?: () => void;
 }) {
 	const inputRef = useRef<HTMLTextAreaElement>(null);
 	const [active, setActive] = useState<{
@@ -154,9 +160,10 @@ export function MentionInput({
 				type="text"
 				textArea={true}
 				value={value}
-				// Lets the comment dialog ignore Escape while the list is open
-				data-mention-open={open}
-				placeholder="Write a comment… type @ to mention someone"
+				rows={1}
+				// Lets the comment dialog ignore Escape while the list or an edit is open
+				data-mention-open={open || !!onCancel}
+				placeholder="Write a comment… @ to mention, Shift+Enter for a new line"
 				onChange={(e: React.ChangeEvent<HTMLTextAreaElement>) => {
 					const target = e.target;
 					onChange(target.value);
@@ -169,7 +176,20 @@ export function MentionInput({
 				}}
 				onBlur={() => setActive(null)}
 				onKeyDown={(e: React.KeyboardEvent<HTMLTextAreaElement>) => {
-					if (!open) return;
+					if (!open) {
+						if (
+							e.key === "Enter" &&
+							!e.shiftKey &&
+							!e.nativeEvent.isComposing &&
+							onSubmit
+						) {
+							e.preventDefault();
+							onSubmit();
+						} else if (e.key === "Escape" && onCancel) {
+							onCancel();
+						}
+						return;
+					}
 					if (e.key === "ArrowDown") {
 						e.preventDefault();
 						setHighlighted((i) => (i + 1) % suggestions.length);

@@ -2,14 +2,11 @@
 
 import { Droppable } from "./droppable";
 import { Draggable } from "@/components/pipeline/draggable";
-import { Inbox, Loader, MessageSquareText, Send } from "lucide-react";
+import { Inbox, MessageSquareText } from "lucide-react";
 import { useGetPipelineBoard } from "@/hooks/pipeline/get_pipeline_board";
 import { DraggableLayout } from "./draggableLayout";
 import { CommentModal } from "../custom/common/comment_dialog";
-import { CustomButton } from "@/components/custom/common/customButton";
-import { MentionInput, getMentionedIds } from "./comments/mentions";
-import { CommentDisplay } from "./comments/comment_display";
-import useAddComment from "@/hooks/pipeline/comment/send_comment";
+import { CommentThread } from "./comments/comment_thread";
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useState } from "react";
 import { useUserProfile } from "@/hooks/user/profile";
@@ -29,7 +26,6 @@ export default function Body() {
 	const pathname = usePathname();
 	const queryStageId = searchParams.get("stageId");
 	const queryCommentId = searchParams.get("commentId");
-	const [comment, setComment] = useState("");
 	const [stageId, setStageId] = useState(queryStageId || "");
 	const [openModalId, setOpenModalId] = useState<string | null>(
 		queryStageId || null,
@@ -53,8 +49,6 @@ export default function Body() {
 		isPending: ownersPending,
 		isError: ownersError,
 	} = useGetDealOwners();
-	const { mutate: addCommentByStage, isPending: addingComment } =
-		useAddComment();
 	const { stages, team_members = [] } = pipelineData || {};
 
 	const handleModalChange = (isOpen: boolean, currentStageId: string) => {
@@ -177,43 +171,13 @@ export default function Body() {
 													}
 													label={`Comments on ${stage.name}`}
 												>
-													<CommentDisplay
+													<CommentThread
 														stageId={stageId}
+														members={team_members}
 														highlightId={
 															openModalId === stage.id ? queryCommentId : null
 														}
-														members={team_members}
 													/>
-													<div className="flex flex-row gap-1 items-end absolute bottom-1.5 left-2 right-2">
-														<MentionInput
-															value={comment}
-															onChange={setComment}
-															members={team_members}
-														/>
-														<CustomButton
-															disabled={!comment || addingComment}
-															className="self-end px-3 py-2"
-															onClick={() => {
-																if (comment !== "") {
-																	addCommentByStage({
-																		stageId: stageId,
-																		content: comment,
-																		mentions: getMentionedIds(
-																			comment,
-																			team_members,
-																		),
-																	});
-																}
-																setComment("");
-															}}
-														>
-															{addingComment ? (
-																<Loader className="animate-spin" />
-															) : (
-																<Send size={12} />
-															)}
-														</CustomButton>
-													</div>
 												</CommentModal>
 											</div>
 										</div>

@@ -25,6 +25,8 @@ export function CommentModal({
       {/* Made Dialog controlled */}
       <DialogTrigger asChild>{trigger}</DialogTrigger>
       <DialogContent
+        // The header already has the X; the built-in one renders as an empty square
+        showCloseButton={false}
         className="lg:min-w-md lg:min-h-80 flex flex-col gap-0"
         onEscapeKeyDown={(event) => {
           // Escape closes an open @mention list, not the dialog

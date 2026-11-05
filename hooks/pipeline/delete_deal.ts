@@ -19,7 +19,7 @@ export const useDeleteDeal = () => {
       }
     },
     onError: () => {
-      toast.error("Failed to delete assigned user");
+      toast.error("Failed to delete deal");
     },
   });
 };

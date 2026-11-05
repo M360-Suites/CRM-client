@@ -1,6 +1,7 @@
 import { useDraggable } from "@dnd-kit/react";
 import { MoreVertical, Pencil, Loader, Trash2, Eye } from "lucide-react";
-import { CustomPopover } from "../custom/common/customPopover";
+import { useState } from "react";
+import { ActionMenu } from "../custom/common/action_menu";
 import { CustomDrawer } from "../custom/common/drawer";
 import { useDeleteDeal } from "@/hooks/pipeline/delete_deal";
 import AddDealForm from "./form/add_deal";
@@ -10,6 +11,7 @@ import DealOwnerPicker from "./deal_owner_picker";
 
 export function Draggable({ lead }: { lead: Deal }) {
 	const { mutate: deleteDeal, isPending: isDeleting } = useDeleteDeal();
+	const [panel, setPanel] = useState<"view" | "edit" | null>(null);
 	const { ref, isDragging } = useDraggable({
 		id: lead.id,
 		type: "card",
@@ -30,64 +32,46 @@ export function Draggable({ lead }: { lead: Deal }) {
 				</span>
 				<div className="flex shrink-0 items-center gap-1.5">
 					<DealOwnerPicker dealId={lead.id} />
-					<CustomPopover
+					<ActionMenu
+						title={lead.title}
 						trigger={
 							<button
 								type="button"
 								aria-label="Deal actions"
-								className="cursor-pointer"
-							>
-								<MoreVertical size={16} className="text-black/80" />
-							</button>
-						}
-					>
-						<div className="flex flex-col w-24 max-md:w-22 pt-2">
-							<CustomDrawer
-								trigger={
-									<button className="flex items-center gap-2.5 px-1.5 py-2 text-foreground transition-colors cursor-pointer text-sm hover:bg-gray-100 rounded-md">
-										<Eye size={14} color="#4A4A4A" />
-										View
-									</button>
-								}
-								label="Deal Details"
-							>
-								<DealDetail deal={lead} />
-							</CustomDrawer>
-
-							<CustomDrawer
-								trigger={
-									<button className="flex items-center gap-2.5 px-1.5 py-2 text-foreground transition-colors cursor-pointer text-sm hover:bg-gray-100 rounded-md">
-										<Pencil size={14} color="#4A4A4A" />
-										Edit
-									</button>
-								}
-								label="Edit Deal"
-							>
-								{(close) => (
-									<AddDealForm
-										editMode={true}
-										deal={lead}
-										onSuccess={() => {
-											close();
-										}}
-									/>
-								)}
-							</CustomDrawer>
-
-							<button
-								className="flex items-center gap-2.5 px-1.5 py-2 text-[#FB3748] hover:bg-gray-100 rounded-md transition-colors cursor-pointer"
-								onClick={() => deleteDeal(lead.id)}
-								disabled={isDeleting}
+								className="rounded-md p-0.5 text-black/60 hover:bg-black/5 hover:text-black cursor-pointer"
 							>
 								{isDeleting ? (
-									<Loader size={16} className="animate-spin" color="#FB3748" />
+									<Loader size={16} className="animate-spin" />
 								) : (
-									<Trash2 size={16} color="#FB3748" />
+									<MoreVertical size={16} />
 								)}
-								{isDeleting ? "Deleting..." : "Delete"}
 							</button>
-						</div>
-					</CustomPopover>
+						}
+						items={[
+							{
+								label: "View details",
+								icon: Eye,
+								onSelect: () => setPanel("view"),
+							},
+							{
+								label: "Edit deal",
+								icon: Pencil,
+								onSelect: () => setPanel("edit"),
+							},
+							{
+								label: "Delete deal",
+								icon: Trash2,
+								destructive: true,
+								onSelect: () => deleteDeal(lead.id),
+								confirm: {
+									title: "Delete this deal",
+									description:
+										"It will be removed from the pipeline for everyone.",
+									confirmLabel: "Delete",
+								},
+							},
+						]}
+					/>
 				</div>
 			</div>
 			{lead.industry && (
@@ -97,6 +81,24 @@ export function Draggable({ lead }: { lead: Deal }) {
 			<span className="text-xs font-medium text-black truncate">
 				₦{(lead.value ?? 0).toLocaleString()}
 			</span>
+
+			{/* Drawers live outside the menu so closing the menu doesn't unmount them */}
+			<CustomDrawer
+				label="Deal Details"
+				open={panel === "view"}
+				onOpenChange={(open) => !open && setPanel(null)}
+			>
+				<DealDetail deal={lead} />
+			</CustomDrawer>
+			<CustomDrawer
+				label="Edit Deal"
+				open={panel === "edit"}
+				onOpenChange={(open) => !open && setPanel(null)}
+			>
+				{(close) => (
+					<AddDealForm editMode={true} deal={lead} onSuccess={close} />
+				)}
+			</CustomDrawer>
 		</div>
 	);
 }

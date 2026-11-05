@@ -2,7 +2,9 @@ import Image from "next/image";
 import CRMLOGO from "@/public/assets/crm-new-logo.png";
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { getInitials } from "@/lib/utils";
-import { Search, Bell, XIcon, CheckCheck } from "lucide-react";
+import { Bell, CheckCheck, MessageSquareText } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Notify } from "@/types/noties";
 import { CustomPopover } from "../custom/common/custom_notification_popover";
 import { useUserProfile } from "@/hooks/user/profile";
 import { useGetAllNotifications } from "@/hooks/notification/get_all_noti";
@@ -12,7 +14,9 @@ import { formatRelativeDateTime, handleHoursTime } from "@/lib/utils";
 import { useState } from "react";
 
 export default function Navbar() {
+	const router = useRouter();
 	const [markingId, setMarkingId] = useState<string | null>(null);
+	const [notificationsOpen, setNotificationsOpen] = useState(false);
 	const { data: user, isPending } = useUserProfile();
 	const { data: notifications, isPending: isLoading } =
 		useGetAllNotifications();
@@ -24,6 +28,17 @@ export default function Navbar() {
 	const handleMarkAsRead = (id: string) => {
 		setMarkingId(id);
 		markAsRead(id);
+	};
+
+	// Jump to the stage's comment thread and highlight the comment
+	const openComment = (notification: Notify) => {
+		const { stage_id, message_id } = notification.metadata ?? {};
+		if (!stage_id) return;
+		const params = new URLSearchParams({ stageId: stage_id });
+		if (message_id) params.set("commentId", message_id);
+		if (!notification.read) handleMarkAsRead(notification._id);
+		setNotificationsOpen(false);
+		router.push(`/pipeline?${params.toString()}`);
 	};
 
 	return (
@@ -48,6 +63,8 @@ export default function Navbar() {
 				<div className="flex items-center gap-4.5">
 					<CustomPopover
 						align="end"
+						open={notificationsOpen}
+						onOpenChange={setNotificationsOpen}
 						popoverClassname="shadow-none"
 						title="Notification"
 						action={
@@ -81,80 +98,73 @@ export default function Navbar() {
 								<div>Loading...</div>
 							) : (
 								<div>
-									{notifications?.data &&
-									notifications.data.length > 0 ? (
+									{notifications?.data && notifications.data.length > 0 ? (
 										<div className="flex flex-col gap-1">
-											{notifications.data.map(
-												(notification) => (
-													<div
-														key={notification._id}
-														className="border-b border-foreground/10 last:border-b-0 pb-2 flex flex-col gap-2 hover:bg-gray-50/40 px-1 pt-1 relative"
-													>
-														{!notification.read && (
-															<div className="absolute top-2 ring-2 ring-[#0076D6]/40 right-2 w-1.25 h-1.25 animate-pulse rounded-lg bg-[#0076D6]" />
-														)}
-														<span className="text-xs text-foreground/95 font-medium">
-															{notification.title}
+											{notifications.data.map((notification) => (
+												<div
+													key={notification._id}
+													className="border-b border-foreground/10 last:border-b-0 pb-2 flex flex-col gap-2 hover:bg-gray-50/40 px-1 pt-1 relative"
+												>
+													{!notification.read && (
+														<div className="absolute top-2 ring-2 ring-[#0076D6]/40 right-2 w-1.25 h-1.25 animate-pulse rounded-lg bg-[#0076D6]" />
+													)}
+													<span className="text-xs text-foreground/95 font-medium">
+														{notification.title}
+													</span>
+													<div className="flex items-center justify-between w-full">
+														<span className="text-[10px]/[100%] font-medium text-foreground/70">
+															{formatRelativeDateTime(notification.created_at)}
 														</span>
-														<div className="flex items-center justify-between w-full">
-															<span className="text-[10px]/[100%] font-medium text-foreground/70">
-																{formatRelativeDateTime(
-																	notification.created_at,
-																)}
+														<span className="text-[10px]/[100%] font-medium text-foreground/70">
+															{handleHoursTime(notification.created_at)}
+														</span>
+													</div>
+													<div className="flex flex-col gap-1 pl-2">
+														{notification.metadata.preview && (
+															<span className="text-foreground/90 text-xs p-2.5 bg-[#0076D6]/5 border-l-3 border-[#D9E1E8] rounded-r-md">
+																{notification.metadata.preview}
 															</span>
-															<span className="text-[10px]/[100%] font-medium text-foreground/70">
-																{handleHoursTime(
-																	notification.created_at,
-																)}
-															</span>
-														</div>
-														<div className="flex flex-col gap-1 pl-2">
-															{notification
-																.metadata
-																.preview && (
-																<span className="text-foreground/90 text-xs p-2.5 bg-[#0076D6]/5 border-l-3 border-[#D9E1E8] rounded-r-md">
-																	{
-																		notification
-																			.metadata
-																			.preview
-																	}
-																</span>
+														)}
+														<div className="flex items-center justify-between gap-2">
+															{notification.metadata?.stage_id ? (
+																<button
+																	type="button"
+																	onClick={() => openComment(notification)}
+																	className="inline-flex items-center gap-1 rounded-sm px-1.5 py-1 text-[10px] font-medium text-[#0076D6] hover:bg-[#0076D6]/10 cursor-pointer"
+																>
+																	<MessageSquareText size={11} />
+																	Open comment
+																</button>
+															) : (
+																<span />
 															)}
-															<div className="flex items-center justify-end">
-																{notification.read ===
-																true ? (
-																	<div className="flex items-center gap-0.5">
-																		<CheckCheck
-																			size={
-																				10
-																			}
-																			className="text-foreground/60"
-																		/>
-																		<span className="text-[10px] text-foreground/60">
-																			read
-																		</span>
-																	</div>
-																) : (
-																	<button
-																		className="text-[10px] text-foreground/60 hover:bg-foreground/20 p-1.5 hover:rounded-sm hover:cursor-pointer hover:text-foreground"
-																		onClick={() =>
-																			handleMarkAsRead(
-																				notification._id,
-																			)
-																		}
-																	>
-																		{isMarkingAsRead &&
-																		notification._id ===
-																			markingId
-																			? "marking as read..."
-																			: "mark as read"}
-																	</button>
-																)}
-															</div>
+															{notification.read === true ? (
+																<div className="flex items-center gap-0.5">
+																	<CheckCheck
+																		size={10}
+																		className="text-foreground/60"
+																	/>
+																	<span className="text-[10px] text-foreground/60">
+																		read
+																	</span>
+																</div>
+															) : (
+																<button
+																	className="text-[10px] text-foreground/60 hover:bg-foreground/20 p-1.5 hover:rounded-sm hover:cursor-pointer hover:text-foreground"
+																	onClick={() =>
+																		handleMarkAsRead(notification._id)
+																	}
+																>
+																	{isMarkingAsRead &&
+																	notification._id === markingId
+																		? "marking as read..."
+																		: "mark as read"}
+																</button>
+															)}
 														</div>
 													</div>
-												),
-											)}
+												</div>
+											))}
 										</div>
 									) : (
 										<div>No notifications</div>
@@ -185,9 +195,7 @@ export default function Navbar() {
 								</span>
 							</div>
 							<div className="bg-[#00B3A6] flex justify-center items-center md:h-10 md:w-10 h-9.5 w-9.5 lg:text-base text-sm font-bold text-gray-100 rounded-full">
-								{getInitials(
-									user?.display_name || "",
-								).toUpperCase()}
+								{getInitials(user?.display_name || "").toUpperCase()}
 							</div>
 						</div>
 					)}

@@ -1,3 +1,4 @@
+import { useEffect, useRef } from "react";
 import { useGetCommentsByStage } from "@/hooks/pipeline/comment/get_comments";
 import { formatRelativeDateTime } from "@/lib/utils";
 import { Loader, MoreVertical } from "lucide-react";
@@ -7,12 +8,21 @@ import { MentionText } from "./mentions";
 export const CommentDisplay = ({
 	stageId,
 	members,
+	highlightId,
 }: {
 	stageId: string;
 	members: PipelineTeamMembers[];
+	// Comment to scroll to and flash, e.g. from a mention notification
+	highlightId?: string | null;
 }) => {
 	const { data: comments, isPending: isFetchingComments } =
 		useGetCommentsByStage(stageId);
+	const highlightRef = useRef<HTMLDivElement>(null);
+	const hasHighlight = !!comments?.data.some((c) => c.id === highlightId);
+
+	useEffect(() => {
+		if (hasHighlight) highlightRef.current?.scrollIntoView({ block: "center" });
+	}, [hasHighlight, highlightId]);
 
 	return (
 		<div className="max-h-75 overflow-y-auto thin-scrollbar w-full pt-2 pb-10 px-4">
@@ -31,7 +41,15 @@ export const CommentDisplay = ({
 				{!isFetchingComments && comments?.data && (
 					<div className="flex flex-col gap-2">
 						{comments.data.map((comment) => (
-							<div key={comment.id}>
+							<div
+								key={comment.id}
+								ref={comment.id === highlightId ? highlightRef : undefined}
+								className={
+									comment.id === highlightId
+										? "comment-flash p-1 -m-1"
+										: undefined
+								}
+							>
 								<span
 									className={`w-full flex  ${comment.is_owner ? "justify-end" : "justify-start"}`}
 								>
@@ -51,7 +69,7 @@ export const CommentDisplay = ({
 													<MentionText
 														content={comment.content}
 														members={members}
-														mentionClassName="font-semibold underline underline-offset-2"
+														mentionClassName="rounded bg-white/25 px-1 font-semibold box-decoration-clone"
 													/>
 												</p>
 											</div>
@@ -78,7 +96,7 @@ export const CommentDisplay = ({
 													<MentionText
 														content={comment.content}
 														members={members}
-														mentionClassName="font-medium text-[#0091FE]"
+														mentionClassName="rounded bg-[#0091FE]/15 px-1 font-medium text-[#0076D6] box-decoration-clone"
 													/>
 												</p>
 											</div>

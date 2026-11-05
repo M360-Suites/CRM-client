@@ -28,11 +28,21 @@ export default function Body() {
 	const router = useRouter();
 	const pathname = usePathname();
 	const queryStageId = searchParams.get("stageId");
+	const queryCommentId = searchParams.get("commentId");
 	const [comment, setComment] = useState("");
 	const [stageId, setStageId] = useState(queryStageId || "");
 	const [openModalId, setOpenModalId] = useState<string | null>(
 		queryStageId || null,
 	);
+	// Re-open the thread when a notification links here while already on /pipeline
+	const [syncedStageId, setSyncedStageId] = useState(queryStageId);
+	if (queryStageId !== syncedStageId) {
+		setSyncedStageId(queryStageId);
+		if (queryStageId) {
+			setStageId(queryStageId);
+			setOpenModalId(queryStageId);
+		}
+	}
 	const [assignmentFilter, setAssignmentFilter] =
 		useState<AssignmentFilterValue>("all");
 	const { data: pipelineData, isPending } = useGetPipelineBoard();
@@ -53,7 +63,7 @@ export default function Body() {
 			setOpenModalId(currentStageId);
 		} else {
 			setOpenModalId(null);
-			// Optional: Remove ?stageId from the URL so it doesn't reopen on refresh
+			// Drop ?stageId/&commentId so the thread doesn't reopen on refresh
 			if (queryStageId) {
 				router.replace(pathname, { scroll: false });
 			}
@@ -169,6 +179,9 @@ export default function Body() {
 												>
 													<CommentDisplay
 														stageId={stageId}
+														highlightId={
+															openModalId === stage.id ? queryCommentId : null
+														}
 														members={team_members}
 													/>
 													<div className="flex flex-row gap-1 items-end absolute bottom-1.5 left-2 right-2">

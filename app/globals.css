@@ -183,9 +183,29 @@ body {
 	}
 }
 
+/* Comment opened from a mention notification: tint it, then fade out */
+.comment-flash {
+	border-radius: 8px;
+	animation: comment-flash 2.4s ease-out 0.2s both;
+}
+
+@keyframes comment-flash {
+	0%,
+	40% {
+		background-color: rgb(0 145 254 / 0.16);
+	}
+	100% {
+		background-color: transparent;
+	}
+}
+
 @media (prefers-reduced-motion: reduce) {
 	.droppable-receiving {
 		animation: none;
+	}
+	.comment-flash {
+		animation: none;
+		background-color: rgb(0 145 254 / 0.12);
 	}
 }
 

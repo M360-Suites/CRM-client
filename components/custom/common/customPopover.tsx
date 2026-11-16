@@ -14,6 +14,8 @@ interface CustomPopoverProps {
 	headerClassName?: string;
 	headerTextClassName?: string;
 	align?: "start" | "center" | "end";
+	open?: boolean;
+	onOpenChange?: (open: boolean) => void;
 }
 
 export function CustomPopover({
@@ -26,9 +28,11 @@ export function CustomPopover({
 	align = "end",
 	className,
 	popoverClassname,
+	open,
+	onOpenChange,
 }: CustomPopoverProps) {
 	return (
-		<Popover>
+		<Popover open={open} onOpenChange={onOpenChange}>
 			<PopoverTrigger asChild>{trigger}</PopoverTrigger>
 			<PopoverContent
 				align={align}

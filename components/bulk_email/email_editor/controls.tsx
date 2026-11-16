@@ -3,45 +3,66 @@
 import { useState } from "react";
 import { ChevronDown } from "lucide-react";
 
-// Small form controls shared by the template and broadcast inspectors.
+// Small form controls used by the email editor's settings panel.
 
 const HEX = /^[0-9a-fA-F]{0,6}$/;
 
+const CHECKERBOARD: React.CSSProperties = {
+	backgroundImage: "repeating-conic-gradient(#CBD5E1 0 25%, #FFFFFF 0 50%)",
+	backgroundSize: "8px 8px",
+};
+
+// Colors are "#RRGGBB" strings, the format the editor and the email HTML use.
+// With allowTransparent, "transparent" means no color (shows what's behind).
 export function ColorField({
 	label,
 	value,
 	onChange,
+	allowTransparent = false,
 }: {
 	label: string;
 	value: string;
-	onChange: (hex: string) => void;
+	onChange: (color: string) => void;
+	allowTransparent?: boolean;
 }) {
+	const transparent = !value || value === "transparent";
+	const bare = transparent ? "" : value.replace("#", "");
 	return (
 		<div className="flex flex-col gap-1.5">
-			<span className="text-[11px] text-[#64748B]">{label}</span>
+			<span className="flex items-center justify-between text-[11px] text-[#64748B]">
+				{label}
+				{allowTransparent && !transparent && (
+					<button
+						type="button"
+						onClick={() => onChange("transparent")}
+						className="text-[10px] text-[#0091FE] hover:underline cursor-pointer"
+					>
+						None
+					</button>
+				)}
+			</span>
 			<div className="flex items-center gap-2 rounded-md border border-[#E2E8F0] bg-white px-2.5 py-1.5">
 				<label
 					className="relative h-4 w-4 shrink-0 rounded-full border border-[#E2E8F0] cursor-pointer overflow-hidden"
-					style={{ backgroundColor: `#${value}` }}
+					style={transparent ? CHECKERBOARD : { backgroundColor: value }}
 				>
 					<input
 						type="color"
 						aria-label={`${label} picker`}
-						value={`#${value.padEnd(6, "0")}`}
-						onChange={(e) =>
-							onChange(e.target.value.slice(1).toUpperCase())
-						}
+						value={transparent ? "#FFFFFF" : `#${bare.padEnd(6, "0").slice(0, 6)}`}
+						onChange={(e) => onChange(e.target.value.toUpperCase())}
 						className="absolute inset-0 opacity-0 cursor-pointer"
 					/>
 				</label>
 				<span className="text-xs text-[#94A3B8]">#</span>
 				<input
 					aria-label={label}
-					value={value}
+					value={bare}
+					placeholder={transparent ? "None" : undefined}
 					maxLength={6}
 					onChange={(e) =>
 						HEX.test(e.target.value) &&
-						onChange(e.target.value.toUpperCase())
+						onChange(`#${e.target.value.toUpperCase()}`)
 					}
 					className="flex-1 min-w-0 font-mono text-[11px] text-[#0F172A] outline-none bg-transparent"
 				/>
@@ -174,18 +195,21 @@ export function TextField({
 	placeholder,
 	icon,
 	onChange,
+	inputRef,
 }: {
 	label: string;
 	value: string;
 	placeholder?: string;
 	icon?: React.ReactNode;
 	onChange: (value: string) => void;
+	inputRef?: React.Ref<HTMLInputElement>;
 }) {
 	return (
 		<label className="flex flex-col gap-1.5">
 			<span className="text-xs text-[#334155]">{label}</span>
 			<span className="flex items-center gap-2 rounded-md border border-[#E2E8F0] bg-white px-2.5 py-1.5 focus-within:border-[#0091FE]">
 				<input
+					ref={inputRef}
 					value={value}
 					placeholder={placeholder}
 					onChange={(e) => onChange(e.target.value)}

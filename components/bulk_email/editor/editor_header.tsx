@@ -1,44 +1,94 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
-import { ChevronLeft, Cloud, LoaderCircle } from "lucide-react";
+import { ChevronLeft, Cloud, CloudOff, LoaderCircle } from "lucide-react";
 
-// Debounced save so every keystroke doesn't hit the store (later: the API).
-export function useAutosave<T>(value: T, save: (value: T) => void) {
+// Debounced save so every keystroke doesn't hit the API. Saves run one at a
+// time, and flush() pushes any pending change right away (e.g. before send).
+export function useAutosave<T>(
+	value: T,
+	save: (value: T) => Promise<unknown>,
+	delay = 800,
+) {
 	const [saving, setSaving] = useState(false);
+	const [failed, setFailed] = useState(false);
 	const saveRef = useRef(save);
-	const first = useRef(true);
+	const latest = useRef(value);
+	const saved = useRef(value);
+	const dirty = useRef(false);
+	const timer = useRef<ReturnType<typeof setTimeout>>(undefined);
+	const chain = useRef<Promise<void>>(Promise.resolve());
 
 	useEffect(() => {
 		saveRef.current = save;
 	});
 
-	useEffect(() => {
-		if (first.current) {
-			first.current = false;
-			return;
-		}
-		setSaving(true);
-		const timer = setTimeout(() => {
-			saveRef.current(value);
-			setSaving(false);
-		}, 600);
-		return () => clearTimeout(timer);
-	}, [value]);
+	const flush = useCallback(() => {
+		clearTimeout(timer.current);
+		chain.current = chain.current.then(async () => {
+			if (!dirty.current) return;
+			dirty.current = false;
+			const snapshot = latest.current;
+			try {
+				await saveRef.current(snapshot);
+				saved.current = snapshot;
+				setFailed(false);
+			} catch (err) {
+				dirty.current = true;
+				setFailed(true);
+				throw err;
+			} finally {
+				if (!dirty.current) setSaving(false);
+			}
+		});
+		const result = chain.current;
+		// Keep the queue alive after a failure; the caller still sees the error
+		chain.current = chain.current.catch(() => {});
+		return result;
+	}, []);
 
-	return saving;
+	useEffect(() => {
+		latest.current = value;
+		if (Object.is(value, saved.current)) return;
+		dirty.current = true;
+		setSaving(true);
+		clearTimeout(timer.current);
+		timer.current = setTimeout(() => {
+			flush().catch(() => {});
+		}, delay);
+	}, [value, delay, flush]);
+
+	// Don't drop the last edits when leaving the page
+	useEffect(
+		() => () => {
+			if (dirty.current) flush().catch(() => {});
+		},
+		[flush],
+	);
+
+	return { saving, failed, flush };
 }
 
-export function SavedStatus({ saving }: { saving: boolean }) {
+export function SavedStatus({
+	saving,
+	failed = false,
+}: {
+	saving: boolean;
+	failed?: boolean;
+}) {
 	return (
-		<span className="flex items-center gap-1.5 text-xs text-[#94A3B8]">
-			{saving ? (
+		<span
+			className={`flex items-center gap-1.5 text-xs ${failed ? "text-[#DC2626]" : "text-[#94A3B8]"}`}
+		>
+			{saving && !failed ? (
 				<LoaderCircle size={14} className="animate-spin" />
+			) : failed ? (
+				<CloudOff size={14} />
 			) : (
 				<Cloud size={14} />
 			)}
-			{saving ? "Saving" : "Saved"}
+			{failed ? "Not saved" : saving ? "Saving" : "Saved"}
 		</span>
 	);
 }
@@ -55,7 +105,7 @@ export default function EditorHeader({
 	right: React.ReactNode;
 }) {
 	return (
-		<div className="flex items-center justify-between gap-4 md:pl-8 md:pr-6">
+		<div className="flex items-center justify-between gap-4">
 			<div className="flex items-center gap-4 min-w-0">
 				<Link
 					href={backHref}

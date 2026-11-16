@@ -421,3 +421,38 @@ body {
 		scrollbar-color: rgb(0 0 0 / 0.2) transparent;
 	}
 }
+
+/* Minimal scrollbars on the bulk email pages (class set on <html> by
+   components/bulk_email/scrollbar_scope.tsx). Covers the page, inner panels,
+   popovers and dialogs. Firefox gets its built-in thin style instead. */
+html.bulk-email-scrollbars::-webkit-scrollbar,
+html.bulk-email-scrollbars *::-webkit-scrollbar {
+	width: 6px;
+	height: 6px;
+}
+
+html.bulk-email-scrollbars::-webkit-scrollbar-track,
+html.bulk-email-scrollbars *::-webkit-scrollbar-track,
+html.bulk-email-scrollbars::-webkit-scrollbar-corner,
+html.bulk-email-scrollbars *::-webkit-scrollbar-corner {
+	background: transparent;
+}
+
+html.bulk-email-scrollbars::-webkit-scrollbar-thumb,
+html.bulk-email-scrollbars *::-webkit-scrollbar-thumb {
+	background-color: rgb(15 23 42 / 0.16);
+	border-radius: 9999px;
+}
+
+html.bulk-email-scrollbars::-webkit-scrollbar-thumb:hover,
+html.bulk-email-scrollbars *::-webkit-scrollbar-thumb:hover {
+	background-color: rgb(15 23 42 / 0.32);
+}
+
+@supports not selector(::-webkit-scrollbar) {
+	html.bulk-email-scrollbars,
+	html.bulk-email-scrollbars * {
+		scrollbar-width: thin;
+		scrollbar-color: rgb(15 23 42 / 0.2) transparent;
+	}
+}

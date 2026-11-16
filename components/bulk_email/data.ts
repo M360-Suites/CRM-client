@@ -1,67 +1,67 @@
 import {
-	BulkEmail,
-	BulkEmailAudience,
-	BulkEmailStatus,
-	EmailContent,
-	EmailTemplate,
+	BroadcastAudience,
+	BroadcastStatus,
+	ContactTemperature,
+	RecipientStatus,
+	StarterTemplate,
 	TemplateCategory,
 } from "@/types/bulk_email";
 
-// Placeholder data for the bulk email UI. Everything here lives in the client
-// store until the bulk email endpoints exist.
+import { createDefaultDesign } from "./email_editor/design";
 
-export const DEFAULT_EMAIL_HTML = `<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ultrices vehicula erat, eu faucibus ligula viverra sit amet. Nullam porta scelerisque lacus eu dignissim. Curabitur mattis dui est, sed gravida ex tincidunt sed.</p>
-<h2>Exploring Monterey</h2>
-<p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Morbi ultrices vehicula erat, eu faucibus ligula viverra sit amet.</p>
-<p><a class="cta" href="#">Click here</a></p>
-<p>Duis vel dui in elit tristique mattis ut vel nisl. Nam sit amet euismod sapien, sed auctor eros. Morbi aliquet lobortis tellus, sit amet ullamcorper purus egestas non. Morbi nec massa lacus. Sed blandit tincidunt dui sit amet fermentum. Donec vehicula feugiat pretium.</p>`;
+// Defaults, labels and the built-in starter designs for the bulk email screens.
 
-export const DEFAULT_TEMPLATE_NAME = "Monterey";
-
-export const createDefaultContent = (): EmailContent => ({
-	background_color: "0091FE",
-	button_text_color: "FFFFFF",
-	button_background_color: "0091FE",
-	html: DEFAULT_EMAIL_HTML,
-	image: {
-		url: "/assets/bulk-email-hero.jpg",
-		alt: "Header Image",
-		link: "",
-		show_caption: false,
-		caption: "",
-		width_mode: "full",
-		width: 350,
-		crop: "none",
-		radius: "none",
-		radius_px: 12,
-		align: "center",
-		border_color: "000000",
-		border_width: "none",
-		border_px: 2,
-		wrap_text: false,
-		optimize: false,
-		margin: 0,
-	},
-});
-
-export const AUDIENCE_LABELS: Record<BulkEmailAudience, string> = {
-	hot: "Hot",
-	warm: "Warm",
-	cold: "Cold",
-	all: "All Contacts",
-};
-
-export const AUDIENCE_STYLES: Record<BulkEmailAudience, string> = {
+// Contact temperature badge colours (contacts list, Add Contacts modal)
+export const TEMPERATURE_STYLES: Record<ContactTemperature, string> = {
 	hot: "bg-[#0091FE] text-white",
 	warm: "bg-[#00B3A6] text-white",
 	cold: "bg-[#94A3B8] text-white",
-	all: "bg-[#FBBF24] text-white",
 };
 
-export const STATUS_STYLES: Record<BulkEmailStatus, string> = {
+const TEMPERATURE_LABELS: Record<ContactTemperature, string> = {
+	hot: "Hot",
+	warm: "Warm",
+	cold: "Cold",
+};
+
+export const isAllContacts = (audience?: BroadcastAudience) =>
+	!audience || (!!audience.all && !audience.contact_ids?.length);
+
+// Who a broadcast goes to, in a few words. Audiences are "all contacts" or a
+// picked list; older broadcasts may have been saved with a temperature group.
+export const audienceSummary = (audience?: BroadcastAudience) => {
+	if (audience?.contact_ids?.length) {
+		const n = audience.contact_ids.length;
+		return { label: `${n} ${n === 1 ? "contact" : "contacts"}`, style: "bg-[#0091FE] text-white" };
+	}
+	if (isAllContacts(audience)) return { label: "All contacts", style: "bg-[#FBBF24] text-white" };
+	const temps = audience?.temperature ?? [];
+	if (temps.length === 1) {
+		return { label: `${TEMPERATURE_LABELS[temps[0]]} contacts`, style: TEMPERATURE_STYLES[temps[0]] };
+	}
+	return { label: "Custom", style: "bg-[#64748B] text-white" };
+};
+
+export const STATUS_STYLES: Record<BroadcastStatus, string> = {
 	draft: "bg-[#F1F5F9] text-[#334155]",
-	scheduled: "bg-[#F1F5F9] text-[#0F172A]",
-	published: "bg-[#ECFDF5] text-[#059669]",
+	scheduled: "bg-[#EFF6FF] text-[#1D4ED8]",
+	sending: "bg-[#FFFBEB] text-[#B45309]",
+	sent: "bg-[#ECFDF5] text-[#059669]",
+	cancelled: "bg-[#F1F5F9] text-[#64748B]",
+	failed: "bg-[#FEF2F2] text-[#DC2626]",
+};
+
+// Only these can still be edited (PATCH) on the backend
+export const EDITABLE_STATUSES: BroadcastStatus[] = ["draft", "scheduled"];
+
+export const RECIPIENT_STATUS_STYLES: Record<RecipientStatus, string> = {
+	queued: "bg-[#F1F5F9] text-[#334155]",
+	sending: "bg-[#FFFBEB] text-[#B45309]",
+	sent: "bg-[#ECFDF5] text-[#059669]",
+	failed: "bg-[#FEF2F2] text-[#DC2626]",
+	bounced: "bg-[#FEF2F2] text-[#DC2626]",
+	complained: "bg-[#FFF7ED] text-[#C2410C]",
+	skipped: "bg-[#F1F5F9] text-[#64748B]",
 };
 
 export const TEMPLATE_CATEGORIES: {
@@ -96,14 +96,12 @@ export const TEMPLATE_CATEGORIES: {
 	},
 ];
 
-const minutesAgo = (mins: number) =>
-	new Date(Date.now() - mins * 60_000).toISOString();
-
 const TEMPLATE_DESCRIPTION =
 	"Send personalized welcome messages and guide new subscribers to get the most value from your brand.";
 
-// Starter designs shown in "Choose a template to customize".
-export const LIBRARY_TEMPLATES: EmailTemplate[] = (
+// Starter designs shown in "Choose a template to customize". Picking one
+// creates a real template from it through the API.
+export const LIBRARY_TEMPLATES: StarterTemplate[] = (
 	["starting", "classic", "library"] as TemplateCategory[]
 ).flatMap((category) =>
 	Array.from({ length: 9 }).map((_, i) => ({
@@ -111,48 +109,25 @@ export const LIBRARY_TEMPLATES: EmailTemplate[] = (
 		name: "Welcome (Events)",
 		description: TEMPLATE_DESCRIPTION,
 		category,
-		content: createDefaultContent(),
-		updated_at: minutesAgo(60 * (i + 1)),
+		design: createDefaultDesign(),
 	})),
 );
 
-// The organisation's saved templates shown on the Email Templates page.
-export const MOCK_TEMPLATES: EmailTemplate[] = Array.from({ length: 12 }).map(
-	(_, i) => ({
-		_id: `tpl-${i + 1}`,
-		name: "Welcome (Events)",
-		description: TEMPLATE_DESCRIPTION,
-		category: "starting",
-		content: createDefaultContent(),
-		updated_at: minutesAgo(60 * (i + 1)),
-	}),
-);
-
-const MOCK_ROWS: [BulkEmailAudience, BulkEmailStatus][] = [
-	["hot", "draft"],
-	["warm", "draft"],
-	["cold", "scheduled"],
-	["all", "published"],
-	["hot", "draft"],
-	["warm", "draft"],
-	["cold", "scheduled"],
-	["all", "published"],
-	["cold", "scheduled"],
-	["all", "published"],
-];
-
-export const MOCK_EMAILS: BulkEmail[] = [...MOCK_ROWS, ...MOCK_ROWS].map(
-	([audience, status], i) => ({
-		_id: `email-${i + 1}`,
-		title: "Q3 Enterprise Product Announcement",
-		subject: "Unlock 3x pipeline velocity with CRM360 2.0",
-		preview_text: "",
-		audience,
-		status,
-		template_id: null,
-		ab_test: false,
-		content: createDefaultContent(),
-		updated_at: minutesAgo(12 + i),
-		updated_by: "Sarah C.",
-	}),
-);
+export const personName = (
+	p?: {
+		display_name?: string | null;
+		first_name?: string;
+		last_name?: string;
+		name?: string | null;
+		email?: string | null;
+	} | null,
+) => {
+	if (!p) return "";
+	return (
+		p.display_name ||
+		p.name ||
+		[p.first_name, p.last_name].filter(Boolean).join(" ") ||
+		p.email ||
+		""
+	);
+};

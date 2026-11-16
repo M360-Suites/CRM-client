@@ -1,11 +1,11 @@
 "use client";
 
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
-	ChevronLeft,
-	ChevronRight,
+	BarChart3,
+	Ban,
 	EllipsisVertical,
 	MailOpen,
 	PlusIcon,
@@ -16,19 +16,36 @@ import {
 import { toast } from "sonner";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { CustomPopover } from "@/components/custom/common/customPopover";
-import { useBulkEmailStore } from "@/stores/bulk_email/bulk_email_store";
+import {
+	useBroadcasts,
+	useCancelBroadcast,
+	useDeleteBroadcast,
+} from "@/hooks/bulk_email/broadcasts";
+import { useDebounced } from "@/hooks/bulk_email/use_debounced";
 import { handleHoursTime } from "@/lib/utils";
-import { BulkEmailStatus } from "@/types/bulk_email";
-import { AUDIENCE_LABELS, AUDIENCE_STYLES, STATUS_STYLES } from "./data";
+import { Broadcast, BroadcastStatus } from "@/types/bulk_email";
+import {
+	EDITABLE_STATUSES,
+	STATUS_STYLES,
+	audienceSummary,
+	personName,
+} from "./data";
+import Pager from "./pager";
+import { BroadcastListSkeleton, TableRowsSkeleton } from "./skeletons";
 
-const TABS: { label: string; value: BulkEmailStatus | "all" }[] = [
+const TABS: { label: string; value: BroadcastStatus | "all" }[] = [
 	{ label: "All", value: "all" },
 	{ label: "Drafts", value: "draft" },
 	{ label: "Scheduled", value: "scheduled" },
-	{ label: "Published", value: "published" },
+	{ label: "Sent", value: "sent" },
 ];
 
 const PAGE_SIZE = 10;
+
+export const broadcastHref = (b: Pick<Broadcast, "_id" | "status">) =>
+	EDITABLE_STATUSES.includes(b.status)
+		? `/bulk-email/new?id=${b._id}`
+		: `/bulk-email/${b._id}`;
 
 function EmptyState() {
 	return (
@@ -59,9 +76,16 @@ function EmptyState() {
 	);
 }
 
-function RowActions({ id }: { id: string }) {
+const menuItem =
+	"flex items-center gap-2 px-2 py-1.5 rounded-md text-sm cursor-pointer disabled:opacity-50";
+
+function RowActions({ broadcast }: { broadcast: Broadcast }) {
 	const router = useRouter();
-	const { deleteEmail } = useBulkEmailStore();
+	const remove = useDeleteBroadcast();
+	const cancel = useCancelBroadcast();
+	const editable = EDITABLE_STATUSES.includes(broadcast.status);
+	const cancellable =
+		broadcast.status === "scheduled" || broadcast.status === "sending";
 
 	return (
 		<CustomPopover
@@ -73,55 +97,73 @@ function RowActions({ id }: { id: string }) {
 					<EllipsisVertical size={16} color="#64748B" />
 				</button>
 			}
-			className="pt-2 flex flex-col w-28"
+			className="pt-2 flex flex-col w-36"
 			popoverClassname="bg-[#F7FAFC]"
 		>
-			<button
-				onClick={() => router.push(`/bulk-email/new?id=${id}`)}
-				className="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-[#334155] hover:bg-gray-100 cursor-pointer"
-			>
-				<Pencil size={14} />
-				Edit
-			</button>
-			<button
-				onClick={() => {
-					// TODO: call the delete endpoint once the backend adds one
-					deleteEmail(id);
-					toast.success("Email deleted");
-				}}
-				className="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-[#DC2626] hover:bg-red-50 cursor-pointer"
-			>
-				<Trash2 size={14} />
-				Delete
-			</button>
+			{editable && (
+				<button
+					onClick={() => router.push(`/bulk-email/new?id=${broadcast._id}`)}
+					className={`${menuItem} text-[#334155] hover:bg-gray-100`}
+				>
+					<Pencil size={14} />
+					Edit
+				</button>
+			)}
+			{broadcast.status !== "draft" && (
+				<button
+					onClick={() => router.push(`/bulk-email/${broadcast._id}`)}
+					className={`${menuItem} text-[#334155] hover:bg-gray-100`}
+				>
+					<BarChart3 size={14} />
+					View report
+				</button>
+			)}
+			{cancellable && (
+				<button
+					disabled={cancel.isPending}
+					onClick={() => cancel.mutate(broadcast._id)}
+					className={`${menuItem} text-[#B45309] hover:bg-amber-50`}
+				>
+					<Ban size={14} />
+					Cancel send
+				</button>
+			)}
+			{broadcast.status === "draft" && (
+				<button
+					disabled={remove.isPending}
+					onClick={() =>
+						remove.mutate(broadcast._id, {
+							onSuccess: () => toast.success("Draft deleted"),
+						})
+					}
+					className={`${menuItem} text-[#DC2626] hover:bg-red-50`}
+				>
+					<Trash2 size={14} />
+					Delete
+				</button>
+			)}
 		</CustomPopover>
 	);
 }
 
 export default function Body() {
-	const { emails } = useBulkEmailStore();
-	const [activeTab, setActiveTab] = useState<BulkEmailStatus | "all">("all");
+	const [activeTab, setActiveTab] = useState<BroadcastStatus | "all">("all");
 	const [search, setSearch] = useState("");
 	const [page, setPage] = useState(1);
+	const term = useDebounced(search.trim());
 
-	const filtered = useMemo(() => {
-		const term = search.trim().toLowerCase();
-		return emails.filter(
-			(e) =>
-				(activeTab === "all" || e.status === activeTab) &&
-				(!term ||
-					[e.title, e.subject, e.updated_by].some((v) =>
-						v.toLowerCase().includes(term),
-					)),
-		);
-	}, [emails, activeTab, search]);
+	const { data, isLoading, isError, isPlaceholderData } = useBroadcasts({
+		status: activeTab === "all" ? undefined : activeTab,
+		search: term || undefined,
+		page,
+		limit: PAGE_SIZE,
+	});
+	// While a new tab, search or page loads, the old rows are swapped for skeletons
+	const rows = isPlaceholderData ? [] : (data?.data ?? []);
+	const filtered = activeTab !== "all" || !!term;
 
-	const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
-	const currentPage = Math.min(page, totalPages);
-	const start = (currentPage - 1) * PAGE_SIZE;
-	const rows = filtered.slice(start, start + PAGE_SIZE);
-
-	if (emails.length === 0) return <EmptyState />;
+	if (isLoading) return <BroadcastListSkeleton />;
+	if (!isError && !filtered && data?.total === 0) return <EmptyState />;
 
 	return (
 		<div className="w-full flex-col flex gap-8">
@@ -135,7 +177,7 @@ export default function Body() {
 							setSearch(e.target.value);
 							setPage(1);
 						}}
-						placeholder="Search email drafts, subject lines, or authors..."
+						placeholder="Search email titles or subject lines..."
 						className="flex-1 placeholder:text-sm h-full outline-0 focus-visible:ring-0"
 					/>
 				</div>
@@ -172,108 +214,85 @@ export default function Body() {
 						</tr>
 					</thead>
 					<tbody>
-						{rows.map((email) => (
-							<tr
-								key={email._id}
-								className="border-b border-[#F1F5F9] last:border-b-0"
-							>
-								<td className="py-3 px-4">
-									<Link
-										href={`/bulk-email/new?id=${email._id}`}
-										className="block max-w-40 text-[13px] leading-5 font-semibold text-[#0F172A] hover:underline line-clamp-2"
-									>
-										{email.title}
-									</Link>
-								</td>
-								<td className="py-3 px-4 text-[13px] text-[#334155] text-center">
-									{email.subject}
-								</td>
-								<td className="py-3 px-4">
-									<div
-										className={`mx-auto w-24 flex items-center justify-center gap-1.5 rounded-full py-1 text-[11px] ${AUDIENCE_STYLES[email.audience]}`}
-									>
-										<span className="h-1.5 w-1.5 rounded-full bg-white" />
-										{AUDIENCE_LABELS[email.audience]}
-									</div>
-								</td>
-								<td className="py-3 px-4">
-									<div
-										className={`mx-auto w-fit flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-semibold tracking-wider uppercase ${STATUS_STYLES[email.status]}`}
-									>
-										{email.status === "published" && (
-											<span className="h-1.5 w-1.5 rounded-full bg-[#059669]" />
-										)}
-										{email.status}
-									</div>
-								</td>
-								<td className="py-3 px-4">
-									<div className="flex flex-col">
-										<span className="text-xs text-[#0F172A]">
-											{handleHoursTime(email.updated_at)}
-										</span>
-										<span className="text-[11px] text-[#64748B]">
-											{email.updated_by}
-										</span>
-									</div>
-								</td>
-								<td className="py-3 px-4 text-center">
-									<RowActions id={email._id} />
-								</td>
-							</tr>
-						))}
+						{isPlaceholderData && <TableRowsSkeleton cols={6} rows={8} />}
+						{rows.map((email) => {
+							const audience = audienceSummary(email.audience);
+							const editedAt = email.updated_at ?? email.created_at;
+							return (
+								<tr
+									key={email._id}
+									className="border-b border-[#F1F5F9] last:border-b-0"
+								>
+									<td className="py-3 px-4">
+										<Link
+											href={broadcastHref(email)}
+											className="block max-w-40 text-[13px] leading-5 font-semibold text-[#0F172A] hover:underline line-clamp-2"
+										>
+											{email.name}
+										</Link>
+									</td>
+									<td className="py-3 px-4 text-[13px] text-[#334155] text-center">
+										{email.subject || "—"}
+									</td>
+									<td className="py-3 px-4">
+										<div
+											className={`mx-auto min-w-24 w-fit px-3 whitespace-nowrap flex items-center justify-center gap-1.5 rounded-full py-1 text-[11px] ${audience.style}`}
+										>
+											<span className="h-1.5 w-1.5 rounded-full bg-white" />
+											{audience.label}
+										</div>
+									</td>
+									<td className="py-3 px-4">
+										<div
+											className={`mx-auto w-fit flex items-center gap-1 rounded-full px-2.5 py-1 text-[10px] font-semibold tracking-wider uppercase ${STATUS_STYLES[email.status] ?? STATUS_STYLES.draft}`}
+										>
+											{email.status === "sent" && (
+												<span className="h-1.5 w-1.5 rounded-full bg-[#059669]" />
+											)}
+											{email.status}
+										</div>
+									</td>
+									<td className="py-3 px-4">
+										<div className="flex flex-col">
+											<span className="text-xs text-[#0F172A]">
+												{editedAt ? handleHoursTime(editedAt) : "—"}
+											</span>
+											<span className="text-[11px] text-[#64748B]">
+												{personName(email.created_by)}
+											</span>
+										</div>
+									</td>
+									<td className="py-3 px-4 text-center">
+										<RowActions broadcast={email} />
+									</td>
+								</tr>
+							);
+						})}
 					</tbody>
 				</table>
 
-				{rows.length === 0 && (
+				{!isPlaceholderData && rows.length === 0 && (
 					<div className="flex flex-col items-center gap-4 py-20">
 						<span className="text-base font-normal text-foreground">
-							{search.trim()
-								? "No emails match your search"
-								: "No emails here yet"}
+							{isError
+								? "Couldn't load your emails. Try again shortly."
+								: term
+									? "No emails match your search"
+									: "No emails here yet"}
 						</span>
 					</div>
 				)}
 			</div>
 
-			{filtered.length > 0 && (
-				<div className="flex items-center justify-between gap-4 w-full">
-					<span className="text-xs text-[#334155]">
-						Showing {start + 1}-{start + rows.length} of{" "}
-						{filtered.length} emails
-					</span>
-					<div className="flex items-center gap-2">
-						<button
-							aria-label="Previous page"
-							onClick={() => setPage(currentPage - 1)}
-							disabled={currentPage <= 1}
-							className="p-1 text-foreground disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed"
-						>
-							<ChevronLeft size={16} />
-						</button>
-						{Array.from({ length: totalPages }).map((_, i) => (
-							<button
-								key={i}
-								onClick={() => setPage(i + 1)}
-								className={`h-6 min-w-6 px-1 rounded text-xs cursor-pointer ${
-									currentPage === i + 1
-										? "border border-[#0091FE] text-[#0091FE]"
-										: "text-[#334155] hover:bg-gray-100"
-								}`}
-							>
-								{i + 1}
-							</button>
-						))}
-						<button
-							aria-label="Next page"
-							onClick={() => setPage(currentPage + 1)}
-							disabled={currentPage >= totalPages}
-							className="p-1 text-foreground disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed"
-						>
-							<ChevronRight size={16} />
-						</button>
-					</div>
-				</div>
-			)}
+			<Pager
+				page={data?.page ?? page}
+				totalPages={data?.total_pages ?? 1}
+				total={data?.total ?? 0}
+				pageSize={PAGE_SIZE}
+				shown={data?.data?.length ?? 0}
+				noun="emails"
+				onPage={setPage}
+			/>
 		</div>
 	);
 }

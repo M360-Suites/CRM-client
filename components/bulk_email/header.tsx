@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { LayoutGrid, PlusIcon } from "lucide-react";
+import { LayoutGrid, MailX, PlusIcon } from "lucide-react";
 import { CustomButton } from "@/components/custom/common/customButton";
 
 export default function Header() {
@@ -16,7 +16,17 @@ export default function Header() {
 						Emails you have sent to your Contacts
 					</span>
 				</div>
-				<div className="flex flex-row items-center md:gap-4 gap-2">
+				<div className="flex flex-row flex-wrap items-center md:gap-4 gap-2">
+					<CustomButton
+						asChild
+						variant="ghost"
+						className="rounded-full flex flex-row items-center gap-2 md:px-5 max-md:px-4 py-2.5"
+					>
+						<Link href="/bulk-email/suppressions">
+							<MailX />
+							<span>Suppressed</span>
+						</Link>
+					</CustomButton>
 					<CustomButton
 						asChild
 						variant="ghost"

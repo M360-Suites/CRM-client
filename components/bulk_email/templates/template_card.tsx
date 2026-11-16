@@ -1,13 +1,18 @@
 "use client";
 
-import { EmailTemplate } from "@/types/bulk_email";
+// Works for both saved templates (subject) and starter designs (description)
+interface CardTemplate {
+	name: string;
+	description?: string;
+	subject?: string;
+}
 
 export default function TemplateCard({
 	template,
 	onSelect,
 	onUse,
 }: {
-	template: EmailTemplate;
+	template: CardTemplate;
 	onSelect: () => void;
 	onUse?: () => void;
 }) {
@@ -32,7 +37,7 @@ export default function TemplateCard({
 					{template.name}
 				</span>
 				<p className="text-[11px] text-[#334155] line-clamp-4">
-					{template.description}
+					{template.description ?? template.subject}
 				</p>
 				{onUse && (
 					<button

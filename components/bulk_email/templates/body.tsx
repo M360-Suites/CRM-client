@@ -3,30 +3,45 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { PlusIcon, Search } from "lucide-react";
+import { ChevronLeft, PlusIcon, Search } from "lucide-react";
 import { CustomButton } from "@/components/custom/common/customButton";
-import { useBulkEmailStore } from "@/stores/bulk_email/bulk_email_store";
+import { useEmailTemplates } from "@/hooks/bulk_email/templates";
+import { useDebounced } from "@/hooks/bulk_email/use_debounced";
+import Pager from "../pager";
 import TemplateCard from "./template_card";
+import { TemplateGridSkeleton } from "../skeletons";
+
+const PAGE_SIZE = 24;
 
 export default function TemplatesBody() {
 	const router = useRouter();
-	const { templates } = useBulkEmailStore();
 	const [search, setSearch] = useState("");
-
-	const term = search.trim().toLowerCase();
-	const visible = templates.filter(
-		(t) =>
-			!term ||
-			t.name.toLowerCase().includes(term) ||
-			t.description.toLowerCase().includes(term),
-	);
+	const [page, setPage] = useState(1);
+	const term = useDebounced(search.trim());
+	const { data, isLoading: firstLoad, isError, isPlaceholderData } = useEmailTemplates({
+		search: term || undefined,
+		page,
+		limit: PAGE_SIZE,
+	});
+	// Skeletons also cover a new search or page while it loads
+	const isLoading = firstLoad || isPlaceholderData;
+	const visible = data?.data ?? [];
 
 	return (
 		<div className="w-full flex flex-col gap-6 pt-8 pb-8">
 			<div className="flex max-md:flex-col max-md:items-start max-md:gap-4 items-center justify-between w-full">
-				<h2 className="xl:text-2xl lg:text-xl/[110%] text-lg font-medium text-[#3A2418]">
-					Email Templates
-				</h2>
+				<div className="flex items-center gap-3">
+					<Link
+						href="/bulk-email"
+						aria-label="Back to Bulk Email"
+						className="p-1 rounded hover:bg-gray-100"
+					>
+						<ChevronLeft size={16} color="#94A3B8" />
+					</Link>
+					<h2 className="xl:text-2xl lg:text-xl/[110%] text-lg font-medium text-[#3A2418]">
+						Email Templates
+					</h2>
+				</div>
 				<CustomButton
 					asChild
 					variant="default"
@@ -44,16 +59,25 @@ export default function TemplatesBody() {
 				<input
 					type="text"
 					value={search}
-					onChange={(e) => setSearch(e.target.value)}
+					onChange={(e) => {
+						setSearch(e.target.value);
+						setPage(1);
+					}}
 					placeholder="Search templates..."
 					className="flex-1 placeholder:text-sm h-full outline-0 focus-visible:ring-0"
 				/>
 			</div>
 
-			{visible.length === 0 ? (
+			{isLoading ? (
+				<TemplateGridSkeleton />
+			) : visible.length === 0 ? (
 				<div className="flex flex-col items-center gap-4 py-20 border border-[#E8E8E8] rounded-[12px]">
 					<span className="text-base font-normal text-foreground">
-						{term ? "No templates match your search" : "No templates yet"}
+						{isError
+							? "Couldn't load your templates. Try again shortly."
+							: term
+								? "No templates match your search"
+								: "No templates yet"}
 					</span>
 				</div>
 			) : (
@@ -72,6 +96,18 @@ export default function TemplatesBody() {
 					))}
 				</div>
 			)}
+
+			<div className="max-w-[1100px]">
+				<Pager
+					page={data?.page ?? page}
+					totalPages={data?.total_pages ?? 1}
+					total={data?.total ?? 0}
+					pageSize={PAGE_SIZE}
+					shown={visible.length}
+					noun="templates"
+					onPage={setPage}
+				/>
+			</div>
 		</div>
 	);
 }

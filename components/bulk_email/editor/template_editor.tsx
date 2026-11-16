@@ -3,57 +3,102 @@
 import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Copy, EllipsisVertical, Trash2 } from "lucide-react";
+import { Copy, EllipsisVertical, LoaderCircle, Mail, Trash2 } from "lucide-react";
 import { toast } from "sonner";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { CustomPopover } from "@/components/custom/common/customPopover";
-import { useBulkEmailStore } from "@/stores/bulk_email/bulk_email_store";
-import { EmailContent, EmailTemplate } from "@/types/bulk_email";
+import { useCreateBroadcast } from "@/hooks/bulk_email/broadcasts";
+import {
+	useDeleteEmailTemplate,
+	useDuplicateEmailTemplate,
+	useEmailTemplate,
+	useTestEmailTemplate,
+	useUpdateEmailTemplate,
+} from "@/hooks/bulk_email/templates";
+import { EmailDesign, EmailTemplate } from "@/types/bulk_email";
 import ConfirmationModal from "../confirmation_modal";
-import EmailCanvas from "./email_canvas";
+import { LoadedDesign, loadDesign } from "../email_editor/design";
+import EmailEditor from "../email_editor/email_editor";
+import PreviewButton from "../email_editor/preview_dialog";
+import { renderDesignHtml } from "../email_editor/render";
 import EditorHeader, { SavedStatus, useAutosave } from "./editor_header";
-import FormatToolbar from "./format_toolbar";
-import { ImageInspector, StylesInspector } from "./inspector";
+import { EditorPageSkeleton } from "../skeletons";
 
-function Editor({ initial }: { initial: EmailTemplate }) {
+interface TemplateState {
+	name: string;
+	subject: string;
+	preview_text: string;
+	design: EmailDesign;
+}
+
+const menuItem =
+	"flex items-center gap-2 px-2 py-1.5 rounded-md text-sm cursor-pointer disabled:opacity-60";
+
+function Editor({
+	id,
+	initial,
+	loaded,
+}: {
+	id: string;
+	initial: TemplateState;
+	loaded: LoadedDesign;
+}) {
 	const router = useRouter();
-	const { saveTemplate, deleteTemplate, saveEmail } = useBulkEmailStore();
+	const updateTemplate = useUpdateEmailTemplate();
+	const deleteTemplate = useDeleteEmailTemplate();
+	const duplicateTemplate = useDuplicateEmailTemplate();
+	const testTemplate = useTestEmailTemplate();
+	const createBroadcast = useCreateBroadcast();
+
 	const [template, setTemplate] = useState(initial);
-	const [panel, setPanel] = useState<"styles" | "image">("styles");
 	const [broadcastId, setBroadcastId] = useState<string | null>(null);
 
-	// TODO: persist through the templates endpoint once it exists
-	const saving = useAutosave(template, (t) =>
-		saveTemplate({ ...t, updated_at: new Date().toISOString() }),
+	const { saving, failed, flush } = useAutosave(template, (t) =>
+		updateTemplate.mutateAsync({
+			id,
+			payload: {
+				name: t.name.trim() || "Untitled template",
+				// The API requires a subject; fall back to the name until one is set
+				subject: t.subject.trim() || t.name.trim() || "Untitled",
+				preview_text: t.preview_text,
+				html: renderDesignHtml(t.design),
+				design: t.design,
+			},
+		}),
 	);
 
-	const updateContent = (patch: Partial<EmailContent>) =>
-		setTemplate((t) => ({ ...t, content: { ...t.content, ...patch } }));
+	const update = (patch: Partial<TemplateState>) =>
+		setTemplate((t) => ({ ...t, ...patch }));
 
-	const createBroadcast = () => {
-		const _id = crypto.randomUUID();
-		saveEmail({
-			_id,
-			title: template.name,
-			subject: "",
-			preview_text: "",
-			audience: "all",
-			status: "draft",
-			template_id: template._id,
-			ab_test: false,
-			content: structuredClone(template.content),
-			updated_at: new Date().toISOString(),
-			updated_by: "You",
-		});
-		setBroadcastId(_id);
+	const handleCreateBroadcast = () =>
+		createBroadcast.mutate(
+			{
+				name: template.name,
+				template_id: id,
+				subject: template.subject,
+				preview_text: template.preview_text,
+				html: renderDesignHtml(template.design),
+				design: template.design,
+				audience: { all: true },
+			},
+			{ onSuccess: (b) => setBroadcastId(b._id) },
+		);
+
+	const handleTest = async () => {
+		try {
+			await flush();
+			testTemplate.mutate(id);
+		} catch {
+			// toasted by the save mutation
+		}
 	};
 
 	return (
-		<div className="w-full flex flex-col gap-12 pt-8 pb-8">
+		<div className="w-full flex flex-col gap-8 pt-8 pb-8">
 			<EditorHeader
 				backHref="/bulk-email/templates"
 				title={template.name}
-				onTitleChange={(name) => setTemplate((t) => ({ ...t, name }))}
+				onTitleChange={(name) => update({ name })}
 				right={
 					<>
 						<CustomPopover
@@ -65,81 +110,90 @@ function Editor({ initial }: { initial: EmailTemplate }) {
 									<EllipsisVertical size={16} color="#64748B" />
 								</button>
 							}
-							className="pt-2 flex flex-col gap-1 w-40"
+							className="pt-2 flex flex-col gap-1 w-44"
 						>
 							<button
-								onClick={() => {
-									const _id = crypto.randomUUID();
-									saveTemplate({
-										...structuredClone(template),
-										_id,
-										name: `${template.name} (copy)`,
-									});
-									router.push(`/bulk-email/templates/${_id}`);
+								onClick={handleTest}
+								disabled={testTemplate.isPending}
+								className={`${menuItem} text-foreground hover:bg-gray-100`}
+							>
+								<Mail size={16} />
+								Send me a test
+							</button>
+							<button
+								disabled={duplicateTemplate.isPending}
+								onClick={async () => {
+									try {
+										await flush();
+										const copy = await duplicateTemplate.mutateAsync(id);
+										router.push(`/bulk-email/templates/${copy._id}`);
+									} catch {
+										// toasted
+									}
 								}}
-								className="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-foreground hover:bg-gray-100 cursor-pointer"
+								className={`${menuItem} text-foreground hover:bg-gray-100`}
 							>
 								<Copy size={16} />
 								Duplicate
 							</button>
 							<button
-								onClick={() => {
-									deleteTemplate(template._id);
-									toast.success("Template deleted");
-									router.push("/bulk-email/templates");
-								}}
-								className="flex items-center gap-2 px-2 py-1.5 rounded-md text-sm text-[#DC2626] hover:bg-red-50 cursor-pointer"
+								disabled={deleteTemplate.isPending}
+								onClick={() =>
+									deleteTemplate.mutate(id, {
+										onSuccess: () => {
+											toast.success("Template deleted");
+											router.push("/bulk-email/templates");
+										},
+									})
+								}
+								className={`${menuItem} text-[#DC2626] hover:bg-red-50`}
 							>
 								<Trash2 size={16} />
 								Delete template
 							</button>
 						</CustomPopover>
-						<SavedStatus saving={saving} />
+						<SavedStatus saving={saving} failed={failed} />
+						<PreviewButton
+							design={template.design}
+							subject={template.subject}
+							previewText={template.preview_text}
+						/>
 						<CustomButton
-							onClick={createBroadcast}
+							onClick={handleCreateBroadcast}
+							disabled={createBroadcast.isPending}
 							className="rounded-[4px] border-0 px-3.5 min-h-8 py-1.5 text-[13px] font-normal"
 						>
+							{createBroadcast.isPending && (
+								<LoaderCircle size={14} className="animate-spin" />
+							)}
 							Create a broadcast
 						</CustomButton>
 					</>
 				}
 			/>
 
-			<div className="flex max-lg:flex-col items-stretch xl:-mr-8 -mr-5 max-lg:mr-0">
-				<div className="relative flex-1 min-w-0 w-full flex flex-col">
-					<div className="sticky top-20 z-10 flex justify-center pb-2">
-						<FormatToolbar className="w-full max-w-150 rounded-md border border-[#E2E8F0] bg-white px-2 py-0.5 shadow-sm" />
-					</div>
-					<EmailCanvas
-						editable
-						content={template.content}
-						imageSelected={panel === "image"}
-						onSelectImage={() => setPanel("image")}
-						onSelectText={() => setPanel("styles")}
-						onHtmlChange={(html) => updateContent({ html })}
-					/>
+			<div className="flex flex-col gap-6">
+				<div className="grid md:grid-cols-2 gap-3 rounded-md border border-[#E2E8F0] bg-white px-4 py-4">
+					<label className="flex flex-col gap-1.5">
+						<span className="text-xs text-[#334155]">Subject line</span>
+						<input
+							value={template.subject}
+							placeholder="Thanks for your interest, {{contact.first_name}}"
+							onChange={(e) => update({ subject: e.target.value })}
+							className="rounded-[4px] border border-[#E2E8F0] px-3 h-9 text-sm text-[#0F172A] outline-none focus:border-[#0091FE]"
+						/>
+					</label>
+					<label className="flex flex-col gap-1.5">
+						<span className="text-xs text-[#334155]">Preview text</span>
+						<input
+							value={template.preview_text}
+							placeholder="Shown after the subject in the inbox (optional)"
+							onChange={(e) => update({ preview_text: e.target.value })}
+							className="rounded-[4px] border border-[#E2E8F0] px-3 h-9 text-sm text-[#0F172A] outline-none focus:border-[#0091FE]"
+						/>
+					</label>
 				</div>
-
-				<aside
-					className={`${panel === "image" ? "lg:w-80" : "lg:w-70"} w-full shrink-0 bg-white overflow-y-auto`}
-				>
-					{panel === "image" ? (
-						<ImageInspector
-							image={template.content.image}
-							onBack={() => setPanel("styles")}
-							onChange={(patch) =>
-								updateContent({
-									image: { ...template.content.image, ...patch },
-								})
-							}
-						/>
-					) : (
-						<StylesInspector
-							content={template.content}
-							onChange={updateContent}
-						/>
-					)}
-				</aside>
+				<EmailEditor initial={loaded} onChange={(design) => update({ design })} />
 			</div>
 
 			<ConfirmationModal
@@ -153,12 +207,19 @@ function Editor({ initial }: { initial: EmailTemplate }) {
 	);
 }
 
-export default function TemplateEditor({ id }: { id: string }) {
-	const template = useBulkEmailStore((s) =>
-		s.templates.find((t) => t._id === id),
-	);
+const stateFromTemplate = (t: EmailTemplate, loaded: LoadedDesign): TemplateState => ({
+	name: t.name ?? "",
+	subject: t.subject ?? "",
+	preview_text: t.preview_text ?? "",
+	design: loaded.design,
+});
 
-	if (!template) {
+export default function TemplateEditor({ id }: { id: string }) {
+	const { data: template, isLoading, isError } = useEmailTemplate(id);
+
+	if (isLoading) return <EditorPageSkeleton />;
+
+	if (isError || !template) {
 		return (
 			<div className="flex flex-col items-center gap-4 py-24">
 				<span className="text-base text-foreground">
@@ -174,6 +235,14 @@ export default function TemplateEditor({ id }: { id: string }) {
 		);
 	}
 
+	const loaded = loadDesign(template);
 	// Keyed so navigating between templates resets the editor state
-	return <Editor key={id} initial={template} />;
+	return (
+		<Editor
+			key={id}
+			id={id}
+			loaded={loaded}
+			initial={stateFromTemplate(template, loaded)}
+		/>
+	);
 }

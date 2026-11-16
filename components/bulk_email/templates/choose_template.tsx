@@ -2,22 +2,50 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useBulkEmailStore } from "@/stores/bulk_email/bulk_email_store";
-import { TemplateCategory } from "@/types/bulk_email";
+import Link from "next/link";
+import { ChevronLeft, LoaderCircle } from "lucide-react";
+import { useCreateEmailTemplate } from "@/hooks/bulk_email/templates";
+import { renderDesignHtml } from "../email_editor/render";
+import { StarterTemplate, TemplateCategory } from "@/types/bulk_email";
 import { LIBRARY_TEMPLATES, TEMPLATE_CATEGORIES } from "../data";
 import TemplateCard from "./template_card";
 
 export default function ChooseTemplate() {
 	const router = useRouter();
-	const { saveTemplate } = useBulkEmailStore();
+	const createTemplate = useCreateEmailTemplate();
+
+	// Starter designs are copied into a new template the organisation owns
+	const pickStarter = (starter: StarterTemplate) => {
+		if (createTemplate.isPending) return;
+		const design = structuredClone(starter.design);
+		createTemplate.mutate(
+			{
+				name: starter.name,
+				subject: starter.name,
+				html: renderDesignHtml(design),
+				design,
+			},
+			{ onSuccess: (t) => router.push(`/bulk-email/templates/${t._id}`) },
+		);
+	};
 	const [category, setCategory] = useState<TemplateCategory>("starting");
 	const active = TEMPLATE_CATEGORIES.find((c) => c.value === category)!;
 	const templates = LIBRARY_TEMPLATES.filter((t) => t.category === category);
 
 	return (
 		<div className="w-full flex flex-col gap-6 pt-8 pb-8">
-			<h2 className="xl:text-[28px] lg:text-xl/[110%] text-lg font-medium text-[#0F172A]">
+			<h2 className="flex items-center gap-3 xl:text-[28px] lg:text-xl/[110%] text-lg font-medium text-[#0F172A]">
+				<Link
+					href="/bulk-email/templates"
+					aria-label="Back to templates"
+					className="p-1 rounded hover:bg-gray-100"
+				>
+					<ChevronLeft size={16} color="#94A3B8" />
+				</Link>
 				Choose a template to customize
+				{createTemplate.isPending && (
+					<LoaderCircle size={20} className="animate-spin" color="#0091FE" />
+				)}
 			</h2>
 
 			<div className="flex max-md:flex-col gap-6 md:gap-8">
@@ -54,17 +82,7 @@ export default function ChooseTemplate() {
 							<TemplateCard
 								key={template._id}
 								template={template}
-								onSelect={() => {
-									// Starter designs are copied into a new template the user owns
-									const _id = crypto.randomUUID();
-									saveTemplate({
-										...template,
-										_id,
-										content: structuredClone(template.content),
-										updated_at: new Date().toISOString(),
-									});
-									router.push(`/bulk-email/templates/${_id}`);
-								}}
+								onSelect={() => pickStarter(template)}
 							/>
 						))}
 					</div>

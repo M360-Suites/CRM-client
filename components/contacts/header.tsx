@@ -7,33 +7,34 @@ import { CustomDrawer } from "@/components/custom/common/drawer";
 import AddContactForm from "./forms/add_contact";
 import ImportContacts from "./import";
 import { useGetContacts } from "@/hooks/contact/get_contacts";
-import { downloadFile } from "@/lib/handler";
+import { GetContacts } from "@/services/contact/get_contacts";
+import { fetchAllPages, exportRows } from "@/lib/export";
+import { toast } from "sonner";
 
 export default function Header() {
 	const { data: contacts } = useGetContacts({
 		temperature: undefined,
 	});
 
-	const handleExport = (format: "csv" | "json") => {
-		if (!contacts?.data.length) return;
+	const [exporting, setExporting] = React.useState(false);
 
-		if (format === "json") {
-			const json = JSON.stringify(contacts, null, 2);
-			downloadFile(json, "contacts.json", "application/json");
-			return;
+	const handleExport = async (format: "csv" | "json") => {
+		if (exporting) return;
+		setExporting(true);
+		try {
+			const rows = await fetchAllPages((page, limit) =>
+				GetContacts({ page, limit }),
+			);
+			if (!rows.length) {
+				toast.info("No contacts to export");
+				return;
+			}
+			exportRows(rows, format, "contacts");
+		} catch {
+			toast.error("Couldn't export contacts. Please try again.");
+		} finally {
+			setExporting(false);
 		}
-
-		// CSV
-		const headers = Object.keys(contacts.data[0]).join(",");
-		const rows = contacts.data.map((c) =>
-			Object.values(c)
-				.map((v) =>
-					typeof v === "string" ? `"${v.replace(/"/g, '""')}"` : v,
-				)
-				.join(","),
-		);
-		const csv = [headers, ...rows].join("\n");
-		downloadFile(csv, "contacts.csv", "text/csv");
 	};
 
 	return (
@@ -92,6 +93,7 @@ export default function Header() {
 									onClick={() => {
 										handleExport("csv");
 									}}
+									disabled={exporting}
 									variant="default"
 									className="w-full py-3"
 								>
@@ -101,6 +103,7 @@ export default function Header() {
 									onClick={() => {
 										handleExport("json");
 									}}
+									disabled={exporting}
 									variant="ghost"
 									className="w-full py-3"
 								>

@@ -1,12 +1,16 @@
 "use client";
 
+import React from "react";
+
 import { CustomButton } from "@/components/custom/common/customButton";
 import { Download, UploadIcon, PlusIcon } from "lucide-react";
 import { CustomDrawer } from "@/components/custom/common/drawer";
 import AddCompanyForm from "./forms/add_company";
 import ImportCompanies from "./import";
 import { useGetCompanies } from "@/hooks/company/get_companies";
-import { downloadFile } from "@/lib/handler";
+import { GetCompanies } from "@/services/company/get_companies";
+import { fetchAllPages, exportRows } from "@/lib/export";
+import { toast } from "sonner";
 import { handleRoleDisplay } from "@/lib/utils";
 import { useUserProfile } from "@/hooks/user/profile";
 
@@ -14,26 +18,25 @@ export default function Header() {
 	const { data: companies } = useGetCompanies({});
 	const { data: user } = useUserProfile();
 
-	const handleExport = (format: "csv" | "json") => {
-		if (!companies?.data.length) return;
+	const [exporting, setExporting] = React.useState(false);
 
-		if (format === "json") {
-			const json = JSON.stringify(companies, null, 2);
-			downloadFile(json, "companies.json", "application/json");
-			return;
+	const handleExport = async (format: "csv" | "json") => {
+		if (exporting) return;
+		setExporting(true);
+		try {
+			const rows = await fetchAllPages((page, limit) =>
+				GetCompanies({ page, limit }),
+			);
+			if (!rows.length) {
+				toast.info("No companies to export");
+				return;
+			}
+			exportRows(rows, format, "companies");
+		} catch {
+			toast.error("Couldn't export companies. Please try again.");
+		} finally {
+			setExporting(false);
 		}
-
-		// CSV
-		const headers = Object.keys(companies.data[0]).join(",");
-		const rows = companies.data.map((c) =>
-			Object.values(c)
-				.map((v) =>
-					typeof v === "string" ? `"${v.replace(/"/g, '""')}"` : v,
-				)
-				.join(","),
-		);
-		const csv = [headers, ...rows].join("\n");
-		downloadFile(csv, "companies.csv", "text/csv");
 	};
 
 	return (
@@ -99,6 +102,7 @@ export default function Header() {
 							<div className="flex flex-col gap-3 mt-4">
 								<CustomButton
 									onClick={() => handleExport("csv")}
+									disabled={exporting}
 									variant="default"
 									className="w-full py-3"
 								>
@@ -106,6 +110,7 @@ export default function Header() {
 								</CustomButton>
 								<CustomButton
 									onClick={() => handleExport("json")}
+									disabled={exporting}
 									variant="ghost"
 									className="w-full py-3"
 								>

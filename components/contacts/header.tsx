@@ -8,7 +8,7 @@ import AddContactForm from "./forms/add_contact";
 import ImportContacts from "./import";
 import { useGetContacts } from "@/hooks/contact/get_contacts";
 import { GetContacts } from "@/services/contact/get_contacts";
-import { fetchAllPages, exportRows } from "@/lib/export";
+import { exportResource } from "@/lib/export";
 import { toast } from "sonner";
 
 export default function Header() {
@@ -22,14 +22,10 @@ export default function Header() {
 		if (exporting) return;
 		setExporting(true);
 		try {
-			const rows = await fetchAllPages((page, limit) =>
+			const exported = await exportResource("contacts", format, (page, limit) =>
 				GetContacts({ page, limit }),
 			);
-			if (!rows.length) {
-				toast.info("No contacts to export");
-				return;
-			}
-			exportRows(rows, format, "contacts");
+			if (!exported) toast.info("No contacts to export");
 		} catch {
 			toast.error("Couldn't export contacts. Please try again.");
 		} finally {

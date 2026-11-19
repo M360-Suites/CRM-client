@@ -9,7 +9,7 @@ import AddCompanyForm from "./forms/add_company";
 import ImportCompanies from "./import";
 import { useGetCompanies } from "@/hooks/company/get_companies";
 import { GetCompanies } from "@/services/company/get_companies";
-import { fetchAllPages, exportRows } from "@/lib/export";
+import { exportResource } from "@/lib/export";
 import { toast } from "sonner";
 import { handleRoleDisplay } from "@/lib/utils";
 import { useUserProfile } from "@/hooks/user/profile";
@@ -24,14 +24,10 @@ export default function Header() {
 		if (exporting) return;
 		setExporting(true);
 		try {
-			const rows = await fetchAllPages((page, limit) =>
+			const exported = await exportResource("companies", format, (page, limit) =>
 				GetCompanies({ page, limit }),
 			);
-			if (!rows.length) {
-				toast.info("No companies to export");
-				return;
-			}
-			exportRows(rows, format, "companies");
+			if (!exported) toast.info("No companies to export");
 		} catch {
 			toast.error("Couldn't export companies. Please try again.");
 		} finally {

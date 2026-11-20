@@ -38,6 +38,7 @@ import {
 } from "@dnd-kit/react";
 import useMoveLeadToStage from "@/hooks/pipeline/update_deals_stage";
 import { Deal } from "@/types/pipeline";
+import { formatMoney } from "@/lib/currency";
 
 type DragEndEvent = Parameters<
   NonNullable<DragDropEventHandlers["onDragEnd"]>
@@ -53,7 +54,7 @@ function DragCard({ lead }: { lead: Deal }) {
         <span className="text-xs text-black/50">{lead.industry}</span>
       )}
       <span className="text-xs font-medium text-[#0076D6]">
-        ₦{(lead.value ?? 0).toLocaleString()}
+        {formatMoney(lead.value, lead.currency)}
       </span>
     </div>
   );

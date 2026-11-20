@@ -2,6 +2,7 @@ import { useGetPipelineBoard } from "@/hooks/pipeline/get_pipeline_board";
 import { Deal } from "@/types/pipeline";
 import { formatRelativeDateTime, getInitials, toUTC } from "@/lib/utils";
 import DealOwner from "./deal_owner";
+import { formatMoney } from "@/lib/currency";
 
 const formatFieldLabel = (key: string) =>
 	key
@@ -49,7 +50,7 @@ export default function DealDetail({ deal }: { deal: Deal }) {
 	const companyName = dealCompanyName || customCompany;
 
 	const rows = [
-		{ label: "Value", value: `₦${(deal.value ?? 0).toLocaleString()}` },
+		{ label: "Value", value: formatMoney(deal.value, deal.currency) },
 		{ label: "Stage", value: stage?.name },
 		{ label: "Source", value: deal.source },
 		{ label: "Industry", value: deal.industry },
@@ -87,7 +88,7 @@ export default function DealDetail({ deal }: { deal: Deal }) {
 							{deal.title}
 						</span>
 						<span className="text-sm text-foreground/70">
-							₦{(deal.value ?? 0).toLocaleString()}
+							{formatMoney(deal.value, deal.currency)}
 						</span>
 					</div>
 					{stage && (

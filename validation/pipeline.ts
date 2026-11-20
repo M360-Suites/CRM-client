@@ -6,6 +6,7 @@ export const addDealSchema = z.object({
     .number()
     .min(1, "Deal value is required") // 👈 min(1) rejects 0 and empty
     .positive("Deal value must be greater than 0"),
+  currency: z.string().min(1, "Currency is required"),
   source: z.string().min(1, "Source is required"),
   industry: z.string().optional(),
   stage_id: z.string().min(1, "Stage is required"),

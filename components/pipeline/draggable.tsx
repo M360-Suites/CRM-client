@@ -8,6 +8,7 @@ import AddDealForm from "./form/add_deal";
 import DealDetail from "./deal_detail";
 import { Deal } from "@/types/pipeline";
 import DealOwnerPicker from "./deal_owner_picker";
+import { formatMoney } from "@/lib/currency";
 
 export function Draggable({ lead }: { lead: Deal }) {
 	const { mutate: deleteDeal, isPending: isDeleting } = useDeleteDeal();
@@ -79,7 +80,7 @@ export function Draggable({ lead }: { lead: Deal }) {
 			)}
 
 			<span className="text-xs font-medium text-black truncate">
-				₦{(lead.value ?? 0).toLocaleString()}
+				{formatMoney(lead.value, lead.currency)}
 			</span>
 
 			{/* Drawers live outside the menu so closing the menu doesn't unmount them */}

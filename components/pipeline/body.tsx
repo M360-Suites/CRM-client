@@ -2,7 +2,7 @@
 
 import { Droppable } from "./droppable";
 import { Draggable } from "@/components/pipeline/draggable";
-import { Inbox, MessageSquareText } from "lucide-react";
+import { Inbox, Loader2, MessageSquareText, Search, X } from "lucide-react";
 import { useGetPipelineBoard } from "@/hooks/pipeline/get_pipeline_board";
 import { DraggableLayout } from "./draggableLayout";
 import { CommentModal } from "../custom/common/comment_dialog";
@@ -19,6 +19,8 @@ import AssignmentFilter, {
 import TeamWorkload from "./team_workload";
 import { useCanManageDealAssignment } from "@/hooks/user/permissions";
 import { Deal } from "@/types/pipeline";
+import { useSearchDeals } from "@/hooks/pipeline/search_deals";
+import { useDebounced } from "@/hooks/bulk_email/use_debounced";
 
 export default function Body() {
 	const searchParams = useSearchParams();
@@ -41,6 +43,14 @@ export default function Body() {
 	}
 	const [assignmentFilter, setAssignmentFilter] =
 		useState<AssignmentFilterValue>("all");
+	const [search, setSearch] = useState("");
+	const debouncedSearch = useDebounced(search.trim(), 350);
+	const isSearching = debouncedSearch.length > 0;
+	const {
+		data: matchingDealIds,
+		isFetching: searchFetching,
+		isError: searchError,
+	} = useSearchDeals(debouncedSearch);
 	const { data: pipelineData, isPending } = useGetPipelineBoard();
 	const { data: currentUser } = useUserProfile();
 	const canManageAssignments = useCanManageDealAssignment();
@@ -69,12 +79,20 @@ export default function Body() {
 	const activeFilter: AssignmentFilterValue = isSalesRep
 		? "mine"
 		: assignmentFilter;
-	const isFiltered = activeFilter !== "all";
+	const isFiltered = activeFilter !== "all" || isSearching;
 	const selectedMemberId = memberIdFromFilter(activeFilter);
 	const selectedMemberName = selectedMemberId
 		? (team_members.find((m) => m.id === selectedMemberId)?.display_name ??
 			"This member")
 		: null;
+
+	const matchesSearch = (deal: Deal) => {
+		if (!isSearching) return true;
+		// Fall back to a local title match until the server answers (or if it fails)
+		if (!matchingDealIds)
+			return deal.title.toLowerCase().includes(debouncedSearch.toLowerCase());
+		return matchingDealIds.has(deal.id);
+	};
 
 	const matchesAssignmentFilter = (deal: Deal) => {
 		const ownerId = dealOwners?.[deal.id];
@@ -86,10 +104,13 @@ export default function Body() {
 	};
 
 	// Filtering needs the owners map; don't flash an empty board while it loads
-	if (isPending || (isFiltered && ownersPending)) return <PipelineSkeleton />;
+	if (isPending || (activeFilter !== "all" && ownersPending))
+		return <PipelineSkeleton />;
 
 	const visibleStages = (stages ?? []).map((stage) => {
-		const deals = stage.deals.filter(matchesAssignmentFilter);
+		const deals = stage.deals.filter(
+			(deal) => matchesAssignmentFilter(deal) && matchesSearch(deal),
+		);
 		return {
 			...stage,
 			deals,
@@ -110,17 +131,28 @@ export default function Body() {
 		filter: activeFilter,
 		isSalesRep,
 		memberName: selectedMemberName,
-		ownersError: isFiltered && ownersError,
+		ownersError: activeFilter !== "all" && ownersError,
+		search: isSearching ? debouncedSearch : null,
+		searchError: isSearching && searchError,
 	});
-	const columnEmptyMessage = selectedMemberName
+	const columnEmptyMessage = isSearching
+		? "No matching deals in this stage"
+		: selectedMemberName
 		? `No deals for ${selectedMemberName} in this stage`
 		: COLUMN_EMPTY_MESSAGES[activeFilter as keyof typeof COLUMN_EMPTY_MESSAGES];
 
 	return (
 		<div className="flex flex-col gap-4 w-full flex-1">
-			{!isSalesRep && (
-				<div className="flex flex-row max-md:flex-col items-center max-md:items-start justify-between gap-3 w-full">
-					{canManageAssignments && <AutoAssignSwitch />}
+			<div className="flex flex-row max-md:flex-col items-center max-md:items-start justify-between gap-3 w-full">
+				<div className="flex flex-row max-md:flex-col items-center max-md:items-start gap-3 max-md:w-full">
+					<DealSearch
+						value={search}
+						onChange={setSearch}
+						loading={isSearching && searchFetching}
+					/>
+					{!isSalesRep && canManageAssignments && <AutoAssignSwitch />}
+				</div>
+				{!isSalesRep && (
 					<div className="flex flex-wrap items-center gap-2 ml-auto max-md:ml-0">
 						<AssignmentFilter
 							value={assignmentFilter}
@@ -135,8 +167,8 @@ export default function Body() {
 							/>
 						)}
 					</div>
-				</div>
-			)}
+				)}
+			</div>
 			{boardNotice && <BoardNotice {...boardNotice} />}
 			{visibleStages.length > 0 && (
 				<DraggableLayout className="w-full flex-1 flex flex-col rounded-md">
@@ -217,6 +249,8 @@ function getBoardNotice({
 	isSalesRep,
 	memberName,
 	ownersError,
+	search,
+	searchError,
 }: {
 	hasStages: boolean;
 	visibleDealCount: number;
@@ -224,6 +258,8 @@ function getBoardNotice({
 	isSalesRep: boolean;
 	memberName: string | null;
 	ownersError: boolean;
+	search: string | null;
+	searchError: boolean;
 }): Notice | null {
 	if (ownersError)
 		return {
@@ -232,12 +268,24 @@ function getBoardNotice({
 				"We couldn't tell who owns each deal, so this view may be incomplete. Refresh to try again.",
 			tone: "error",
 		};
+	if (searchError)
+		return {
+			title: "Search is unavailable right now",
+			description:
+				"Showing deals whose title matches instead. Try again in a moment.",
+			tone: "error",
+		};
 	if (!hasStages)
 		return {
 			title: "Your pipeline has no stages yet",
 			description: "Once stages are set up, your deals will show up here.",
 		};
 	if (visibleDealCount > 0) return null;
+	if (search)
+		return {
+			title: `No deals match "${search}"`,
+			description: "Try a different search term or clear the search.",
+		};
 	if (memberName)
 		return {
 			title: `${memberName} has no deals assigned yet`,
@@ -260,6 +308,45 @@ function getBoardNotice({
 		title: "No deals in your pipeline yet",
 		description: "Add a deal or import a list to get started.",
 	};
+}
+
+function DealSearch({
+	value,
+	onChange,
+	loading,
+}: {
+	value: string;
+	onChange: (value: string) => void;
+	loading: boolean;
+}) {
+	return (
+		<div className="border border-[#D9E1E8] md:w-72 w-full rounded-full text-[#3A2418] bg-[#F2F7FB] flex flex-row items-center gap-2 py-2 px-3">
+			{loading ? (
+				<Loader2 size={16} className="shrink-0 animate-spin text-foreground/50" />
+			) : (
+				<Search size={16} className="shrink-0 text-foreground/50" />
+			)}
+			<input
+				type="text"
+				value={value}
+				onChange={(e) => onChange(e.target.value)}
+				onKeyDown={(e) => e.key === "Escape" && onChange("")}
+				placeholder="Search deals..."
+				aria-label="Search deals"
+				className="flex-1 min-w-0 bg-transparent text-sm placeholder:text-sm outline-0 focus-visible:ring-0"
+			/>
+			{value && (
+				<button
+					type="button"
+					onClick={() => onChange("")}
+					aria-label="Clear search"
+					className="shrink-0 text-foreground/40 hover:text-foreground cursor-pointer"
+				>
+					<X size={14} />
+				</button>
+			)}
+		</div>
+	);
 }
 
 function BoardNotice({ title, description, tone }: Notice) {

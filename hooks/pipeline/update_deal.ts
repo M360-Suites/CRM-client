@@ -1,13 +1,13 @@
 import { updateDeal } from "@/services/pipeline/update_deal";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { AddDealRequestData } from "@/validation/pipeline";
+import { AddDealOutputData } from "@/validation/pipeline";
 import { toast } from "sonner";
 
 export default function useUpdateDeal() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (data: Partial<AddDealRequestData> & { id: string }) =>
+    mutationFn: (data: Partial<AddDealOutputData> & { id: string }) =>
       updateDeal(data),
     onSuccess: async (data) => {
       if (data.status) {

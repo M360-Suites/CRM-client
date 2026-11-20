@@ -1,10 +1,11 @@
 import { apiClient } from "@/services/apiclient";
-import { AddDealRequestData } from "@/validation/pipeline";
+import { AddDealOutputData } from "@/validation/pipeline";
 
+// /deals/{id} (not /pipeline/deals/{id}) is the endpoint that accepts `currency`
 export const updateDeal = async (
-  data: Partial<AddDealRequestData> & { id: string },
+  data: Partial<AddDealOutputData> & { id: string },
 ) => {
   const { id, ...rest } = data;
-  const response = await apiClient.patch(`/pipeline/deals/${id}`, rest, true);
+  const response = await apiClient.patch(`/deals/${id}`, rest, true);
   return response;
 };

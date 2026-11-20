@@ -3,6 +3,7 @@ export interface Deal {
   title: string;
   summary?: string;
   value: number;
+  currency?: string;
   source: string;
   industry: string;
   stage_id: string;

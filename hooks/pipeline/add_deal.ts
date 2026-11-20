@@ -11,6 +11,7 @@ export default function useAddDeal() {
       if (data.status) {
         toast.success(data.message || "Deal added successfully");
         queryClient.invalidateQueries({ queryKey: ["pipeline"] });
+        queryClient.invalidateQueries({ queryKey: ["deals"] });
       } else {
         toast.error(data.message || "Failed to add deal");
       }

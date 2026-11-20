@@ -1,7 +1,8 @@
 import { apiClient } from "@/services/apiclient";
-import { AddDealRequestData } from "@/validation/pipeline";
+import { AddDealOutputData } from "@/validation/pipeline";
 
-export default function addDeal(data: AddDealRequestData) {
-  const response = apiClient.post("/pipeline/deals", data);
+// /deals (not /pipeline/deals) is the endpoint that accepts `currency`
+export default function addDeal(data: AddDealOutputData) {
+  const response = apiClient.post("/deals", data);
   return response;
 }

@@ -7,7 +7,12 @@ import CustomPhoneInput, {
 } from "@/components/custom/common/customPhoneInput";
 import { CustomButton } from "@/components/custom/common/customButton";
 import { Company } from "@/types/company";
-import { AddCompanyRequestData, addCompanySchema } from "@/validation/company";
+import {
+  AddCompanyRequestData,
+  addCompanySchema,
+  normalizeWebsite,
+  WEBSITE_PREFIX,
+} from "@/validation/company";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useEffect } from "react";
 import { useAddCompany } from "@/hooks/company/add_company";
@@ -40,7 +45,7 @@ export default function AddCompanyForm({
       email: company?.email,
       phone: toE164(company?.phone) ?? "",
       companyAddress: company?.address,
-      website: company?.website,
+      website: company?.website || WEBSITE_PREFIX,
       industry: company?.industry,
       contactPerson: company?.contact_person,
     },
@@ -49,7 +54,8 @@ export default function AddCompanyForm({
   const isEdit = mode === "edit";
   const isPending = isAdding || isEditing;
   const hasChanges = isEdit ? Object.keys(dirtyFields).length > 0 : true;
-  const handleFormSubmit: SubmitHandler<AddCompanyRequestData> = (data) => {
+  const handleFormSubmit: SubmitHandler<AddCompanyRequestData> = (values) => {
+    const data = { ...values, website: normalizeWebsite(values.website) };
     if (isEdit && company?._id) {
       if (!hasChanges) {
         onSuccess?.();
@@ -74,7 +80,7 @@ export default function AddCompanyForm({
         email: company.email || "",
         phone: toE164(company.phone) ?? "",
         companyAddress: company.address || "",
-        website: company.website || "",
+        website: company.website || WEBSITE_PREFIX,
         industry: company.industry || "",
         contactPerson: company.contact_person || "",
       });

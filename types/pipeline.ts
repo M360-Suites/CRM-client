@@ -7,7 +7,7 @@ export interface Deal {
   source: string;
   industry: string;
   stage_id: string;
-  company: null;
+  company: { id: string; name: string } | null;
   stage_changed_at: string;
   custom_fields?: Record<string, unknown>;
   created_at: string;

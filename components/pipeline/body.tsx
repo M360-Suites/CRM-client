@@ -143,17 +143,19 @@ export default function Body() {
 
 	return (
 		<div className="flex flex-col gap-4 w-full flex-1">
-			<div className="flex flex-row max-md:flex-col items-center max-md:items-start justify-between gap-3 w-full">
-				<div className="flex flex-row max-md:flex-col items-center max-md:items-start gap-3 max-md:w-full">
-					<DealSearch
-						value={search}
-						onChange={setSearch}
-						loading={isSearching && searchFetching}
-					/>
-					{!isSalesRep && canManageAssignments && <AutoAssignSwitch />}
+			{!isSalesRep && canManageAssignments && (
+				<div className="flex w-full">
+					<AutoAssignSwitch />
 				</div>
+			)}
+			<div className="flex flex-row max-md:flex-col md:items-center gap-3 w-full">
+				<DealSearch
+					value={search}
+					onChange={setSearch}
+					loading={isSearching && searchFetching}
+				/>
 				{!isSalesRep && (
-					<div className="flex flex-wrap items-center gap-2 ml-auto max-md:ml-0">
+					<div className="flex flex-wrap items-center gap-2 md:ml-auto">
 						<AssignmentFilter
 							value={assignmentFilter}
 							onChange={setAssignmentFilter}
@@ -320,7 +322,7 @@ function DealSearch({
 	loading: boolean;
 }) {
 	return (
-		<div className="border border-[#D9E1E8] md:w-72 w-full rounded-full text-[#3A2418] bg-[#F2F7FB] flex flex-row items-center gap-2 py-2 px-3">
+		<div className="h-9 w-full md:max-w-xs rounded-full border border-[#D9E1E8] bg-white text-[#3A2418] flex flex-row items-center gap-2 px-3 focus-within:border-[#00B3A6] transition-colors">
 			{loading ? (
 				<Loader2 size={16} className="shrink-0 animate-spin text-foreground/50" />
 			) : (

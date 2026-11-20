@@ -9,6 +9,7 @@ export const addDealSchema = z.object({
   currency: z.string().min(1, "Currency is required"),
   source: z.string().min(1, "Source is required"),
   industry: z.string().optional(),
+  company_id: z.string().nullable().optional(),
   stage_id: z.string().min(1, "Stage is required"),
 });
 

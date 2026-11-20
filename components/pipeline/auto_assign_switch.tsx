@@ -21,7 +21,7 @@ export default function AutoAssignSwitch() {
 			: "New leads arrive unassigned until a manager assigns them.";
 
 	return (
-		<div className="flex items-center gap-3 rounded-[10px] border border-[#D9E1E8] bg-white px-4 py-2.5">
+		<div className="flex items-center justify-between gap-4 rounded-[10px] border border-[#D9E1E8] bg-white px-4 py-2.5 max-md:w-full">
 			<div className="flex flex-col">
 				<span className="text-sm font-medium text-foreground">
 					Auto-assign leads

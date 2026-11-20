@@ -98,7 +98,7 @@ export default function TeamWorkload({
 			<PopoverTrigger asChild>
 				<button
 					type="button"
-					className={`inline-flex max-w-52 items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium cursor-pointer transition-colors ${
+					className={`inline-flex h-9 max-w-52 items-center gap-1.5 rounded-full border px-3 text-xs font-medium cursor-pointer transition-colors ${
 						selectedName
 							? "border-[#00B3A6] bg-[#00B3A6] text-white"
 							: "border-[#D9E1E8] bg-white text-foreground/70 hover:bg-gray-100"

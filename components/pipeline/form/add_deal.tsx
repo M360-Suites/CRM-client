@@ -14,6 +14,14 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import useAddDeal from "@/hooks/pipeline/add_deal";
 import useUpdateDeal from "@/hooks/pipeline/update_deal";
 import { useEffect, useMemo } from "react";
+import { useGetCompanies } from "@/hooks/company/get_companies";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Deal } from "@/types/pipeline";
 import {
   CURRENCIES,
@@ -43,6 +51,12 @@ export default function AddDealForm({
     [pipelineBoard?.stages],
   );
 
+  const { data: companies } = useGetCompanies({});
+  const companyOptions = companies?.data.map((company) => ({
+    name: company.name,
+    value: company._id,
+  }));
+
   const { mutate: addDeal, isPending } = useAddDeal();
   const { mutate: updateDeal, isPending: isUpdating } = useUpdateDeal();
   const {
@@ -61,6 +75,7 @@ export default function AddDealForm({
           source: deal?.source,
           industry: deal?.industry,
           stage_id: deal?.stage_id,
+          company_id: deal?.company?.id ?? null,
         }
       : { currency: DEFAULT_CURRENCY },
   });
@@ -74,6 +89,7 @@ export default function AddDealForm({
         source: deal.source,
         industry: deal.industry,
         stage_id: deal.stage_id,
+        company_id: deal.company?.id ?? null,
       });
     }
   }, [editMode, deal, reset, stageData]);
@@ -86,7 +102,8 @@ export default function AddDealForm({
       }
 
       updateDeal(
-        { id: deal.id, ...data },
+        // null clears the company on the deal
+        { id: deal.id, ...data, company_id: data.company_id ?? null },
         {
           onSuccess: () => {
             onSuccess?.();
@@ -99,8 +116,9 @@ export default function AddDealForm({
         value: data.value,
         currency: data.currency,
         source: data.source,
-        industry: data.industry,
+        industry: data.industry || undefined,
         stage_id: data.stage_id,
+        company_id: data.company_id || undefined,
       };
       addDeal(payload, {
         onSuccess: () => {
@@ -136,7 +154,7 @@ export default function AddDealForm({
           Deal Value
         </label>
         <div
-          className={`rounded-[10px] border flex flex-row items-center bg-[#F2F7FB] ${
+          className={`rounded-[10px] border flex flex-row items-center gap-1 bg-[#F2F7FB] p-2 focus-within:border-[#00B3A6] transition-colors ${
             errors.value || errors.currency
               ? "border-foundation-error-6"
               : "border-[#D9E1E8]"
@@ -146,19 +164,43 @@ export default function AddDealForm({
             control={control}
             name="currency"
             render={({ field }) => (
-              <select
-                aria-label="Currency"
+              <Select
                 value={field.value}
-                onChange={(e) => field.onChange(e.target.value)}
-                onBlur={field.onBlur}
-                className="h-full bg-transparent pl-4 pr-2 py-4.5 text-base max-md:text-sm text-foreground outline-none border-r border-[#D9E1E8] cursor-pointer"
+                onValueChange={(v) => field.onChange(v)}
               >
-                {CURRENCIES.map((c) => (
-                  <option key={c.code} value={c.code} title={c.name}>
-                    {c.code} ({c.symbol})
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger
+                  aria-label="Currency"
+                  onBlur={field.onBlur}
+                  className="h-11! shrink-0 gap-2 [&_[data-currency-name]]:hidden *:data-[slot=select-value]:gap-2 rounded-lg border-[#D9E1E8] bg-white pl-2 pr-2.5 shadow-xs cursor-pointer hover:bg-gray-50 focus-visible:ring-[#00B3A6]/30 focus-visible:border-[#00B3A6]"
+                >
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent
+                  position="popper"
+                  align="start"
+                  sideOffset={6}
+                  className="w-64 p-1 font-inter"
+                >
+                  {CURRENCIES.map((c) => (
+                    <SelectItem
+                      key={c.code}
+                      value={c.code}
+                      className="py-2 pl-2 cursor-pointer"
+                    >
+                      <span className="flex h-7 min-w-7 items-center justify-center rounded-md bg-[#D8F3F1] px-1 text-xs font-semibold text-[#2F9E94]">
+                        {c.symbol}
+                      </span>
+                      <span className="text-sm font-medium">{c.code}</span>
+                      <span
+                        data-currency-name
+                        className="text-xs opacity-60 truncate"
+                      >
+                        {c.name}
+                      </span>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
           />
           <Controller
@@ -177,7 +219,7 @@ export default function AddDealForm({
                   field.onChange(parseAmountInput(e.target.value).numeric)
                 }
                 onBlur={field.onBlur}
-                className="flex-1 min-w-0 px-4 py-4.5 outline-none bg-transparent text-base text-foreground max-md:text-sm placeholder:text-sm placeholder:text-foundation-gray-4"
+                className="flex-1 min-w-0 px-3 py-2 outline-none bg-transparent text-base text-foreground max-md:text-sm placeholder:text-sm placeholder:text-foundation-gray-4"
               />
             )}
           />
@@ -205,8 +247,31 @@ export default function AddDealForm({
       </div>
 
       <div className="relative w-full">
+        <Controller
+          name="company_id"
+          control={control}
+          render={({ field }) => (
+            <CustomSelect
+              {...field}
+              label="Company (optional)"
+              value={field.value ?? undefined}
+              onChange={(v) => field.onChange(v)}
+              placeholder="Select company"
+              error={errors.company_id?.message}
+              selectable={companyOptions || []}
+            />
+          )}
+        />
+        {errors.company_id && (
+          <span className="text-xs text-foundation-error-6 absolute right-0 -bottom-5">
+            {errors.company_id.message}
+          </span>
+        )}
+      </div>
+
+      <div className="relative w-full">
         <CustomInput
-          label="Industry"
+          label="Industry (optional)"
           placeholder="Enter industry"
           error={errors.industry?.message}
           type="text"

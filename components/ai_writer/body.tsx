@@ -213,7 +213,7 @@ export default function Body() {
         <span className="text-foreground text-base font-medium shrink-0">
           To:
         </span>
-        {selectedContact ? (
+        {selectedContact?.email ? (
           <div className="border rounded-full p-1 text-sm text-[#4A4A4A] font-medium flex items-center gap-2 min-w-0 max-w-full">
             <div className="rounded-full text-white bg-[#4a0f0a] size-9 shrink-0 flex items-center justify-center text-xs font-medium">
               {getInitials(
@@ -236,7 +236,11 @@ export default function Body() {
             kind="to"
             body={watchSend("to")}
             onChange={(value) => setSendValue("to", value)}
-            placeholder="Enter recipient email"
+            placeholder={
+              selectedContact
+                ? `${selectedContact.first_name || "This contact"} has no email, enter one`
+                : "Enter recipient email"
+            }
           />
         )}
       </div>

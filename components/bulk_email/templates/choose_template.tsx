@@ -7,8 +7,10 @@ import { ChevronLeft, LoaderCircle } from "lucide-react";
 import { useCreateEmailTemplate } from "@/hooks/bulk_email/templates";
 import { renderDesignHtml } from "../email_editor/render";
 import { StarterTemplate, TemplateCategory } from "@/types/bulk_email";
-import { LIBRARY_TEMPLATES, TEMPLATE_CATEGORIES } from "../data";
+import { TEMPLATE_CATEGORIES } from "../data";
+import { LIBRARY_TEMPLATES } from "./library";
 import TemplateCard from "./template_card";
+import DesignThumbnail from "./design_thumbnail";
 
 export default function ChooseTemplate() {
 	const router = useRouter();
@@ -82,6 +84,7 @@ export default function ChooseTemplate() {
 							<TemplateCard
 								key={template._id}
 								template={template}
+								preview={<DesignThumbnail design={template.design} />}
 								onSelect={() => pickStarter(template)}
 							/>
 						))}

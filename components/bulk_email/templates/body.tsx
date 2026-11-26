@@ -9,6 +9,7 @@ import { useEmailTemplates } from "@/hooks/bulk_email/templates";
 import { useDebounced } from "@/hooks/bulk_email/use_debounced";
 import Pager from "../pager";
 import TemplateCard from "./template_card";
+import SavedThumbnail from "./saved_thumbnail";
 import { TemplateGridSkeleton } from "../skeletons";
 
 const PAGE_SIZE = 24;
@@ -86,6 +87,7 @@ export default function TemplatesBody() {
 						<TemplateCard
 							key={template._id}
 							template={template}
+							preview={<SavedThumbnail id={template._id} />}
 							onSelect={() =>
 								router.push(`/bulk-email/templates/${template._id}`)
 							}

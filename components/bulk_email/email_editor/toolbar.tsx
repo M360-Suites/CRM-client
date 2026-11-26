@@ -10,6 +10,7 @@ import {
 	Baseline,
 	Bold,
 	Braces,
+	Columns2,
 	Highlighter,
 	ImagePlus,
 	Italic,
@@ -31,6 +32,14 @@ import { toast } from "sonner";
 import { CustomPopover } from "@/components/custom/common/customPopover";
 import { useMergeVariables } from "@/hooks/bulk_email/templates";
 import { useImagePicker } from "./use_image_picker";
+import {
+	ColumnsAlign,
+	findColumns,
+	insertColumns,
+	removeColumns,
+	setColumnCount,
+	setColumnsAttrs,
+} from "./columns";
 import { MenuItemsSkeleton } from "../skeletons";
 
 export const TEXT_COLORS = [
@@ -305,6 +314,113 @@ function ImageMenu({ editor }: { editor: Editor }) {
 	);
 }
 
+// Insert a row of columns, or change the one the cursor is in
+function ColumnsMenu({
+	editor,
+	current,
+}: {
+	editor: Editor;
+	current: { count: number; gap: number; valign: ColumnsAlign } | null;
+}) {
+	const [open, setOpen] = useState(false);
+	const option = (active: boolean) =>
+		`flex-1 rounded-[4px] border h-8 text-xs cursor-pointer ${
+			active
+				? "border-[#0091FE] bg-[#E6F2FF] text-[#0091FE]"
+				: "border-[#E2E8F0] text-[#0F172A] hover:bg-gray-50"
+		}`;
+	const run = (fn: () => void) => {
+		fn();
+		setOpen(false);
+	};
+
+	return (
+		<CustomPopover
+			align="start"
+			open={open}
+			onOpenChange={setOpen}
+			className="pt-2 flex flex-col gap-2.5 w-56"
+			trigger={
+				<button
+					type="button"
+					title="Columns"
+					aria-label="Columns"
+					aria-pressed={!!current}
+					onMouseDown={(e) => e.preventDefault()}
+					className={btn(!!current)}
+				>
+					<Columns2 />
+				</button>
+			}
+		>
+			{!current ? (
+				<>
+					<span className="text-[11px] text-[#64748B]">
+						Add side-by-side columns. They stack on phones.
+					</span>
+					<div className="flex gap-2">
+						<button type="button" className={option(false)} onClick={() => run(() => insertColumns(editor, 2))}>
+							2 columns
+						</button>
+						<button type="button" className={option(false)} onClick={() => run(() => insertColumns(editor, 3))}>
+							3 columns
+						</button>
+					</div>
+				</>
+			) : (
+				<>
+					<span className="text-[11px] font-medium text-[#0F172A]">Columns</span>
+					<div className="flex gap-2">
+						{([2, 3] as const).map((n) => (
+							<button
+								key={n}
+								type="button"
+								className={option(current.count === n)}
+								onClick={() => setColumnCount(editor, n)}
+							>
+								{n}
+							</button>
+						))}
+					</div>
+					<span className="text-[11px] font-medium text-[#0F172A]">Vertical alignment</span>
+					<div className="flex gap-2">
+						{(["top", "middle"] as const).map((v) => (
+							<button
+								key={v}
+								type="button"
+								className={option(current.valign === v)}
+								onClick={() => setColumnsAttrs(editor, { valign: v })}
+							>
+								{v === "top" ? "Top" : "Middle"}
+							</button>
+						))}
+					</div>
+					<span className="text-[11px] font-medium text-[#0F172A]">Space between</span>
+					<div className="flex gap-2">
+						{[8, 16, 24, 32].map((g) => (
+							<button
+								key={g}
+								type="button"
+								className={option(current.gap === g)}
+								onClick={() => setColumnsAttrs(editor, { gap: g })}
+							>
+								{g}
+							</button>
+						))}
+					</div>
+					<button
+						type="button"
+						onClick={() => run(() => removeColumns(editor))}
+						className="rounded-[4px] border border-[#E2E8F0] h-8 text-xs text-[#0F172A] hover:bg-gray-50 cursor-pointer"
+					>
+						Unstack into one column
+					</button>
+				</>
+			)}
+		</CustomPopover>
+	);
+}
+
 function MergeTagMenu({ editor }: { editor: Editor }) {
 	const { data: variables, isLoading, isError } = useMergeVariables();
 	return (
@@ -367,6 +483,12 @@ export default function Toolbar({ editor }: { editor: Editor }) {
 			highlight: e.getAttributes("highlight").color as string | undefined,
 			canUndo: e.can().undo(),
 			canRedo: e.can().redo(),
+			columns: (() => {
+				const row = findColumns(e)?.node;
+				return row
+					? { count: row.childCount, gap: Number(row.attrs.gap), valign: row.attrs.valign as ColumnsAlign }
+					: null;
+			})(),
 		}),
 	});
 
@@ -485,6 +607,7 @@ export default function Toolbar({ editor }: { editor: Editor }) {
 			>
 				<MousePointerClick />
 			</Tool>
+			<ColumnsMenu editor={editor} current={s.columns} />
 			<MergeTagMenu editor={editor} />
 			<Divider />
 			<Tool

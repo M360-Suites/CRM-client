@@ -84,6 +84,32 @@ const buttonBlock = (btn: HTMLElement) => {
 	return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:4px 0 16px;"><tr><td align="${align}"><table role="presentation" cellpadding="0" cellspacing="0" border="0"${full ? ' width="100%"' : ""}><tr><td align="center" bgcolor="${bg}" style="border-radius:${radius}px;background:${bg};"><a href="${esc(href)}" target="_blank" style="display:inline-block;padding:12px 24px;font-size:15px;font-weight:600;line-height:20px;color:${color};text-decoration:none;border-radius:${radius}px;">${esc(label)}</a></td></tr></table></td></tr></table>`;
 };
 
+// Side-by-side columns as "hybrid" inline-blocks: they sit in a row when the
+// email is full width and wrap under each other on narrow screens. Outlook
+// on Windows ignores inline-block, so it gets a real table via conditional
+// comments.
+const columnsBlock = (
+	row: HTMLElement,
+	design: EmailDesign,
+	textColor: string,
+	innerWidth: number,
+) => {
+	const columns = Array.from(row.children).filter((c) =>
+		c.hasAttribute("data-email-column"),
+	) as HTMLElement[];
+	if (!columns.length) return "";
+	const gap = num(row.getAttribute("data-gap"), 16);
+	const valign = row.getAttribute("data-valign") === "middle" ? "middle" : "top";
+	const width = Math.floor((innerWidth - gap * (columns.length - 1)) / columns.length);
+	const cells = columns.map((col) => {
+		const inner = inlineSection(col, design, textColor, width);
+		return `<div style="display:inline-block;width:100%;max-width:${width}px;vertical-align:${valign};font-size:15px;line-height:24px;"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td style="padding:0 0 16px;color:${textColor};">${inner}</td></tr></table></div>`;
+	});
+	const spacer = `<div style="display:inline-block;width:100%;max-width:${gap}px;font-size:0;line-height:0;">&nbsp;</div>`;
+	const msoCell = `<!--[if mso]></td><td width="${gap}"></td><td width="${width}" valign="${valign}"><![endif]-->`;
+	return `<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0;"><tr><td style="font-size:0;line-height:0;text-align:left;"><!--[if mso]><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0"><tr><td width="${width}" valign="${valign}"><![endif]-->${cells.join(`${msoCell}${spacer}`)}<!--[if mso]></td></tr></table><![endif]--></td></tr></table>`;
+};
+
 const inlineSection = (
 	section: HTMLElement,
 	design: EmailDesign,
@@ -95,12 +121,19 @@ const inlineSection = (
 		holder.innerHTML = html;
 		el.replaceWith(...Array.from(holder.childNodes));
 	};
+	// Columns first: each column is laid out at its own width
+	section
+		.querySelectorAll<HTMLElement>("div[data-email-columns]")
+		.forEach((row) => swap(row, columnsBlock(row, design, textColor, innerWidth)));
 	section
 		.querySelectorAll<HTMLElement>("div[data-email-button]")
 		.forEach((btn) => swap(btn, buttonBlock(btn)));
 	section
 		.querySelectorAll<HTMLElement>("img")
-		.forEach((img) => swap(img, imageBlock(img, innerWidth)));
+		.forEach((img) => {
+			// Images inside columns are already laid out
+			if (!img.closest("table")) swap(img, imageBlock(img, innerWidth));
+		});
 
 	section.querySelectorAll<HTMLElement>("*").forEach((el) => {
 		const tag = el.tagName.toLowerCase();
@@ -110,6 +143,11 @@ const inlineSection = (
 		if (tag === "a") {
 			el.setAttribute("style", `color:${design.link_color};text-decoration:underline;${own}`);
 			el.setAttribute("target", "_blank");
+		} else if (tag === "span" && el.style.fontSize) {
+			// Text sized up past its block's fixed line height would overlap the
+			// lines around it, so it gets a line height of its own
+			const size = parseFloat(el.style.fontSize);
+			if (size) el.setAttribute("style", `${own};line-height:${Math.round(size * 1.25)}px`);
 		} else if (tag === "mark") {
 			el.setAttribute("style", `padding:0 2px;${own}`);
 		} else if (BLOCK_STYLES[tag]) {

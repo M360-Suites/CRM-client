@@ -3,11 +3,8 @@ import {
 	BroadcastStatus,
 	ContactTemperature,
 	RecipientStatus,
-	StarterTemplate,
 	TemplateCategory,
 } from "@/types/bulk_email";
-
-import { createDefaultDesign } from "./email_editor/design";
 
 // Defaults, labels and the built-in starter designs for the bulk email screens.
 
@@ -95,23 +92,6 @@ export const TEMPLATE_CATEGORIES: {
 			"With starting points you can save customized designs and default content for your future emails. These templates give you access to the latest version of our email editor.",
 	},
 ];
-
-const TEMPLATE_DESCRIPTION =
-	"Send personalized welcome messages and guide new subscribers to get the most value from your brand.";
-
-// Starter designs shown in "Choose a template to customize". Picking one
-// creates a real template from it through the API.
-export const LIBRARY_TEMPLATES: StarterTemplate[] = (
-	["starting", "classic", "library"] as TemplateCategory[]
-).flatMap((category) =>
-	Array.from({ length: 9 }).map((_, i) => ({
-		_id: `lib-${category}-${i + 1}`,
-		name: "Welcome (Events)",
-		description: TEMPLATE_DESCRIPTION,
-		category,
-		design: createDefaultDesign(),
-	})),
-);
 
 export const personName = (
 	p?: {

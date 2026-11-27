@@ -1,5 +1,7 @@
 "use client";
 
+import { ReactNode } from "react";
+
 // Works for both saved templates (subject) and starter designs (description)
 interface CardTemplate {
 	name: string;
@@ -9,10 +11,13 @@ interface CardTemplate {
 
 export default function TemplateCard({
 	template,
+	preview,
 	onSelect,
 	onUse,
 }: {
 	template: CardTemplate;
+	// A small render of the email (DesignThumbnail or SavedThumbnail)
+	preview?: ReactNode;
 	onSelect: () => void;
 	onUse?: () => void;
 }) {
@@ -29,7 +34,13 @@ export default function TemplateCard({
 			}}
 			className="group flex flex-col bg-white border border-[#E2E8F0] aspect-[25/28] cursor-pointer overflow-hidden hover:border-[#0091FE] hover:shadow-sm transition-all"
 		>
-			<div className="h-[38%] min-h-24 bg-[#F8FAFC]" />
+			{preview ? (
+				<div className="h-[62%] min-h-32 border-b border-[#E2E8F0]">
+					{preview}
+				</div>
+			) : (
+				<div className="h-[38%] min-h-24 bg-[#F8FAFC]" />
+			)}
 			<div
 				className={`flex flex-col flex-1 px-4 pt-3 ${onUse ? "pb-4" : "justify-end pb-6"}`}
 			>

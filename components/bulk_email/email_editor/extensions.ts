@@ -7,6 +7,7 @@ import { SectionName } from "@/types/bulk_email";
 import { DEFAULT_SECTION_STYLES, SECTION_NODES } from "./design";
 import ImageView from "./image_view";
 import ButtonView from "./button_view";
+import { EmailColumn, EmailColumns } from "./columns";
 
 // The document is always exactly header, body, footer. The schema enforces
 // it, so sections can't be deleted, only emptied.
@@ -222,4 +223,6 @@ export const emailExtensions = (): Extensions => [
 	TextAlign.configure({ types: ["heading", "paragraph"] }),
 	EmailImage,
 	EmailButton,
+	EmailColumns,
+	EmailColumn,
 ];

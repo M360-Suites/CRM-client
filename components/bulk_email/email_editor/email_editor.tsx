@@ -41,8 +41,15 @@ const CANVAS_CSS = `
 .email-canvas code { font-family: Menlo, Consolas, monospace; background: #F1F5F9; padding: 1px 4px; border-radius: 3px; }
 .email-canvas a { color: var(--link-color); text-decoration: underline; }
 .email-canvas mark { padding: 0 2px; border-radius: 2px; color: inherit; }
+/* Text sized up past its block's line height gets taller lines (see lib/email_html.ts) */
+.email-canvas span[style*="font-size"] { line-height: 1.25; }
+.email-canvas div[data-email-columns] { margin: 0 0 16px; }
+.email-canvas div[data-email-column] { min-width: 0; min-height: 32px; border-radius: 2px; outline: 1px dashed transparent; outline-offset: 3px; transition: outline-color .15s; }
+.email-canvas section:hover div[data-email-column], .email-canvas section.is-active-section div[data-email-column] { outline-color: rgba(0,145,254,.35); }
 .email-canvas section > :last-child,
-.email-canvas section > :last-child > [data-node-view-wrapper] { margin-bottom: 0; }
+.email-canvas section > :last-child > [data-node-view-wrapper],
+.email-canvas div[data-email-column] > :last-child,
+.email-canvas div[data-email-column] > :last-child > [data-node-view-wrapper] { margin-bottom: 0; }
 .email-canvas .ProseMirror-gapcursor:after { border-top-color: #0091FE; }
 `;
 
